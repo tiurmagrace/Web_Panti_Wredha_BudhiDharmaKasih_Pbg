@@ -1,0 +1,802 @@
+/* ==========================================================================
+   1. VARIABLES & FONTS
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@700&family=Poppins:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+
+:root {
+    --color-primary: #1D4E89;       /* Biru Tua (Navbar, Aksen) */
+    --color-secondary: #002B5C;     /* Biru Gelap (Teks Utama, Footer) */
+    --color-light-bg: #EAF4FF;      /* Biru Sangat Muda (Background Seksi) */
+    --color-highlight: #4A90E2;     /* Biru Cerah (Hover/CTA) */
+    --color-quote-bg: #CDE4FF;      /* Background Kotak About */
+    
+    --font-heading: 'Inknut Antiqua', serif;
+    --font-body: 'Poppins', sans-serif;
+}
+
+/* ==========================================================================
+   2. GENERAL STYLES & LAYOUT
+   ========================================================================== */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: url('../assets/2.png') center/cover fixed no-repeat;
+    font-family: var(--font-body);
+    font-weight: 400;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-wrapper {
+    flex-grow: 1; /* Memastikan footer selalu di bawah */
+}
+
+a { text-decoration: none; }
+
+/* Typography Global */
+h1, h2, h3, h4 {
+    font-family: var(--font-heading);
+    color: var(--color-secondary);
+}
+
+h2 {
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+    text-transform: uppercase;
+}
+
+/* ==========================================================================
+   3. COMPONENTS (BUTTONS & ALERTS)
+   ========================================================================== */
+.cta-button {
+    text-decoration: none;
+    padding: 10px 24px;
+    font-weight: 700;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-family: var(--font-body);
+    display: inline-block;
+}
+
+.cta-button.primary {
+    background-color: var(--color-highlight);
+    color: white;
+    border: 2px solid var(--color-highlight);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.cta-button.primary:hover {
+    background-color: #2D6CB9;
+    border-color: #2D6CB9;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    color: white;
+}
+
+/* Button Putih (biasanya di Notifikasi) */
+.btn-white-cta {
+    background-color: white;
+    color: #000;
+    font-weight: 700;
+    padding: 10px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    float: right;
+}
+
+.btn-white-cta:hover {
+    transform: translateY(-2px);
+    background-color: #f0f0f0;
+    color: #000;
+}
+
+/* ==========================================================================
+   4. NAVBAR
+   ========================================================================== */
+.navbar {
+    background-color: var(--color-primary);
+    box-sizing: border-box;
+    z-index: 1000;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.navbar.sticky-top {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand img {
+    height: 70px;
+    object-fit: contain;
+}
+
+.navbar-nav .nav-link {
+    color: white;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    padding: 5px 0;
+    position: relative;
+    transition: color 0.3s ease;
+    margin: 0 15px;
+}
+
+/* Underline Animation Effect */
+.navbar-nav .nav-link:not(.dropdown-toggle):after,
+.navbar-nav .nav-link.dropdown-toggle::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background: white;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+}
+
+.navbar-nav .nav-link:not(.dropdown-toggle):hover:after,
+.navbar-nav .nav-link:not(.dropdown-toggle).active:after,
+.navbar-nav .nav-link.dropdown-toggle:hover::before,
+.navbar-nav .nav-link.dropdown-toggle.active::before {
+    width: 100%;
+}
+
+.navbar-nav .nav-link.dropdown-toggle::after { display: none; } /* Hapus panah bawaan */
+
+/* Dropdown Menu */
+.navbar-nav .dropdown-menu {
+    background-color: var(--color-quote-bg);
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    margin-top: 10px;
+}
+
+.navbar-nav .dropdown-item {
+    color: var(--color-secondary);
+    font-family: var(--font-body);
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: all 0.2s ease-out;
+}
+
+.navbar-nav .dropdown-item:hover {
+    background-color: var(--color-highlight);
+    color: white;
+}
+
+.navbar-nav .dropdown-item:active {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+/* Nav Actions (Notif & Login) */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.notif-icon img {
+    width: 32px;
+    height: 32px;
+    transition: all 0.3s ease;
+    filter: brightness(0) invert(1);
+}
+
+.notif-icon img:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+}
+
+/* ==========================================================================
+   5. HOME PAGE SECTIONS
+   ========================================================================== */
+
+/* --- Hero Carousel --- */
+.hero-carousel-inner {
+    height: 550px;
+}
+
+.hero-slide-img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+/* --- Main Header Text --- */
+.main-header {
+    padding-top: 60px;
+    text-align: center;
+}
+
+.main-header .header-text {
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.main-header h1, 
+.main-header h2 {
+    font-family: var(--font-heading);
+    color: var(--color-primary);
+    font-size: 42px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.3;
+    text-transform: uppercase;
+}
+
+.main-header .header-text::after {
+    content: '';
+    display: block;
+    width: 80%; /* Responsive width agar aman di HP */
+    max-width: 1000px; 
+    height: 1px; 
+    background-color: var(--color-highlight);
+    margin: 20px auto 0; 
+    border-radius: 5px;
+}
+
+.main-header .subtitle {
+    font-family: var(--font-body);
+    font-size: 20px;
+    font-weight: 400;
+    font-style: italic;
+    color: #555;
+    margin-top: 0.5px;
+    letter-spacing: 0.5px;
+}
+
+/* --- About Section --- */
+.about {
+    padding: 10px 10px;
+    text-align: center;
+}
+
+.info-box {
+    background-color: rgba(205, 228, 255, 0.85);
+    border-radius: 15px;
+    padding: 40px 60px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border: none;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.info-box.info-box-berlogo {
+    position: relative;
+    overflow: hidden;
+}
+
+.info-box.info-box-berlogo::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 1;
+    background: url('../assets/lope.png') center/contain no-repeat;
+    opacity: 0.3;
+}
+
+.info-box.info-box-berlogo .about-quote {
+    position: relative;
+    z-index: 2;
+}
+
+.about-quote {
+    color: var(--color-secondary);
+    font-size: 18px;
+    line-height: 1.8;
+    text-align: center;
+    font-weight: 400;
+    margin: 0;
+    font-style: italic;
+    font-family: var(--font-body);
+}
+
+/* --- Gallery Section --- */
+.gallery-section {
+    padding: 20px 20px;
+    background-color: transparent;
+}
+
+.gallery-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-image:hover { transform: scale(1.05); }
+
+/* Gallery Modal (Popup) */
+.gallery-modal .modal-content {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.gallery-modal img {
+    width: 100%;
+    height: auto;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    display: block;
+}
+
+.gallery-modal .btn-close-custom {
+    position: absolute;
+    top: -40px; right: 0;
+    background: none; border: none;
+    color: white; font-size: 30px;
+    cursor: pointer; opacity: 0.8;
+    transition: 0.3s;
+}
+
+.gallery-modal .btn-close-custom:hover {
+    opacity: 1; transform: scale(1.1);
+    color: var(--color-highlight);
+}
+
+/* --- Pagination --- */
+.pagination .page-link {
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: var(--color-secondary);
+    border: 1px solid var(--color-secondary);
+    margin: 0 3px;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+.pagination .page-link:hover,
+.pagination .page-item.active .page-link {
+    background-color: var(--color-highlight);
+    color: white;
+    border-color: var(--color-highlight);
+    z-index: 1;
+}
+
+.pagination .page-link#next-page {
+    border: none; background: none;
+    color: var(--color-secondary);
+    font-weight: 700;
+}
+
+.pagination .page-link#next-page:hover {
+    color: var(--color-highlight);
+    text-decoration: underline;
+}
+
+/* --- Paviliun Section --- */
+.paviliun-section {
+    padding: 20px 20px;
+    background-color: transparent;
+}
+
+.paviliun-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 50px;
+}
+
+.paviliun-item {
+    background-color: rgba(205, 228, 255, 0.85);
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.paviliun-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.paviliun-item img {
+    width: 100%; height: 220px; object-fit: cover; display: block;
+}
+
+.paviliun-item p {
+    padding: 15px;
+    color: var(--color-primary);
+    font-weight: 600;
+    font-size: 18px;
+    text-transform: uppercase;
+    margin: 0;
+    border-top: 1px solid #eee;
+    font-family: var(--font-heading);
+}
+
+/* --- CTA Banner --- */
+.cta-banner {
+    background-color: transparent;
+    padding: 0px 30px;
+    text-align: center;
+}
+
+.cta-button.hero-cta {
+    background-color: transparent; border: none; padding: 0;
+}
+
+.cta-button.hero-cta:hover {
+    background-color: transparent; transform: translateY(-2px);
+}
+
+.cta-button.hero-cta img { max-width: 20px; height: 250px; }
+
+.cta-message {
+    color: var(--color-secondary);
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-family: var(--font-body);
+}
+
+.contact-info a {
+    color: var(--color-secondary);
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 500;
+    margin: 10px 20px;
+    transition: color 0.3s ease;
+    font-family: var(--font-heading);
+}
+
+.contact-info a i { margin-right: 10px; color: var(--color-highlight); }
+.contact-info a:hover { color: var(--color-highlight); }
+
+/* ==========================================================================
+   6. PAGE: NOTIFICATIONS
+   ========================================================================== */
+.notif-list-group .list-group-item {
+    border: none;
+    border-bottom: 1px solid #eee;
+    padding: 20px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.notif-list-group .list-group-item:hover { background-color: #f8f9fa; }
+
+.notif-date { font-size: 0.85rem; color: #888; margin-bottom: 5px; display: block; }
+.notif-title { font-weight: 700; color: var(--color-secondary); font-size: 1.1rem; margin-bottom: 5px; }
+.notif-preview { color: #555; font-size: 0.95rem; }
+.notif-unread { background-color: #eaf4ff; border-left: 4px solid var(--color-highlight); }
+
+.notif-detail-card {
+    background-color: #6A9BC8; color: #fff; border-radius: 10px; padding: 30px; position: relative;
+}
+
+.notif-detail-card.figma-style { color: #000; font-weight: 500; }
+
+.notif-icon-circle {
+    width: 50px; height: 50px; background-color: #4cd137;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: white; margin-bottom: 20px;
+}
+
+.detail-list { margin: 20px 0; padding-left: 0; list-style: none; }
+.detail-list li { margin-bottom: 8px; font-weight: 600; }
+
+/* ==========================================================================
+   7. PAGE: AUTH (LOGIN & SIGNUP)
+   ========================================================================== */
+.auth-split-container {
+    display: flex; height: 100vh; width: 100%;
+    background: linear-gradient(to right, #1D4E89, #0E3A6B);
+    margin: 0; padding: 0; overflow: hidden;
+}
+
+.auth-image-side {
+    display: none; /* Mobile hidden */
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.auth-image-side.login-mode { background-image: url('../assets/login.png'); }
+.auth-image-side.signup-mode { background-image: url('../assets/signup.png'); }
+
+.auth-form-side {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    background: linear-gradient(to right, #1D4E89, #0E3A6B);
+    height: 100vh; overflow-y: auto;
+}
+
+.auth-card-figma {
+    background: #ffffff; width: 100%; max-width: 450px;
+    padding: 2.5rem; border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    display: flex; flex-direction: column; justify-content: center;
+    margin: 20px 0;
+}
+
+.auth-card-figma h2 {
+    font-family: var(--font-heading); font-weight: 700; color: #000;
+    text-align: center; margin-bottom: 1.5rem; font-size: 1.8rem; text-transform: uppercase;
+}
+
+.figma-input-group { margin-bottom: 1rem; position: relative; }
+.figma-label {
+    font-family: var(--font-heading); font-weight: 600;
+    font-size: 0.9rem; color: #000; margin-bottom: 0.1rem; display: block;
+}
+
+.form-control-figma {
+    width: 100%; border: none; border-bottom: 1px solid #888;
+    border-radius: 0; padding: 5px 35px 5px 0; /* Padding kanan u/ icon mata */
+    background: transparent; font-family: var(--font-body);
+    font-size: 1rem; color: #000; outline: none;
+    transition: border-color 0.3s;
+}
+
+.form-control-figma:focus { box-shadow: none; border-bottom: 1px solid var(--color-highlight); }
+
+/* Password Eye Icon */
+.password-wrapper { position: relative; width: 100%; }
+.toggle-password-icon {
+    position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+    cursor: pointer; color: #666; z-index: 10;
+}
+
+/* Fix double eye icon on Edge/Chrome */
+input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display: none; }
+
+.btn-figma-outline {
+    display: block; width: 100%; padding: 10px; margin-top: 1.2rem;
+    border: 1px solid #1D4E89; background: transparent; color: #1D4E89;
+    font-family: var(--font-heading); font-weight: 700; font-size: 1rem;
+    border-radius: 50px; text-transform: uppercase; text-align: center;
+    transition: all 0.3s; cursor: pointer;
+}
+
+.btn-figma-outline:hover { background-color: #1D4E89; color: white; text-decoration: none; }
+
+.text-center-link {
+    text-align: center; margin-top: 15px; font-size: 0.85rem; font-family: var(--font-body);
+}
+.text-center-link a { color: #1D4E89; font-weight: 600; text-decoration: none; }
+.text-center-link a:hover { text-decoration: underline; }
+.forgot-password-link { text-decoration: none; color: #000; font-size: 0.8rem; font-weight: 600; }
+
+/* ==========================================================================
+   8. PAGE: DONATION & OTHERS
+   ========================================================================== */
+/* Hero Full Width (Donasi) */
+.hero-banner-full {
+    width: 100%; height: auto; max-height: 500px; object-fit: cover; display: block;
+}
+
+/* Donasi Content */
+.donasi-direct-content p, .donasi-direct-content li {
+    font-size: 1.1rem; line-height: 1.7; color: #000;
+    text-align: justify; font-weight: 500; margin-bottom: 1rem;
+}
+.donasi-direct-content h3 {
+    font-family: var(--font-heading); color: var(--color-secondary);
+    font-weight: 700; margin-top: 2rem; margin-bottom: 1.5rem;
+    text-align: center; border-bottom: 2px solid var(--color-highlight); padding-bottom: 10px;
+}
+.donasi-buttons { margin-top: 2.5rem; display: grid; grid-template-columns: 1fr; gap: 1rem; }
+.btn-donasi {
+    background-color: var(--color-secondary); color: white; padding: 1rem;
+    text-align: center; border-radius: 8px; font-size: 1.2rem; font-weight: 600;
+    transition: all 0.3s ease; border: 2px solid var(--color-secondary); text-decoration: none;
+}
+.btn-donasi:hover {
+    background-color: var(--color-primary); border-color: var(--color-primary); color: white; transform: translateY(-3px);
+}
+
+/* Form Box (Donasi Barang/Tunai) */
+.form-donasi-box { background-color: #3b5998; padding: 2.5rem; border-radius: 15px; }
+.form-donasi-box .form-label { color: white; font-weight: 600; }
+.form-donasi-box .form-control, .form-donasi-box .form-select {
+    background-color: white; color: #333; padding: 0.75rem 1rem; height: 50px;
+}
+.form-donasi-box textarea.form-control { height: 120px; }
+.form-donasi-box input[type="file"].form-control { height: auto; padding: 10px; }
+.btn-kirim {
+    background-color: white; color: #000; font-weight: 700; font-size: 1.1rem;
+    padding: 10px 40px; border-radius: 8px; border: none; transition: background-color 0.3s ease;
+}
+.btn-kirim:hover { background-color: #f0f0f0; }
+
+/* Modal Berhasil */
+.modal-berhasil .modal-content {
+    background-color: #0b2f58e5; color: white; text-align: left; padding: 0.3rem 0.3rem 0.1rem;
+    border: none; border-radius: 5px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+.modal-berhasil .btn-close { filter: invert(1); }
+.modal-berhasil .modal-icon-circle {
+    width: 30px; height: 30px; background-color: var(--color-highlight);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; color: white; margin: 0 auto 0.5rem auto; box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+.modal-berhasil .modal-title { font-family: var(--font-body); font-weight: 700; font-size: 1.2rem; color: #ecf0f1; text-align: center; margin-bottom: 1rem; }
+.modal-berhasil .modal-quote { font-style: italic; font-weight: 600; margin-top: 1rem; margin-bottom: 1.5rem; text-align: center; color: #bdc3c7; font-size: 1rem; }
+.modal-berhasil p { text-align: justify; font-size: 0.9rem; line-height: 1.6; color: #ecf0f1; margin-bottom: 0.8rem; }
+
+/* Visi Misi & Sejarah Styles */
+.visi-misi-bg {
+    background: url('../assets/visimisi.png') no-repeat center top; background-size: cover;
+    min-height: 100vh; padding-top: 80px; padding-bottom: 80px; background-color: rgba(255, 255, 255, 0.25);
+}
+.vm-title { font-family: var(--font-heading); font-size: 2rem; font-weight: 700; text-transform: uppercase; color: #000; margin-bottom: 10px; }
+.vm-divider { border-top: 2px solid #5c86b6; width: 100%; max-width: 800px; margin: 0 auto 30px auto; opacity: 1; }
+.vm-text { font-family: var(--font-body); font-size: 1.35rem; font-weight: 500; color: #000; max-width: 900px; margin: 0 auto; line-height: 1.6; }
+.vm-list { font-family: var(--font-body); font-size: 1.25rem; font-weight: 500; color: #000; max-width: 900px; margin: 0 auto; text-align: justify; padding-left: 20px; }
+.history-text { line-height: 1.8; font-size: 1.1rem; color: #333; text-align: justify; margin-bottom: 3rem; }
+.history-text p { margin-bottom: 1.5rem; }
+
+/* Page Headers (Umum) */
+.page-header { padding-top: 3rem; padding-bottom: 25px; text-align: center; }
+.page-header .main-title { font-family: var(--font-heading); color: var(--color-secondary); font-size: 3rem; font-weight: 700; text-transform: uppercase; }
+.page-header .subtitle { font-family: var(--font-body); color: #111; font-size: 1.0rem; font-weight: 500; margin: 0; }
+
+/* Facilities */
+.facility-item {
+    margin-bottom: 4rem; background: #CCE0F3; padding: 2rem; border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07); transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.facility-item:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1); }
+.facility-item img { height: 300px; width: 100%; object-fit: cover; border-radius: 10px; }
+.facility-text h3 { font-family: var(--font-heading); color: var(--color-primary); font-weight: 700; margin-bottom: 1rem; }
+.facility-text p { color: #333; font-size: 1rem; line-height: 1.7; text-align: justify; }
+
+/* Contact Page Specifics */
+.contact-hero {
+    background: url('../assets/kontak.png') no-repeat center center; background-size: cover;
+    height: 400px; position: relative; display: flex; align-items: center; justify-content: center; text-align: center;
+}
+.contact-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.3); }
+.hero-content { position: relative; z-index: 1; max-width: 800px; padding: 20px; }
+.hero-content h1 { font-family: var(--font-heading); font-size: 2.8rem; color: var(--color-secondary); margin-bottom: 0.5rem; }
+.hero-content h3 { font-family: var(--font-heading); font-size: 1.2rem; color: #333; font-weight: 400; margin-bottom: 0.5rem; }
+.contact-info-block { text-align: center; margin-bottom: 3rem; }
+.info-icon-circle { width: 60px; height: 60px; background-color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; margin: 0 auto 1.5rem auto; }
+.contact-form-header { font-weight: 700; color: #333; margin-bottom: 2rem; line-height: 1.6; font-size: 1.1rem; }
+.btn-kirim-pesan { background-color: var(--color-secondary); color: white; padding: 10px 30px; font-weight: 700; border: none; border-radius: 5px; margin-top: 1rem; transition: background-color 0.3s; }
+.btn-kirim-pesan:hover { background-color: var(--color-primary); }
+
+/* ==========================================================================
+   9. FOOTER
+   ========================================================================== */
+.footer-new {
+    background-color: var(--color-primary);
+    color: #f0f0f0;
+    padding-top: 40px; padding-bottom: 15px;
+    margin-top: auto;
+    font-family: var(--font-body);
+}
+
+.footer-brand-desc h2 {
+    font-family: var(--font-heading); color: white; font-size: 18px; text-align: left; margin-bottom: 10px; text-transform: uppercase;
+}
+.footer-brand-desc h2::after { display: none; }
+
+.footer-text { font-size: 13px; line-height: 1.5; color: #e0e8f3; margin-bottom: 15px; max-width: 300px; }
+
+/* Footer Search */
+.footer-search { position: relative; max-width: 250px; }
+.footer-search input {
+    width: 100%; padding: 8px 35px 8px 15px; border-radius: 50px; border: none;
+    background: rgba(255, 255, 255, 0.1); color: white; outline: none; font-size: 13px; transition: 0.3s;
+}
+.footer-search input::placeholder { color: rgba(255, 255, 255, 0.6); font-size: 12px; }
+.footer-search input:focus { background: white; color: #333; }
+.footer-search button {
+    position: absolute; right: 4px; top: 4px; width: 28px; height: 28px;
+    border-radius: 50%; border: none; background: var(--color-highlight); color: white;
+    cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;
+}
+.footer-search button:hover { background-color: #2D6CB9; }
+
+/* Footer Links */
+.footer-heading { color: white; font-weight: 700; font-size: 14px; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+.footer-links, .footer-hours { list-style: none; padding: 0; margin: 0; font-size: 13px; }
+.footer-links li, .footer-hours li { margin-bottom: 8px; }
+.footer-links a { color: #e0e8f3; text-decoration: none; transition: 0.3s; }
+.footer-links a:hover { color: var(--color-highlight); padding-left: 5px; }
+
+.footer-social-icons { display: flex; gap: 15px; align-items: center; }
+.footer-social-icons a img { width: 24px; height: 24px; transition: transform 0.3s; }
+.footer-social-icons a:hover img { transform: translateY(-3px); }
+
+.footer-hours li { display: flex; justify-content: space-between; color: #e0e8f3; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; }
+.footer-hours span:first-child { font-weight: 600; }
+
+.footer-contact-bar { border-top: 1px solid rgba(255, 255, 255, 0.15); border-bottom: 1px solid rgba(255, 255, 255, 0.15); padding: 20px 0; margin-top: 30px; }
+.contact-item { display: flex; align-items: center; gap: 12px; color: white; }
+.contact-item i { font-size: 20px; color: var(--color-highlight); }
+.contact-item div span { display: block; font-size: 12px; font-weight: 300; opacity: 0.8; }
+.contact-item div h6 { font-size: 13px; font-weight: 600; margin: 0; }
+
+.footer-copyright { padding-top: 15px; text-align: center; font-size: 12px; color: rgba(255, 255, 255, 0.5); }
+
+/* ==========================================================================
+   10. MEDIA QUERIES (RESPONSIVE)
+   ========================================================================== */
+@media (min-width: 992px) {
+    .auth-image-side { display: block; flex: 1; width: 50%; height: 100vh; }
+    .auth-form-side { flex: 1; width: 50%; height: 100vh; }
+    .donasi-buttons { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 992px) {
+    .contact-item { margin-bottom: 15px; }
+    .footer-brand-desc, .footer-col-mobile { margin-bottom: 25px; }
+}
+
+@media (max-width: 768px) {
+    .hero-carousel-inner { height: 300px; }
+    .main-header h1, .main-header h2 { font-size: 28px; }
+    .main-header .header-text::after { width: 150px; }
+    .main-header .subtitle { font-size: 16px; margin-top: 25px; }
+    .contact-hero { height: 300px; }
+    .hero-content h1 { font-size: 2rem; }
+    .ps-lg-5 { padding-left: 0 !important; }
+    .vm-title { font-size: 1.5rem; }
+    .vm-text, .vm-list { font-size: 1rem; }
+    .history-text { font-size: 1rem; text-align: left; }
+    .page-header .main-title { font-size: 2.2rem; }
+    .hero-image-requirements { height: 250px; }
+    .content-paper { margin-top: -50px; padding: 2rem; }
+    .content-paper h2 { font-size: 1.8rem; }
+}
+
+@media (max-width: 576px) {
+    .contact-info a { 
+        font-size: 16px; 
+        display: block; 
+        margin: 10px 0; 
+    }
+    
+    .cta-message { 
+        font-size: 16px; 
+    }
+
+    .info-box {
+        padding: 30px 20px !important; 
+    }
+
+    .auth-card-figma {
+        padding: 1.5rem !important;
+        max-width: 100%; 
+    }
+
+    .main-header h1, 
+    .main-header h2 { 
+        font-size: 24px; 
+    }
+    
+    .footer-brand-desc, 
+    .footer-col-mobile {
+        text-align: center; 
+    }
+    
+    .footer-social-icons {
+        justify-content: center;
+    }
+    
+    .footer-links a:hover {
+        padding-left: 0; 
+    }
+}

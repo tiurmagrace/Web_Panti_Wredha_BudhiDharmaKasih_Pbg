@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Panti Wredha</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/admin-style.css">
+</head>
+<body class="admin-page">
+    
+    <div class="admin-layout-wrapper">
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                <img src="../assets/1.png" alt="Logo Panti Wredha">
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="dashboard-admin.html" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+                </li>
+                <li class="has-submenu">
+                    <a href="#submenu-penghuni" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="submenu-penghuni">
+                        <i class="fas fa-users"></i> <span>Manajemen Data Penghuni</span> <i class="fas fa-chevron-down arrow"></i>
+                    </a>
+                    <ul class="submenu collapse" id="submenu-penghuni">
+                        <li><a href="#">Data Penghuni Panti</a></li>
+                        <li><a href="#">Tambah Data Penghuni Baru</a></li>
+                    </ul>
+                </li>
+                <li class="has-submenu">
+                    <a href="#submenu-donasi" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="submenu-donasi">
+                        <i class="fas fa-hand-holding-heart"></i> <span>Manajemen Distribusi Donasi</span> <i class="fas fa-chevron-down arrow"></i>
+                    </a>
+                    <ul class="submenu collapse" id="submenu-donasi">
+                        <li><a href="#">Riwayat Distribusi Donasi</a></li>
+                        <li><a href="#">Tambah Data Donasi</a></li>
+                        <li><a href="#">Laporan Distribusi</a></li>
+                    </ul>
+                </li>
+                <li class="has-submenu">
+                    <a href="#submenu-obat" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="submenu-obat">
+                        <i class="fas fa-pills"></i> <span>Manajemen Stok Barang</span> <i class="fas fa-chevron-down arrow"></i>
+                    </a>
+                    <ul class="submenu collapse" id="submenu-obat">
+                        <li><a href="#">Data Stok Barang</a></li>
+                        <li><a href="#">Tambah Stok Barang</a></li>
+                        <li><a href="#">Ambil Stok Barang</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="sidebar-logout">
+                <a href="login-admin.html"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+            </div>
+        </aside>
+
+        <div class="admin-main-area">
+            <header class="admin-header">
+                <div class="input-group search-bar">
+                    <input type="text" class="form-control" placeholder="Search Text">
+                    <button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="icon-button notification-button">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <div class="user-profile">
+                        <span>Hai, Muhammad Zaenal!</span> <img src="../assets/images/profile-placeholder.png" alt="User Avatar">
+                    </div>
+                </div>
+            </header>
+
+            <main class="admin-dashboard-content">
+                <div class="content-title">
+                    <h3>Data Penghuni Panti Wredha "Budi Dharma Kasih" Purbalingga</h3>
+                </div>
+
+                <section class="summary-cards">
+                    <div class="row g-4"> <div class="col-xl col-md-6">
+                            <div class="card h-100">
+                                <h4>Jumlah Penghuni Saat Ini</h4>
+                                <p class="big-number">50</p>
+                            </div>
+                        </div>
+                        <div class="col-xl col-md-6">
+                            <div class="card h-100">
+                                <h4>Donasi Tunai Bulan Ini</h4>
+                                <p class="big-number">Rp. 01234</p>
+                            </div>
+                        </div>
+                        <div class="col-xl col-md-6">
+                            <div class="card card-list h-100">
+                                <h4>Donasi Barang Bulan Ini</h4>
+                                <ul>
+                                    <li>12 pcs Sembako</li>
+                                    <li>5 pak Pakaian</li>
+                                    <li>3 dus Obat-obatan</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-xl col-md-6">
+                            <div class="card card-detail h-100">
+                                <h4>Total Donasi Kombinasi</h4>
+                                <p><i class="fas fa-money-bill-wave"></i> Uang Tunai : Rp 1.500.000</p>
+                                <p><i class="fas fa-box"></i> Barang : 20 Item</p>
+                            </div>
+                        </div>
+                        <div class="col-xl col-md-6">
+                            <div class="card card-detail h-100">
+                                <h4>Stok Obat Tersedia / Hampir Habis</h4>
+                                <p><i class="fas fa-capsules"></i> Total Jenis Obat: 25</p>
+                                <p><i class="fas fa-exclamation-triangle"></i> Hampir Habis: 4 Jenis</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="feedback-section">
+                    <h4>Pesan / Feedback dari Donatur</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover feedback-table">
+                            <thead>
+                                <tr>
+                                    <th>Nama Donatur</th>
+                                    <th>Tanggal</th>
+                                    <th>Pesan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Arief</td>
+                                    <td>20 April 2025</td>
+                                    <td>Terima kasih sudah menjaga para lansia dengan baik.</td>
+                                </tr>
+                                <tr>
+                                    <td>rina</td>
+                                    <td>18 April 2025</td>
+                                    <td>Kalau ada kebutuhan obat tertentu, kabari ya.</td>
+                                </tr>
+                                <tr>
+                                    <td>dr. Dani</td>
+                                    <td>15 April 2025</td>
+                                    <td>Saya akan bantu cek kesehatan lansia bulan depan.</td>
+                                </tr>
+                                <tr>
+                                    <td>Sari Mart</td>
+                                    <td>10 April 2025</td>
+                                    <td>Kami rutin ingin menyumbang sembako tiap bulan.</td>
+                                </tr>
+                                <tr>
+                                    <td>Anonim</td>
+                                    <td>7 April 2025</td>
+                                    <td>Semoga bermanfaat. Maaf tidak bisa bantu banyak bulan ini.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <span class="timestamp">dst</span>
+                </section>
+
+                <section class="info-boxes">
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <div class="info-box h-100">
+                                <h5>AKTIVITAS TERAKHIR</h5>
+                                <ol>
+                                    <li>Admin menambahkan data penghuni</li>
+                                    <li>Distribusi donasi dilakukan ke penghuni A</li>
+                                    <li>Admin menambahkan stok obat-obatan</li>
+                                    <li>Penghuni baru ditambahkan</li>
+                                </ol>
+                                <span class="timestamp">dst</span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="info-box h-100">
+                                <h5>NOTIFIKASI TERBARU</h5>
+                                <ul>
+                                    <li>Donasi masuk dari Budi</li>
+                                    <li>Stok Paracetamol menipis</li>
+                                    <li>Donasi masuk dari J***h</li>
+                                </ul>
+                                <span class="timestamp">dst</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    </body>
+</html>
