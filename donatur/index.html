@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@700&family=Poppins:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
@@ -30,7 +30,7 @@
             <div class="container-fluid px-4">
                 
                 <a class="navbar-brand" href="index.html">
-                    <img src="assets/1.png" alt="Logo Panti Wredha">
+                    <img src="../assets/images/1.png" alt="Logo Panti Wredha">
                 </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -64,8 +64,8 @@
                 </div>
 
                 <div class="nav-actions d-flex align-items-center ms-lg-auto">
-                    <a href="notifikasi.html" class="notif-icon" title="Notifikasi">
-                        <img src="assets/3.png" alt="Notifikasi">
+                    <a href="../auth/notifikasi.html" class="notif-icon" title="Notifikasi">
+                        <img src="../assets/images/3.png" alt="Notifikasi">
                     </a>
                     
                     <div v-if="isLoggedIn" class="d-flex align-items-center gap-2">
@@ -73,10 +73,11 @@
                         <button @click="showLogoutModal" class="btn btn-sm btn-danger rounded-pill px-3">Logout</button>
                     </div>
 
-                    <a v-else href="login.html" class="cta-button primary">LOGIN</a>
+                    <a v-else href="../auth/login.html" class="cta-button primary">LOGIN</a>
                 </div>
             </div>
         </nav>
+
         <main class="content-wrapper">
 
             <section id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -88,13 +89,13 @@
 
                 <div class="carousel-inner hero-carousel-inner">
                     <div class="carousel-item active">
-                        <img src="assets/FotoKegiatan1.jpg" class="d-block w-100 hero-slide-img" alt="Slide Kegiatan 1">
+                        <img src="../assets/images/FotoKegiatan1.jpg" class="d-block w-100 hero-slide-img" alt="Slide Kegiatan 1">
                     </div>
                     <div class="carousel-item">
-                        <img src="assets/FotoKegiatan2.jpg" class="d-block w-100 hero-slide-img" alt="Slide Kegiatan 2">
+                        <img src="../assets/images/FotoKegiatan2.jpg" class="d-block w-100 hero-slide-img" alt="Slide Kegiatan 2">
                     </div>
                     <div class="carousel-item">
-                        <img src="assets/FotoKegiatan3.jpg" class="d-block w-100 hero-slide-img" alt="Slide Kegiatan 3">
+                        <img src="../assets/images/FotoKegiatan3.jpg" class="d-block w-100 hero-slide-img" alt="Slide Kegiatan 3">
                     </div>
                 </div>
 
@@ -141,33 +142,33 @@
                     <div class="row g-4 gallery-grid-bootstrap">
                         <div class="col-lg-4 col-md-6 gallery-item" data-page="1">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#popup-1">
-                                <img src="assets/7.png" alt="Dokumentasi 1" class="gallery-image">
+                                <img src="../assets/images/7.png" alt="Dokumentasi 1" class="gallery-image">
                             </a>
                         </div>
                         <div class="col-lg-4 col-md-6 gallery-item" data-page="1">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#popup-2">
-                                <img src="assets/8.png" alt="Dokumentasi 2" class="gallery-image">
+                                <img src="../assets/images/8.png" alt="Dokumentasi 2" class="gallery-image">
                             </a>
                         </div>
                         <div class="col-lg-4 col-md-6 gallery-item" data-page="1">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#popup-3">
-                                <img src="assets/9.png" alt="Dokumentasi 3" class="gallery-image">
+                                <img src="../assets/images/9.png" alt="Dokumentasi 3" class="gallery-image">
                             </a>
                         </div>
 
-                        <div class="col-lg-4 col-md-6 gallery-item" data-page="2">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#popup-1"> 
-                                <img src="assets/7.png" alt="Dokumentasi 4" class="gallery-image">
+                        <div class="col-lg-4 col-md-6 gallery-item" data-page="1">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#popup-4"> 
+                                <img src="../assets/images/7.png" alt="Dokumentasi 4" class="gallery-image">
                             </a>
                         </div>
-                        <div class="col-lg-4 col-md-6 gallery-item" data-page="2">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#popup-2"> 
-                                <img src="assets/8.png" alt="Dokumentasi 5" class="gallery-image">
+                        <div class="col-lg-4 col-md-6 gallery-item" data-page="1">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#popup-5"> 
+                                <img src="../assets/images/8.png" alt="Dokumentasi 5" class="gallery-image">
                             </a>
                         </div>
-                        <div class="col-lg-4 col-md-6 gallery-item" data-page="2">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#popup-3"> 
-                                <img src="assets/9.png" alt="Dokumentasi 6" class="gallery-image">
+                        <div class="col-lg-4 col-md-6 gallery-item" data-page="1">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#popup-6"> 
+                                <img src="../assets/images/9.png" alt="Dokumentasi 6" class="gallery-image">
                             </a>
                         </div>
                     </div>
@@ -176,7 +177,6 @@
                         <ul class="pagination justify-content-center">
                             <li class="page-item"><a class="page-link page-num" href="#" data-page="1">1</a></li>
                             <li class="page-item"><a class="page-link page-num" href="#" data-page="2">2</a></li>
-                            <li class="page-item"><a class="page-link page-num" href="#" data-page="3">3</a></li>
                             <li class="page-item">
                                 <a class="page-link" href="#" id="next-page" aria-label="Next">
                                     <span aria-hidden="true">NEXT &raquo;</span>
@@ -189,40 +189,51 @@
 
             <div class="modal fade gallery-modal" id="popup-1" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
-                                <i class="fas fa-times"></i>
-                            </button>
-                            <img src="assets/7.png" alt="Dokumentasi 1">
-                        </div>
-                    </div>
+                    <div class="modal-content"><div class="modal-body">
+                        <button type="button" class="btn-close-custom" data-bs-dismiss="modal"><i class="fas fa-times"></i></button>
+                        <img src="../assets/images/7.png" alt="Dokumentasi 1">
+                    </div></div>
                 </div>
             </div>
-
             <div class="modal fade gallery-modal" id="popup-2" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
-                                <i class="fas fa-times"></i>
-                            </button>
-                            <img src="assets/8.png" alt="Dokumentasi 2">
-                        </div>
-                    </div>
+                    <div class="modal-content"><div class="modal-body">
+                        <button type="button" class="btn-close-custom" data-bs-dismiss="modal"><i class="fas fa-times"></i></button>
+                        <img src="../assets/images/8.png" alt="Dokumentasi 2">
+                    </div></div>
+                </div>
+            </div>
+            <div class="modal fade gallery-modal" id="popup-3" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content"><div class="modal-body">
+                        <button type="button" class="btn-close-custom" data-bs-dismiss="modal"><i class="fas fa-times"></i></button>
+                        <img src="../assets/images/9.png" alt="Dokumentasi 3">
+                    </div></div>
                 </div>
             </div>
 
-            <div class="modal fade gallery-modal" id="popup-3" tabindex="-1" aria-hidden="true">
+            <div class="modal fade gallery-modal" id="popup-4" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
-                                <i class="fas fa-times"></i>
-                            </button>
-                            <img src="assets/9.png" alt="Dokumentasi 3">
-                        </div>
-                    </div>
+                    <div class="modal-content"><div class="modal-body">
+                        <button type="button" class="btn-close-custom" data-bs-dismiss="modal"><i class="fas fa-times"></i></button>
+                        <img src="../assets/images/7.png" alt="Dokumentasi 4">
+                    </div></div>
+                </div>
+            </div>
+            <div class="modal fade gallery-modal" id="popup-5" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content"><div class="modal-body">
+                        <button type="button" class="btn-close-custom" data-bs-dismiss="modal"><i class="fas fa-times"></i></button>
+                        <img src="../assets/images/8.png" alt="Dokumentasi 5">
+                    </div></div>
+                </div>
+            </div>
+            <div class="modal fade gallery-modal" id="popup-6" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content"><div class="modal-body">
+                        <button type="button" class="btn-close-custom" data-bs-dismiss="modal"><i class="fas fa-times"></i></button>
+                        <img src="../assets/images/9.png" alt="Dokumentasi 6">
+                    </div></div>
                 </div>
             </div>
             
@@ -246,37 +257,37 @@
                     <div class="row g-4">
                         <div class="col-lg-4 col-md-6">
                             <div class="paviliun-item">
-                                <img src="assets/pav1.jpg" class="card-img-top" alt="Paviliun Bougenville 1">
+                                <img src="../assets/images/pav1.jpg" class="card-img-top" alt="Paviliun Bougenville 1">
                                 <p>PAVILIUN BOUGENVILLE 1</p>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-6">
                             <div class="paviliun-item">
-                                <img src="assets/pav4.png" class="card-img-top" alt="Paviliun Bougenville 2">
+                                <img src="../assets/images/pav4.png" class="card-img-top" alt="Paviliun Bougenville 2">
                                 <p>PAVILIUN BOUGENVILLE 2</p>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-6">
                             <div class="paviliun-item">
-                                <img src="assets/pav3.png" class="card-img-top" alt="Paviliun Bougenville 3">
+                                <img src="../assets/images/pav3.png" class="card-img-top" alt="Paviliun Bougenville 3">
                                 <p>PAVILIUN BOUGENVILLE 3</p>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-6">
                             <div class="paviliun-item">
-                                <img src="assets/pav4.png" class="card-img-top" alt="Paviliun Bougenville 4">
+                                <img src="../assets/images/pav4.png" class="card-img-top" alt="Paviliun Bougenville 4">
                                 <p>PAVILIUN BOUGENVILLE 4</p>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-6">
                             <div class="paviliun-item">
-                                <img src="assets/pav1.jpg" class="card-img-top" alt="Paviliun Bougenville 5">
+                                <img src="../assets/images/pav1.jpg" class="card-img-top" alt="Paviliun Bougenville 5">
                                 <p>PAVILIUN BOUGENVILLE 5</p>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-6">
                             <div class="paviliun-item">
-                                <img src="assets/pav3.png" class="card-img-top" alt="Paviliun Bougenville 6">
+                                <img src="../assets/images/pav3.png" class="card-img-top" alt="Paviliun Bougenville 6">
                                 <p>PAVILIUN BOUGENVILLE 6</p>
                             </div>
                         </div>
@@ -288,7 +299,7 @@
                 <div class="container">
                     <div class="cta-content text-center">
                         <a href="donasi.html" class="cta-button hero-cta">
-                            <img src="assets/cta_donasi.png" alt="Donate Icon" style="max-width: 350px;">
+                            <img src="../assets/images/cta_donasi.png" alt="Donate Icon" style="max-width: 350px;">
                         </a>
                         <p class="cta-message mt-4">
                             Untuk informasi lebih lanjut, silahkan menghubungi kami:
@@ -353,13 +364,13 @@
                         <h5 class="footer-heading">IKUTI KAMI</h5>
                         <div class="footer-social-icons mt-3">
                             <a href="https://www.tiktok.com/@pantiwredabdk510?_r=1&_t=ZS-91bsHEJrAr2" target="_blank" title="TikTok">
-                                <img src="assets/tiktok.png" alt="TikTok">
+                                <img src="../assets/images/tiktok.png" alt="TikTok">
                             </a>
                             <a href="https://youtube.com/@pantiwredhabudidharmakasih8513?si=I7ovYPB4FIXtWqES" target="_blank" title="YouTube">
-                                <img src="assets/yt.png" alt="YouTube">
+                                <img src="../assets/images/yt.png" alt="YouTube">
                             </a>
                             <a href="https://www.facebook.com/pantiwredha.bdk" target="_blank" title="Facebook">
-                                <img src="assets/facebook.png" alt="Facebook">
+                                <img src="../assets/images/facebook.png" alt="Facebook">
                             </a>
                         </div>
                     </div>
@@ -398,13 +409,13 @@
 
             </div>
         </footer>
-        </div> 
+    </div> 
   
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 
-    <script src="js/script.js"></script>
+    <script src="../assets/js/script.js"></script>
 
     <script>
         const { createApp } = Vue;
