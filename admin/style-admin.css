@@ -1,0 +1,239 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@400;700&display=swap');
+
+:root {
+    --sidebar-bg: #001F3F;       /* Navy Gelap */
+    --header-bg: #21698a;        /* Teal Header */
+    --card-bg: #21698a;
+    --text-white: #ffffff;
+    --header-height: 80px;       /* Tinggi Header */
+    --sidebar-width: 320px;      /* LEBAR SIDEBAR GAGAH (320px) */
+    --font-main: 'Poppins', sans-serif;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: #f4f4f4;
+    margin: 0;
+    padding-top: var(--header-height); /* Dorong body ke bawah header */
+    overflow-x: hidden; /* MATIKAN SCROLL KANAN-KIRI */
+}
+
+/* --- 1. HEADER (FULL WIDTH & FIXED) --- */
+.top-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height);
+    background: var(--header-bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px; 
+    z-index: 1050;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Kiri Header (Logo) - Lebarnya sama kayak Sidebar */
+.header-left {
+    width: var(--sidebar-width); 
+    display: flex;
+    align-items: center;
+    border-right: 1px solid rgba(255,255,255,0.1); /* Batas tipis biar rapi */
+    height: 100%;
+}
+.header-logo { height: 60px; } 
+
+/* Tengah Header (Search) */
+.header-center { flex-grow: 1; display: flex; justify-content: center; padding: 0 20px; }
+.search-box { position: relative; width: 100%; max-width: 600px; }
+.search-box input {
+    width: 100%;
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.7);
+    border-radius: 8px;
+    padding: 10px 45px 10px 20px;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    text-align: center;
+}
+.search-box input::placeholder { color: rgba(255,255,255,0.8); }
+.search-box i {
+    position: absolute; right: 15px; top: 50%;
+    transform: translateY(-50%); color: white; font-size: 1.2rem;
+}
+
+/* Kanan Header */
+.header-right {
+    display: flex; align-items: center; gap: 20px; color: white;
+    min-width: 200px; justify-content: flex-end;
+}
+.icon-profile { font-size: 3rem; }
+
+/* --- 2. SIDEBAR (LEBAR & FIXED) --- */
+.sidebar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    width: var(--sidebar-width);
+    height: calc(100vh - var(--header-height)); /* Tinggi Full Layar dikurang header */
+    background: var(--sidebar-bg);
+    
+    /* WAJIB ADA 2 BARIS INI BIAR LOGOUT BISA DIATUR: */
+    display: flex;
+    flex-direction: column;
+    
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1040;
+    padding-top: 20px;
+    border-right: 1px solid rgba(0,0,0,0.1);
+}
+
+.sidebar ul { padding: 0; list-style: none; width: 100%; }
+.sidebar li a {
+    display: flex; align-items: center;
+    padding: 18px 30px; 
+    color: #cbd5e1; text-decoration: none;
+    transition: 0.3s; font-weight: 500; font-size: 1rem;
+    width: 100%;
+    white-space: nowrap; /* Teks jangan turun ke bawah */
+}
+.sidebar li a:hover, .sidebar li a.active {
+    background: rgba(255,255,255,0.1);
+    color: #fff; border-left: 5px solid #fff;
+}
+.sidebar li a i { width: 35px; margin-right: 10px; font-size: 1.2rem; text-align: center; }
+
+/* Submenu */
+.sidebar-submenu { background: rgba(0,0,0,0.25); }
+.sidebar-submenu a { padding-left: 75px !important; font-size: 0.95rem; }
+
+/* Logout */
+.logout-wrapper {
+    /* MANTRA SAKTI: Ini yang bikin dia mental ke paling bawah */
+    margin-top: auto; 
+    
+    padding: 30px;
+    padding-bottom: 50px; /* Jarak dari tulisan logout ke ujung layar bawah */
+}
+
+/* --- 3. MAIN CONTENT (RAPET SAMA SIDEBAR) --- */
+.main-content {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+    
+    /* PADDING: Bawahnya ganti 0 biar nempel lantai */
+    padding: 20px 0px 0px 0px; 
+    
+    min-height: calc(100vh - var(--header-height));
+    background: url('../assets/images/index.png') no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+
+    /* TAMBAHAN SAKTI BIAR MELAR: */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Overlay Putih */
+.main-content::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.1); 
+    z-index: 0;
+}
+
+.content-body { 
+    position: relative; 
+    z-index: 2; 
+    width: 100%;
+    
+    /* TAMBAHAN SAKTI: */
+    flex: 1; /* Ini bikin dia menuhin main-content */
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- CARDS & TABLES --- */
+.page-title-banner {
+    background: var(--header-bg); 
+    color: white;
+    padding: 15px; 
+    text-align: center;
+    font-weight: 700; 
+    font-size: 1.2rem;
+    margin-bottom: 25px; /* Jarak ke bawah dikit aja */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+}
+
+.custom-card {
+    background: rgba(33, 105, 138, 0.85);  
+    color: white; 
+    padding: 25px 15px;
+    text-align: center; 
+    height: 100%;
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.custom-card h2 { font-size: 3rem; font-weight: 700; margin: 0; }
+
+.card-label {
+    font-family: 'Inknut Antiqua', serif; margin-top: 10px; font-size: 1rem;
+    border-top: 2px solid rgba(255,255,255,0.4); padding-top: 10px; width: 100%;
+}
+
+/* Table Glass */
+.glass-panel {
+    background: rgba(33, 105, 138, 0.85);
+    color: white;
+    padding: 25px;
+    
+    /* JARAK KE ATAS (Ke kotak info tengah) */
+    margin-top: 30px; 
+    
+    /* JARAK KE BAWAH (Ke kotak aktivitas/notif) */
+    /* Ubah jadi 0 kalau mau nempel banget */
+    margin-bottom: 2px; 
+    
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Footer Panels */
+.footer-panels { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 3px; /* Jarak kiri kanan 0 */
+    margin-top: 1px; 
+    
+    /* INI KUNCINYA SENG: */
+    flex: 1; /* Bikin kotak ini melar ke bawah ngisi ruang kosong */
+    min-height: 200px; /* Jaga-jaga biar ga gepeng kalau konten dikit */
+}
+
+.panel-box {
+    background: rgba(33, 105, 138, 0.85); 
+    color: white; 
+    padding: 25px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 0;
+    
+    /* Pastikan dia full height */
+    height: 100%; 
+}
+
+/* List Content */
+.list-content { text-align: left; width: 100%; padding-left: 10px; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
+.info-box-middle { background: rgba(33, 105, 138, 0.85);  color: white; padding: 20px; text-align: center; border-radius: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.info-box-content { font-weight: 600; margin-bottom: 10px; }
+.info-box-footer { font-family: 'Inknut Antiqua', serif; font-weight: 700; font-size: 1rem; border-top: 2px solid rgba(255,255,255,0.3); padding-top: 10px; }
+.table-transparent { width: 100%; color: white; }
+.table-transparent th { border-bottom: 2px solid white; padding: 2px; text-align: left; }
+.table-transparent td { border-bottom: 1px solid rgba(255,255,255,0.3); padding: 8px; }
+.section-head { text-align: center; font-family: 'Inknut Antiqua', serif; text-decoration: underline; font-weight: 700; margin-bottom: 15px; font-size: 1.2rem; }
+.dst-mark { position: absolute; bottom: 10px; right: 15px; font-weight: 700; }

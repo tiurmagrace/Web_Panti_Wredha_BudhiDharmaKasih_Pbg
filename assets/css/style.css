@@ -815,3 +815,20 @@ input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* PENTING: Ini obat anti kedip/patah-patah */
+@view-transition {
+    navigation: auto;
+}
+
+/* Opsional: Biar navbar-nya dikunci browser biar gak ikut goyang */
+.navbar {
+    view-transition-name: main-navbar;
+}
+
+/* ==========================================================================
+   OBAT ANTI GLITCH VUE (v-cloak)
+   ========================================================================== */
+[v-cloak] {
+    display: none !important;
+}
