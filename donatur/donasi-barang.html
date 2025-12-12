@@ -92,25 +92,36 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label">Kategori Donasi</label>
+                                        <label class="form-label">Kategori Barang</label>
                                         <select class="form-select" v-model="form.kategori">
-                                            <option value="Barang">Barang (Pakaian, dll)</option>
-                                            <option value="Makanan">Makanan Pokok</option>
-                                            <option value="Obat">Obat-obatan</option>
-                                            <option value="Lainnya">Lainnya</option>
+                                            <option value="" disabled selected>-- Pilih Kategori --</option>
+                                            <option>Sembako</option>
+                                            <option>Pakaian</option>
+                                            <option>Alat Kebersihan</option>
+                                            <option>Alat Kesehatan</option>
+                                            <option>Peralatan Rumah Tangga</option>
+                                            <option>Elektronik</option>
+                                            <option>Perlengkapan Tidur</option>
+                                            <option>Buku & Hiburan</option>
+                                            <option>Perlengkapan Medis</option>
                                         </select>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label">Barang/Kebutuhan*</label>
-                                        <input type="text" class="form-control" :class="{ 'is-invalid': errors.barang }" v-model="form.barang">
+                                        <label class="form-label">Nama Barang / Detail*</label>
+                                        <input type="text" class="form-control" :class="{ 'is-invalid': errors.barang }" v-model="form.barang" placeholder="Contoh: Beras, Mie Instan, Baju Layak Pakai">
                                         <div class="invalid-feedback" v-if="errors.barang">{{ errors.barang }}</div>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label">Jumlah</label>
-                                        <input type="text" class="form-control" :class="{ 'is-invalid': errors.jumlah }" v-model="form.jumlah">
-                                        <div class="invalid-feedback" v-if="errors.jumlah">{{ errors.jumlah }}</div>
+                                        <label class="form-label fw-bold">Upload Foto Barang / Resi Pengiriman *</label>
+                                        <input type="file" class="form-control" :class="{ 'is-invalid': errors.fileBukti }" @change="handleFileUpload" accept="image/*">
+                                        <div class="invalid-feedback" v-if="errors.fileBukti">{{ errors.fileBukti }}</div>
+                                        <div class="form-text text-light opacity-75">Foto barang atau resi wajib dilampirkan sebagai verifikasi.</div>
+                                        
+                                        <div v-if="form.fileBukti" class="mt-2">
+                                            <img :src="form.fileBukti" style="max-height: 150px; border-radius: 8px; border: 2px solid white;">
+                                        </div>
                                     </div>
 
                                     <div class="mb-3">
@@ -147,7 +158,7 @@
                         <div class="modal-icon-circle"><i class="fas fa-check"></i></div>
                         <h4 class="modal-title">Donasi Anda Berhasil Kami Terima</h4>    
                         <p class="modal-quote">⭐"Terima Kasih Telah Menjadi Cahaya"⭐</p>       
-                        <p>Terima kasih {{ form.nama || 'Kakak Baik' }}, data donasi barang anda sudah kami catat.</p>
+                        <p>Terima kasih {{ form.nama || 'Kakak Baik' }}, Admin kami akan memverifikasi kiriman Anda.</p>
                     </div>
                 </div>
             </div>
@@ -178,64 +189,9 @@
                     <div class="col-lg-4 col-md-6 footer-brand-desc">
                         <h2>Panti Wredha BDK</h2>
                         <p class="footer-text">"Kasih Kristus Untuk Semua" Melayani dan mendampingi para lansia menjalani hari tua dengan penuh makna.</p>
-                        <div class="footer-search">
-                            <form action="#">
-                                <input type="text" placeholder="Cari informasi..." required>
-                                <button type="submit"><i class="fas fa-search"></i></button>
-                            </form>
-                        </div>
                     </div>
-                    <div class="col-lg-2 col-md-6 footer-col-mobile">
-                        <h5 class="footer-heading">NAVIGASI</h5>
-                        <ul class="footer-links">
-                            <li><a href="index.html">Beranda</a></li>
-                            <li><a href="sejarah.html">Profil Kami</a></li>
-                            <li><a href="donasi.html">Donasi</a></li>
-                            <li><a href="kontak.html">Hubungi Kami</a></li>
-                        </ul>
                     </div>
-                    <div class="col-lg-3 col-md-6 footer-col-mobile">
-                        <h5 class="footer-heading">IKUTI KAMI</h5>
-                        <div class="footer-social-icons mt-3">
-                            <a href="https://www.tiktok.com/@pantiwredabdk510?_r=1&_t=ZS-91bsHEJrAr2" target="_blank" title="TikTok">
-                                <img src="../assets/images/tiktok.png" alt="TikTok">
-                            </a>
-                            <a href="https://youtube.com/@pantiwredhabudidharmakasih8513?si=I7ovYPB4FIXtWqES" target="_blank" title="YouTube">
-                                <img src="../assets/images/yt.png" alt="YouTube">
-                            </a>
-                            <a href="https://www.facebook.com/pantiwredha.bdk" target="_blank" title="Facebook">
-                                <img src="../assets/images/facebook.png" alt="Facebook">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <h5 class="footer-heading">JAM KERJA</h5>
-                        <ul class="footer-hours list-unstyled">
-                            <li><span>Senin - Jumat</span> <span>08.00 - 16.00</span></li>
-                            <li><span>Sabtu</span> <span>08.00 - 13.00</span></li>
-                            <li class="text-warning"><span>Minggu</span> <span>Tutup</span></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="footer-contact-bar">
-                    <div class="row">
-                        <div class="col-lg-5 col-md-6 contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <div><span>Lokasi Kami</span><h6>Jl. May. Jend. Soengkono 510</h6></div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 contact-item">
-                            <i class="fas fa-phone-volume"></i>
-                            <div><span>Hubungi Kami</span><h6>(0281) 891-829</h6></div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <div><span>Email</span><h6>info@pantiwredhabdk.com</h6></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="footer-copyright">
-                    <p class="m-0">© 2025 Yayasan Panti Wredha Budi Dharma Kasih. All Rights Reserved.</p>
-                </div>
+                <div class="footer-copyright"><p class="m-0">© 2025 Yayasan Panti Wredha Budi Dharma Kasih. All Rights Reserved.</p></div>
             </div>
         </footer>
 
@@ -249,11 +205,12 @@
         createApp({
             data() {
                 return {
-                    isLoggedIn: false,
-                    currentUser: null,
-                    logoutModalInstance: null,
+                    isLoggedIn: false, currentUser: null, logoutModalInstance: null,
                     form: {
-                        nama: '', hp: '', email: '', kategori: 'Barang', barang: '', jumlah: '', catatan: ''
+                        nama: '', hp: '', email: '', kategori: 'Sembako', // Default Kategori
+                        barang: '', 
+                        // JUMLAH DIHAPUS DARI SINI
+                        catatan: '', fileBukti: null
                     },
                     errors: {}
                 }
@@ -265,7 +222,6 @@
                 cekStatusLogin() {
                     const status = localStorage.getItem('isLoggedIn');
                     const userData = localStorage.getItem('user_sementara');
-
                     if (status === 'true' && userData) {
                         this.isLoggedIn = true;
                         this.currentUser = JSON.parse(userData);
@@ -282,18 +238,55 @@
                     this.logoutModalInstance = new bootstrap.Modal(modalEl);
                     this.logoutModalInstance.show();
                 },
-                confirmLogout() {
-                    window.location.href = "index.html"; 
+                confirmLogout() { window.location.href = "index.html"; },
+                
+                handleFileUpload(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => { this.form.fileBukti = e.target.result; };
+                        reader.readAsDataURL(file);
+                    } else { this.form.fileBukti = null; }
                 },
+
                 kirimDonasi() {
                     this.errors = {};
                     if (!this.form.hp) this.errors.hp = "Wajib diisi";
                     if (!this.form.barang) this.errors.barang = "Wajib diisi";
-                    if (!this.form.jumlah) this.errors.jumlah = "Wajib diisi";
+                    if (!this.form.fileBukti) this.errors.fileBukti = "Wajib upload foto/resi.";
 
                     if (Object.keys(this.errors).length === 0) {
+                        
+                        let dataAdmin = JSON.parse(localStorage.getItem('donasiList')) || [];
+                        
+                        // LOGIC SINKRON: JUMLAH KOSONG KARENA DONATUR GA INPUT
+                        let donasiBaru = {
+                            id: Date.now(),
+                            tanggal: new Date().toLocaleDateString('en-GB'),
+                            donatur: this.form.nama,
+                            jenis: 'Barang', // Tipe Donasi
+                            kategori: this.form.kategori, // Kategori Barang (Sembako, dll)
+                            detail: this.form.barang, 
+                            jumlah: '-', // DEFAULT KOSONG, NANTI ADMIN YANG INPUT PAS EDIT
+                            status: 'Langsung', 
+                            petugas: '-', 
+                            catatan: this.form.catatan,
+                            hp: this.form.hp,
+                            email: this.form.email,
+                            foto: this.form.fileBukti,
+                            isSynced: false // Penanda belum masuk stok
+                        };
+
+                        dataAdmin.push(donasiBaru);
+                        localStorage.setItem('donasiList', JSON.stringify(dataAdmin));
+
                         const modal = new bootstrap.Modal(document.getElementById('modalSuccess'));
                         modal.show();
+                        
+                        this.form.barang = '';
+                        this.form.catatan = '';
+                        this.form.fileBukti = null;
+                        event.target.value = '';
                     }
                 }
             }

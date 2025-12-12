@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambil Stok Barang - Panti Wredha BDK</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="style-admin.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+    // --- SECURITY CHECK (SATPAM) ---
+    // Kalau ga ada stempel 'adminLoggedIn', tendang ke login
+    if (!localStorage.getItem('adminLoggedIn')) {
+        window.location.href = 'login.html';
+    }
+    </script>
+
+    <style>
+        .swal2-container { z-index: 999999 !important; }
+        .form-container { background-color: #f8fbfd; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-height: 500px; }
+        .section-header-teal { background-color: #21698a; color: white; padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 1rem; display: inline-block; margin-bottom: 25px; min-width: 200px; text-align: center; }
+        .form-group-row { display: flex; align-items: center; margin-bottom: 20px; }
+        .label-custom { width: 200px; font-size: 1rem; color: #333; font-weight: 500; }
+        .input-custom { flex: 1; background-color: #f0f8ff; border: 1px solid #1a5c7a; border-radius: 4px; padding: 10px 12px; color: #333; outline: none; transition: 0.3s; }
+        .input-custom:focus { background-color: #fff; box-shadow: 0 0 0 2px rgba(26, 92, 122, 0.2); }
+        .stok-info-box { background-color: #e9ecef; padding: 10px 15px; border-radius: 4px; font-weight: bold; color: #1a5c7a; border: 1px solid #ccc; width: 100%; display: block; }
+        .btn-submit-custom { background-color: #21698a; color: white; padding: 10px 40px; border: none; border-radius: 6px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-submit-custom:hover { background-color: #14465e; }
+        .error-message { color: red; text-align: center; margin-top: 20px; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div id="ambilStokApp" class="admin-wrapper">
+        <header class="top-header">
+            <div class="header-left"><img src="../assets/images/1.png" alt="Logo BDK" class="header-logo"></div>
+            <div class="header-center"><div class="search-box"><input type="text" placeholder="Search Text"><i class="fas fa-search"></i></div></div>
+            <div class="header-right"><i class="far fa-bell icon-bell me-3"></i><span class="user-text me-3">Hai, Muhammad Zaenal!</span><i class="fas fa-user-circle icon-profile"></i></div>
+        </header>
+        <aside class="sidebar">
+            <ul class="list-unstyled">
+                <li><a href="index.html"><i class="fas fa-folder"></i> Dashboard</a></li>
+                <li><a href="#penghuniSub" data-bs-toggle="collapse"><i class="fas fa-file-invoice"></i> Manajemen Data Penghuni</a></li>
+                <li><a href="#donasiSub" data-bs-toggle="collapse"><i class="fas fa-box-open"></i> Manajemen Distribusi Donasi</a></li>
+                <li>
+                    <a href="#barangSub" data-bs-toggle="collapse" aria-expanded="true"><i class="fas fa-boxes"></i> Manajemen Stok Barang</a>
+                    <ul class="collapse show list-unstyled sidebar-submenu" id="barangSub">
+                        <li><a href="data-barang.html"><i class="fas fa-clipboard-list"></i> Data Stok Barang</a></li>
+                        <li><a href="tambah-barang.html"><i class="fas fa-plus"></i> Tambah Stok Barang</a></li>
+                        <li><a href="ambil-stok.html" class="active"><i class="fas fa-minus-square"></i> Ambil Stok Barang</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="logout-wrapper">
+                <a href="#" onclick="logoutAdmin()" class="text-white text-decoration-none d-flex align-items-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>  
+        </aside>
+
+        <main class="main-content" style="padding: 25px;">
+            <div class="content-body">
+                <div class="page-title-banner" style="background-color: #21698a; color: white; padding: 15px; text-align: center; border-radius: 6px; font-weight: bold; font-size: 1.2rem; margin-bottom: 20px;">
+                    Form Pengambilan Stok Barang
+                </div>
+
+                <div class="form-container">
+                    <div class="section-header-teal" style="background-color: #21698a;">Data Pengambilan</div>
+                    
+                    <div class="form-group-row">
+                        <label class="label-custom">Pilih Barang</label>
+                        <input list="barangOptions" class="input-custom" v-model="selectedNamaBarang" @change="cekStok" placeholder="Ketik nama barang...">
+                        <datalist id="barangOptions">
+                            <option v-for="item in barangList" :value="item.nama">{{ item.sisa_stok }} tersedia</option>
+                        </datalist>
+                    </div>
+
+                    <div class="form-group-row">
+                        <label class="label-custom">Stok Tersedia</label>
+                        <div style="flex: 1;">
+                            <span class="stok-info-box">
+                                {{ stokTersediaDisplay || '-' }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group-row">
+                        <label class="label-custom">Jumlah Ambil</label>
+                        <input type="number" class="input-custom" v-model="form.jumlah" placeholder="Masukkan angka..." min="1">
+                        <span v-if="satuanBarang" class="ms-2 fw-bold">{{ satuanBarang }}</span>
+                    </div>
+
+                    <div class="form-group-row"><label class="label-custom">Tanggal Ambil</label><input type="date" class="input-custom" v-model="form.tanggal"></div>
+                    <div class="form-group-row"><label class="label-custom">Tujuan / Keperluan</label><input type="text" class="input-custom" v-model="form.keperluan" placeholder="Contoh: Dapur, Kebersihan"></div>
+                    <div class="form-group-row"><label class="label-custom">Nama Pengambil</label><input type="text" class="input-custom" v-model="form.petugas"></div>
+
+                    <div class="text-end mt-5">
+                        <button @click="submitAmbil" class="btn-submit-custom"><i class="fas fa-sign-out-alt me-2"></i> Keluarkan Barang</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function logoutAdmin() {
+            Swal.fire({
+                title: 'Keluar?', text: "Sesi admin akan diakhiri.", icon: 'warning',
+                showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Logout'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('adminLoggedIn'); // Hapus sesi
+                    window.location.href = 'login.html'; // Balik ke login
+                }
+            });
+        }
+        
+        const { createApp } = window.Vue;
+        createApp({
+            data() {
+                return {
+                    selectedNamaBarang: '', stokTersediaDisplay: '', satuanBarang: '', stokAngka: 0,
+                    barangList: [], // Data dari localStorage
+                    form: { jumlah: '', tanggal: '', keperluan: '', petugas: '' }
+                }
+            },
+            mounted() {
+                // Load data stok real
+                const data = JSON.parse(localStorage.getItem('barangList'));
+                if (data) this.barangList = data;
+            },
+            methods: {
+                cekStok() {
+                    const item = this.barangList.find(i => i.nama === this.selectedNamaBarang);
+                    if (item) {
+                        this.stokTersediaDisplay = item.sisa_stok;
+                        // Coba ambil angka dan satuan dari string "10 pack"
+                        const match = item.sisa_stok.toString().match(/(\d+)\s*(.*)/);
+                        if(match) {
+                            this.stokAngka = parseInt(match[1]);
+                            this.satuanBarang = match[2];
+                        } else {
+                            this.stokAngka = parseInt(item.sisa_stok) || 0;
+                            this.satuanBarang = '';
+                        }
+                    } else {
+                        this.stokTersediaDisplay = '-';
+                        this.stokAngka = 0;
+                        this.satuanBarang = '';
+                    }
+                },
+                submitAmbil() {
+                    // Validasi... (sama kayak punya kamu)
+                    if (!this.selectedNamaBarang || !this.form.jumlah || !this.form.tanggal) {
+                        Swal.fire('Error', 'Lengkapi semua data!', 'error'); return;
+                    }
+                    if (parseInt(this.form.jumlah) > this.stokAngka) {
+                        Swal.fire('Stok Kurang!', `Hanya tersedia ${this.stokAngka} ${this.satuanBarang}`, 'error'); return;
+                    }
+
+                    Swal.fire({
+                        title: 'Keluarkan Barang?', icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya', confirmButtonColor: '#21698a'
+                    }).then((r) => {
+                        if(r.isConfirmed) {
+                            const index = this.barangList.findIndex(i => i.nama === this.selectedNamaBarang);
+                            if(index !== -1) {
+                                // Hitung Sisa & Tanggal (Sama kayak kodemu)
+                                let sisaBaru = this.stokAngka - parseInt(this.form.jumlah);
+                                let formatSisa = `${sisaBaru} ${this.satuanBarang}`.trim();
+                                let d = new Date(this.form.tanggal);
+                                let tglKeluar = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+
+                                // Update Object Barang
+                                this.barangList[index].sisa_stok = formatSisa;
+                                this.barangList[index].brg_keluar = `${this.form.jumlah} ${this.satuanBarang}`.trim();
+                                this.barangList[index].tgl_keluar = tglKeluar;
+
+                                // 1. SIMPAN UPDATE STOK
+                                localStorage.setItem('barangList', JSON.stringify(this.barangList));
+
+                                // 2. SIMPAN LOG AKTIVITAS (Taruh Sini!)
+                                let logs = JSON.parse(localStorage.getItem('activityLog')) || [];
+                                let jam = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                                
+                                logs.push({ 
+                                    text: `Admin mengeluarkan stok: ${this.selectedNamaBarang} (${this.form.jumlah} ${this.satuanBarang})`, 
+                                    time: jam 
+                                });
+                                localStorage.setItem('activityLog', JSON.stringify(logs));
+
+                                // 3. BARU MUNCUL NOTIF SUKSES & PINDAH
+                                Swal.fire('Berhasil!', 'Barang berhasil dikeluarkan & stok berkurang.', 'success').then(() => {
+                                    window.location.href = 'data-barang.html';
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        }).mount('#ambilStokApp');
+    </script>
+</body>
+</html>

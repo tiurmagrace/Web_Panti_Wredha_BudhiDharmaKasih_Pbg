@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusat Notifikasi - Panti Wredha BDK</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="style-admin.css"> 
+    
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        if (!localStorage.getItem('adminLoggedIn')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <style>
+        /* CSS KHUSUS CARD */
+        .notif-list-container {
+            background-color: #41b6f06a;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 20px;
+            
+            /* INI YANG KAMU MAU SENG: JARAK DIKIT AJA KIRI KANAN */
+            margin-left: 15px; 
+            margin-right: 15px;
+            margin-bottom: 25px;
+        }
+
+        .notif-item {
+            padding: 15px;
+            border-bottom: 1px solid #7c95bc;
+            display: flex;
+            align-items: start;
+            gap: 15px;
+            transition: 0.3s;
+        }
+        .notif-item:last-child { border-bottom: none; }
+        .notif-item:hover { background-color: #bddef4; }
+        
+        .notif-icon-box {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .bg-soft-green { background-color: #d1e7dd; color: #198754; }
+        .bg-soft-orange { background-color: #fff3cd; color: #ffc107; }
+        
+        .notif-content h6 { font-weight: 700; margin-bottom: 2px; color: #333; }
+        .notif-content p { margin-bottom: 0; font-size: 0.95rem; color: #555; }
+        .notif-date { font-size: 0.8rem; color: #888; white-space: nowrap; }
+    </style>
+</head>
+<body>
+
+    <div id="notifApp" class="admin-wrapper">
+        
+        <header class="top-header">
+            <div class="header-left">
+                <img src="../assets/images/1.png" alt="Logo BDK" class="header-logo">
+            </div>
+            <div class="header-center">
+                <div class="search-box">
+                    <input type="text" placeholder="Search Text" name="search">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="notifikasi.html" class="text-white text-decoration-none me-3 position-relative active">
+                    <i class="far fa-bell icon-bell"></i>
+                    </a>
+                <span class="user-text me-3">Hai, Admin!</span>
+                <i class="fas fa-user-circle icon-profile"></i>
+            </div>
+        </header>
+        <aside class="sidebar">
+            <ul class="list-unstyled">
+                <li><a href="index.html"><i class="fas fa-folder"></i> Dashboard</a></li>
+                
+                <li>
+                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle">
+                        <i class="fas fa-file-invoice"></i> Manajemen Data Penghuni
+                    </a>
+                    <ul class="collapse list-unstyled sidebar-submenu" id="penghuniSub">
+                        <li><a href="kelola-penghuni.html"><i class="fas fa-list"></i> Data Penghuni</a></li>
+                        <li><a href="tambah-penghuni.html"><i class="fas fa-plus"></i> Tambah Data</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle">
+                        <i class="fas fa-box-open"></i> Manajemen Distribusi Donasi
+                    </a>
+                    <ul class="collapse list-unstyled sidebar-submenu" id="donasiSub">
+                        <li><a href="kelola-donasi.html"><i class="fas fa-history"></i> Riwayat</a></li>
+                        <li><a href="tambah-donasi.html"><i class="fas fa-plus"></i> Tambah Donasi</a></li>
+                        <li><a href="laporan-donasi.html"><i class="fas fa-file-alt"></i> Laporan</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle">
+                        <i class="fas fa-boxes"></i> Manajemen Stok Barang
+                    </a>
+                    <ul class="collapse list-unstyled sidebar-submenu" id="barangSub">
+                        <li><a href="data-barang.html"><i class="fas fa-clipboard-list"></i> Data Stok Barang</a></li>
+                        <li><a href="tambah-barang.html"><i class="fas fa-plus"></i> Tambah Stok Barang</a></li>
+                        <li><a href="ambil-stok.html"><i class="fas fa-minus-square"></i> Ambil Stok Barang</a></li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <div class="logout-wrapper">
+                <a href="javascript:void(0)" @click="logoutAdmin" class="text-white text-decoration-none d-flex align-items-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div> 
+        </aside>
+        <main class="main-content">
+            <div class="content-body">
+                
+                <div class="page-title-banner text-center" style="margin-bottom: 20px;">
+                    Pusat Notifikasi
+                </div>
+
+                <div class="notif-list-container">
+                    
+                    <div v-if="notifications.length === 0" class="text-center py-5 text-muted">
+                        <i class="far fa-bell-slash fa-3x mb-3"></i>
+                        <p>Tidak ada notifikasi baru.</p>
+                    </div>
+
+                    <div v-else>
+                        <div v-for="(notif, index) in notifications" :key="index" class="notif-item">
+                            <div class="notif-icon-box" :class="notif.type === 'stok' ? 'bg-soft-orange' : 'bg-soft-green'">
+                                <i v-if="notif.type === 'donasi'" class="fas fa-box-open"></i>
+                                <i v-else class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            
+                            <div class="notif-content flex-grow-1">
+                                <h6>{{ notif.title }}</h6>
+                                <p>{{ notif.text }}</p>
+                            </div>
+
+                            <div class="notif-date">{{ notif.date }}</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+        
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const { createApp } = window.Vue;
+
+        createApp({
+            data() {
+                return {
+                    notifications: []
+                }
+            },
+            mounted() {
+                this.loadAllNotifications();
+            },
+            methods: {
+                loadAllNotifications() {
+                    let allNotifs = [];
+
+                    // 1. Notif Donasi
+                    const donasiList = JSON.parse(localStorage.getItem('donasiList')) || [];
+                    donasiList.forEach(d => {
+                        allNotifs.push({
+                            title: 'Donasi Masuk',
+                            text: `Diterima dari ${d.donatur} berupa ${d.jenis} (${d.detail || d.jumlah}).`,
+                            type: 'donasi',
+                            timestamp: d.id,
+                            date: d.tanggal
+                        });
+                    });
+
+                    // 2. Notif Stok
+                    const barangList = JSON.parse(localStorage.getItem('barangList')) || [];
+                    barangList.forEach(b => {
+                        let stok = parseInt(b.sisa_stok);
+                        if (!isNaN(stok) && stok < 5) {
+                            allNotifs.push({
+                                title: 'Stok Menipis',
+                                text: `Stok barang "${b.nama}" tersisa ${b.sisa_stok}. Segera restock!`,
+                                type: 'stok',
+                                timestamp: Date.now(),
+                                date: 'Hari ini'
+                            });
+                        }
+                    });
+
+                    // Urutkan (Terbaru di atas)
+                    this.notifications = allNotifs.sort((a, b) => b.timestamp - a.timestamp);
+                },
+
+                logoutAdmin() {
+                    Swal.fire({
+                        title: 'Keluar?', text: "Sesi admin akan diakhiri.", icon: 'warning',
+                        showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, Logout'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            localStorage.removeItem('adminLoggedIn'); 
+                            window.location.href = 'login.html'; 
+                        }
+                    });
+                }
+            }
+        }).mount('#notifApp');
+    </script>
+</body>
+</html>

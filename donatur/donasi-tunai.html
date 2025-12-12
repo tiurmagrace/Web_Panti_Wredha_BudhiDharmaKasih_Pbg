@@ -265,14 +265,48 @@
                     window.location.href = "index.html"; 
                 },
                 handleFileUpload(event) {
-                    this.form.fileBukti = event.target.files[0];
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.form.fileBukti = e.target.result; // Simpan Base64
+                        };
+                        reader.readAsDataURL(file);
+                    }
                 },
                 kirimDonasi() {
                     this.errors = {};
                     if (!this.form.hp) this.errors.hp = "Wajib diisi";
-                    if (!this.form.fileBukti) this.errors.file = "Bukti transfer wajib diupload";
+                    // if (!this.form.fileBukti) this.errors.file = "Bukti transfer wajib diupload"; // Opsional kalau mau ketat
 
                     if (Object.keys(this.errors).length === 0) {
+                        
+                        // --- LOGIC SIMPAN KE ADMIN (SINKRONISASI) ---
+                        
+                        // 1. Ambil data lama
+                        let dataAdmin = JSON.parse(localStorage.getItem('donasiList')) || [];
+                        
+                        // 2. Format Data untuk Admin
+                        let donasiBaru = {
+                            id: Date.now(),
+                            tanggal: new Date().toLocaleDateString('en-GB'),
+                            donatur: this.form.nama,
+                            jenis: 'Tunai', // Otomatis Tunai
+                            detail: 'Uang Tunai', // Detail default
+                            jumlah: 'Rp (Cek Bukti)', // Karena user ga input nominal di form kamu, atau bisa tambah input nominal
+                            status: 'Tidak Langsung', // Biasanya transfer itu tidak langsung
+                            petugas: '-',
+                            catatan: this.form.catatan,
+                            hp: this.form.hp,
+                            email: this.form.email,
+                            // Simpan Foto Bukti jika ada (Base64 logic harusnya ada di handleFileUpload)
+                            foto: this.form.fileBukti // Pastikan handleFileUpload sudah convert ke Base64
+                        };
+
+                        // 3. Push & Save
+                        dataAdmin.push(donasiBaru);
+                        localStorage.setItem('donasiList', JSON.stringify(dataAdmin));
+
                         const modal = new bootstrap.Modal(document.getElementById('modalSuccess'));
                         modal.show();
                     }

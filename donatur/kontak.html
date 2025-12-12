@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@700&family=Poppins:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 
@@ -109,22 +109,22 @@
                                     <hr style="width: 100%; margin-top: 20px; opacity: 0.2;">
                                 </h5>
 
-                                <form action="#" class="form-contact">
+                                <form @submit.prevent="kirimPesan" class="form-contact">
                                     <div class="mb-3">
                                         <label for="nama" class="form-label">Nama</label>
-                                        <input type="text" class="form-control" id="nama" placeholder="Nama Anda">
+                                        <input type="text" class="form-control" id="nama" placeholder="Nama Anda" v-model="form.nama" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" placeholder="email@anda.com">
+                                        <input type="email" class="form-control" id="email" placeholder="email@anda.com" v-model="form.email" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="telepon" class="form-label">Telepon</label>
-                                        <input type="tel" class="form-control" id="telepon" placeholder="08xxxxxxxx">
+                                        <input type="tel" class="form-control" id="telepon" placeholder="08xxxxxxxx" v-model="form.telepon">
                                     </div>
                                     <div class="mb-3">
                                         <label for="pesan" class="form-label">Pesan Anda</label>
-                                        <textarea class="form-control" id="pesan" rows="6" placeholder="Tulis pesan Anda di sini..."></textarea>
+                                        <textarea class="form-control" id="pesan" rows="6" placeholder="Tulis pesan Anda di sini..." v-model="form.pesan" required></textarea>
                                     </div>
                                     <button type="submit" class="btn-kirim-pesan">Kirim Pesan</button>
                                 </form>
@@ -246,19 +246,75 @@
                 return {
                     isLoggedIn: false,
                     currentUser: null,
-                    logoutModalInstance: null
+                    logoutModalInstance: null,
+                    // DATA BARU UNTUK FORM KONTAK
+                    form: {
+                        nama: '',
+                        email: '',
+                        telepon: '',
+                        pesan: ''
+                    }
                 }
             },
             mounted() {
+                // Cek Login (Kode Lama)
                 const status = localStorage.getItem('isLoggedIn');
                 const userData = localStorage.getItem('user_sementara');
 
                 if (status === 'true' && userData) {
                     this.isLoggedIn = true;
                     this.currentUser = JSON.parse(userData);
+                    // Otomatis isi nama & email kalau udah login
+                    this.form.nama = this.currentUser.username;
+                    this.form.email = this.currentUser.email;
                 }
             },
             methods: {
+                // --- FUNGSI KIRIM PESAN (BARU) ---
+                kirimPesan() {
+                    // 1. Validasi Input
+                    if (!this.form.nama || !this.form.pesan) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Data Belum Lengkap',
+                            text: 'Harap isi Nama dan Pesan Anda!',
+                            confirmButtonColor: '#1a5c7a'
+                        });
+                        return;
+                    }
+
+                    // 2. Ambil data lama
+                    let feedbackList = JSON.parse(localStorage.getItem('feedbackList')) || [];
+
+                    // 3. Buat objek pesan baru
+                    let pesanBaru = {
+                        id: Date.now(),
+                        nama: this.form.nama,
+                        email: this.form.email,
+                        telepon: this.form.telepon,
+                        pesan: this.form.pesan,
+                        tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+                        jam: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+                    };
+
+                    // 4. Simpan
+                    feedbackList.push(pesanBaru);
+                    localStorage.setItem('feedbackList', JSON.stringify(feedbackList));
+
+                    // 5. POP-UP TJAKEP (Ganti alert biasa)
+                    Swal.fire({
+                        title: 'Pesan Terkirim!',
+                        text: 'Terima kasih atas masukan dan dukungan Anda.',
+                        icon: 'success',
+                        confirmButtonColor: '#1a5c7a', // Warna Teal sesuai tema
+                        confirmButtonText: 'Sama-sama'
+                    });
+
+                    // Reset form
+                    this.form.pesan = ''; 
+                },
+                // ---------------------------------
+
                 showLogoutModal() {
                     const modalEl = document.getElementById('logoutModal');
                     this.logoutModalInstance = new bootstrap.Modal(modalEl);

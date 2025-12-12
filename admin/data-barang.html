@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Stok Barang - Panti Wredha BDK</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="style-admin.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+    // --- SECURITY CHECK (SATPAM) ---
+    // Kalau ga ada stempel 'adminLoggedIn', tendang ke login
+    if (!localStorage.getItem('adminLoggedIn')) {
+        window.location.href = 'login.html';
+    }
+    </script>
+
+    <style>
+        .swal2-container { z-index: 999999 !important; }
+        .search-wrapper { position: relative; width: 100%; }
+        .search-input-custom { background-color: #f1f5f9; border: 2px solid #21698a; border-radius: 5px; padding: 10px 45px 10px 15px; width: 100%; color: #333; font-size: 0.95rem; transition: 0.3s; }
+        .search-input-custom:focus { background-color: #fff; border-color: #1a5c7a; outline: none; box-shadow: 0 0 5px rgba(33, 105, 138, 0.2); }
+        .search-icon-inside { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #21698a; font-size: 1.1rem; pointer-events: none; }
+        .stat-card { color: white; border-radius: 8px; padding: 20px; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+        .bg-blue-mid { background-color: #2c86b0; }
+        .stat-number { font-size: 3rem; font-weight: bold; line-height: 1; margin-bottom: 5px; }
+        .stat-label { font-size: 1.2rem; font-weight: 600; }
+        .table-custom { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .table-custom thead th { border-bottom: 2px solid #21698a; color: #333; font-weight: 700; padding: 12px 8px; white-space: nowrap; text-align: left; font-size: 0.8rem; }
+        .table-custom tbody td { padding: 12px 8px; vertical-align: middle; color: #21698a; font-weight: 500; white-space: nowrap; }
+        .btn-action-custom { border: 2px solid #21698a; color: #21698a; background: white; border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; transition: 0.3s; margin: 0 3px; cursor: pointer; }
+        .btn-action-custom:hover { background-color: #21698a; color: white; }
+        .pagination-box { background-color: #f1f5f9; padding: 6px 14px; border-radius: 6px; font-weight: bold; color: #333; font-size: 0.9rem; cursor: pointer; margin: 0 3px; transition: 0.2s; }
+        .pagination-box.active { background-color: #21698a; color: white; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 10000; }
+        .modal-container { width: 600px; background: white; border-radius: 10px; overflow: hidden; max-height: 90vh; overflow-y: auto; }
+        .modal-header { background: #1a5c7a; color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 1.1rem; }
+        .modal-body { padding: 25px; }
+        .detail-row { display: flex; margin-bottom: 10px; align-items: center; }
+        .detail-label { width: 150px; font-weight: 600; color: #555; }
+        .edit-input { width: 100%; padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; }
+        .btn-save { background: #1a5c7a; color: white; border: none; padding: 8px 30px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .btn-close { background: #95a5a6; color: white; border: none; padding: 8px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <div id="barangApp" class="admin-wrapper">
+        <header class="top-header">
+            <div class="header-left"><img src="../assets/images/1.png" alt="Logo BDK" class="header-logo"></div>
+            <div class="header-center"><div class="search-box"><input type="text" placeholder="Search Text" v-model="searchQuery"><i class="fas fa-search"></i></div></div>
+            <div class="header-right"><i class="far fa-bell icon-bell me-3"></i><span class="user-text me-3">Hai, Muhammad Zaenal!</span><i class="fas fa-user-circle icon-profile"></i></div>
+        </header>
+        <aside class="sidebar">
+            <ul class="list-unstyled">
+                <li><a href="index.html"><i class="fas fa-folder"></i> Dashboard</a></li>
+                <li><a href="#penghuniSub" data-bs-toggle="collapse"><i class="fas fa-file-invoice"></i> Manajemen Data Penghuni</a></li>
+                <li><a href="#donasiSub" data-bs-toggle="collapse"><i class="fas fa-box-open"></i> Manajemen Distribusi Donasi</a></li>
+                <li>
+                    <a href="#barangSub" data-bs-toggle="collapse" aria-expanded="true"><i class="fas fa-boxes"></i> Manajemen Stok Barang</a>
+                    <ul class="collapse show list-unstyled sidebar-submenu" id="barangSub">
+                        <li><a href="data-barang.html" class="active"><i class="fas fa-clipboard-list"></i> Data Stok Barang</a></li>
+                        <li><a href="tambah-barang.html"><i class="fas fa-plus"></i> Tambah Stok Barang</a></li>
+                        <li><a href="ambil-stok.html"><i class="fas fa-minus-square"></i> Ambil Stok Barang</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="logout-wrapper">
+                <a href="#" onclick="logoutAdmin()" class="text-white text-decoration-none d-flex align-items-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>  
+        </aside>
+
+        <main class="main-content" style="padding: 25px;">
+            <div class="content-body">
+                <div class="page-title-banner" style="background-color: #1a5c7a; color: white; padding: 15px; text-align: center; border-radius: 6px; font-weight: bold; font-size: 1.2rem; margin-bottom: 25px;">Data Stok Barang</div>
+
+                <div class="row mb-4 g-3">
+                    <div class="col-md-4"><div class="stat-card bg-blue-mid"><div class="stat-number">{{ totalStok }}</div><div class="stat-label">Total Stok Item</div></div></div>
+                    <div class="col-md-4"><div class="stat-card bg-blue-mid"><div class="stat-number">10</div><div class="stat-label">Mendekati<br>Kadaluarsa</div></div></div>
+                    <div class="col-md-4"><div class="stat-card bg-blue-mid"><div class="stat-number">{{ stokMenipis }}</div><div class="stat-label">Stok Menipis</div></div></div>
+                </div>
+
+                <div class="glass-panel" style="margin-top: 0; background-color: #ffffff; color: #333; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 25px;">
+                    <div class="row align-items-center mb-4">
+                        <div class="col-md-5">
+                            <div class="search-wrapper"><input type="text" v-model="searchQuery" class="search-input-custom" placeholder="Cari Nama barang..."><i class="fas fa-search search-icon-inside"></i></div>
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <button @click="sinkronDonasi" class="btn btn-outline-secondary btn-sm" title="Refresh"><i class="fas fa-sync"></i> Refresh Data</button>
+                        </div> 
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom align-middle mb-0">
+                            <thead><tr><th>No</th><th>Nama barang</th><th>Tanggal<br>masuk</th><th>Kategori</th><th>Barang<br>masuk</th><th>Sisa<br>stok</th><th class="text-center">Aksi</th></tr></thead>
+                            <tbody>
+                                <tr v-for="(item, index) in paginatedList" :key="index">
+                                    <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
+                                    <td>{{ item.nama }}</td>
+                                    <td>{{ item.tgl_masuk }}</td>
+                                    <td>{{ item.kategori }}</td>
+                                    
+                                    <td :class="{'text-danger fw-bold': item.brg_masuk === '-'}">{{ item.brg_masuk }}</td>
+                                    <td :class="{'text-danger fw-bold': item.sisa_stok === '-'}">{{ item.sisa_stok }}</td>
+                                    
+                                    <td>
+                                        <div class="d-flex gap-2 justify-content-center">
+                                            <button @click="openModal(item, 'detail')" class="btn-action-custom" title="Detail"><i class="fas fa-eye"></i></button>
+                                            <button @click="openModal(item, 'edit')" class="btn-action-custom" title="Edit/Input Stok"><i class="fas fa-edit"></i></button>
+                                            <button @click="deleteItem(item)" class="btn-action-custom" title="Hapus" style="color: #dc3545; border-color: #dc3545;"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr v-if="paginatedList.length === 0"><td colspan="8" class="text-center py-5 text-muted">Data tidak ditemukan.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-end align-items-center mt-4" v-if="totalPages > 1">
+                        <button @click="prevPage" :disabled="currentPage === 1" class="btn btn-sm"><i class="fas fa-chevron-left"></i></button>
+                        <div v-for="page in totalPages" :key="page" @click="currentPage = page" :class="['pagination-box', { active: currentPage === page }]">{{ page }}</div>
+                        <button @click="nextPage" :disabled="currentPage === totalPages" class="btn btn-sm"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div v-if="isModalOpen" class="modal-overlay" @click.self="closeModal">
+            <div class="modal-container">
+                <div class="modal-header">
+                    {{ modalMode === 'detail' ? 'Detail Barang' : 'Edit Barang / Input Stok' }}
+                </div>
+                <div class="modal-body">
+                    <div v-if="modalMode === 'detail'">
+                        <div class="detail-row"><div class="detail-label">Nama Barang</div><div>: {{ tempFormData.nama }}</div></div>
+                        <div class="detail-row"><div class="detail-label">Kategori</div><div>: {{ tempFormData.kategori }}</div></div>
+                        <div class="detail-row"><div class="detail-label">Tanggal Masuk</div><div>: {{ tempFormData.tgl_masuk }}</div></div>
+                        <div class="detail-row"><div class="detail-label">Stok Masuk</div><div class="fw-bold">: {{ tempFormData.brg_masuk }}</div></div>
+                        <div class="detail-row"><div class="detail-label">Sisa Stok</div><div class="fw-bold" style="color: #1a5c7a;">: {{ tempFormData.sisa_stok }}</div></div>
+                    </div>
+
+                    <div v-else>
+                        <div class="alert alert-info py-2" style="font-size: 0.9rem;">
+                            <i class="fas fa-info-circle"></i> Input jumlah barang real yang diterima.
+                        </div>
+                        <div class="detail-row"><div class="detail-label">Nama Barang</div><input v-model="tempFormData.nama" class="edit-input"></div>
+                        <div class="detail-row"><div class="detail-label">Kategori</div>
+                            <select v-model="tempFormData.kategori" class="edit-input">
+                                <option>Sembako</option><option>Pakaian</option><option>Alat Kebersihan</option><option>Alat Kesehatan</option>
+                                <option>Peralatan Rumah Tangga</option><option>Elektronik</option><option>Perlengkapan Tidur</option>
+                                <option>Buku & Hiburan</option><option>Perlengkapan Medis</option><option>Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="detail-row"><div class="detail-label">Tanggal Masuk</div><input type="date" v-model="tempFormData.tgl_masuk_raw" class="edit-input"></div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Stok Masuk</div>
+                            <input v-model="tempFormData.brg_masuk" class="edit-input" placeholder="Contoh: 5 Dus / 100 Pcs">
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Sisa Stok</div>
+                            <input v-model="tempFormData.sisa_stok" class="edit-input" placeholder="Samakan dengan Stok Masuk">
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button @click="closeModal" class="btn-close">Tutup</button>
+                        <button v-if="modalMode === 'edit'" @click="processEdit" class="btn-save">Simpan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function logoutAdmin() {
+            Swal.fire({
+                title: 'Keluar?', text: "Sesi admin akan diakhiri.", icon: 'warning',
+                showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Logout'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('adminLoggedIn'); // Hapus sesi
+                    window.location.href = 'login.html'; // Balik ke login
+                }
+            });
+        }
+        
+        const { createApp } = window.Vue;
+        createApp({
+            data() {
+                return {
+                    searchQuery: '', currentPage: 1, itemsPerPage: 10, 
+                    isModalOpen: false, modalMode: 'detail', tempFormData: {}, editingIndex: -1,
+                    
+                    barangList: [
+                        { nama: 'Pampers uk. M', tgl_masuk: '15/05/2025', tgl_keluar: '30/09/2025', brg_masuk: '5 pack', brg_keluar: '2 Pack', sisa_stok: '3 pack' },
+                        { nama: 'Kecap ABC', tgl_masuk: '16/04/2025', tgl_keluar: '30/09/2025', brg_masuk: '10 botol', brg_keluar: '5 botol', sisa_stok: '5 botol' },
+                        { nama: 'Sunlight', tgl_masuk: '15/02/2025', tgl_keluar: '28/02/2025', brg_masuk: '5 sachet', brg_keluar: '3 sachet', sisa_stok: '2 sachet' }
+                    ]
+                }
+            },
+            mounted() {
+                // 1. Load Data Barang dari LocalStorage
+                const savedBarang = JSON.parse(localStorage.getItem('barangList'));
+                if (savedBarang && Array.isArray(savedBarang)) {
+                    this.barangList = savedBarang;
+                } else {
+                    localStorage.setItem('barangList', JSON.stringify(this.barangList));
+                }
+
+                // 2. OTOMATIS SINKRON DENGAN DONASI
+                this.sinkronDonasi();
+            },
+            computed: {
+                filteredList() {
+                    return this.barangList.filter(item => {
+                        return item.nama.toLowerCase().includes(this.searchQuery.toLowerCase());
+                    });
+                },
+                totalPages() { return Math.ceil(this.filteredList.length / this.itemsPerPage); },
+                paginatedList() {
+                    const start = (this.currentPage - 1) * this.itemsPerPage;
+                    const end = start + this.itemsPerPage;
+                    return this.filteredList.slice(start, end);
+                },
+                totalStok() { return this.barangList.length; },
+                stokMenipis() { return this.barangList.filter(i => this.isStokMenipis(i.sisa_stok)).length; }
+            },
+            methods: {
+                isStokMenipis(stokStr) {
+                    const num = parseInt(stokStr);
+                    return !isNaN(num) && num < 5;
+                },
+
+                // --- MESIN SINKRONISASI CANGGIH ---
+                sinkronDonasi() {
+                    let donasiList = JSON.parse(localStorage.getItem('donasiList'));
+                    if (!donasiList) return;
+
+                    let adaDataBaru = false;
+
+                    donasiList.forEach(donasi => {
+                        // SYARAT MASUK: 
+                        // 1. Bukan 'Tunai' (Berarti Barang, Makanan, Obat, dll)
+                        // 2. Belum pernah disinkronkan (!isSynced)
+                        if (donasi.jenis !== 'Tunai' && !donasi.isSynced) {
+                            
+                            // AUTO-MAPPING KATEGORI
+                            let kategoriFix = donasi.kategori || 'Lainnya'; // Ambil kategori dari donatur
+
+                            const itemBaru = {
+                                nama: donasi.detail || 'Barang Donasi',
+                                kategori: kategoriFix,
+                                tgl_masuk: donasi.tanggal,
+                                tgl_keluar: '-',
+                                brg_masuk: '-', // KOSONG (TUGAS ADMIN INPUT)
+                                brg_keluar: '-',
+                                sisa_stok: '-', // KOSONG (TUGAS ADMIN INPUT)
+                                kondisi: 'Baik'
+                            };
+
+                            this.barangList.unshift(itemBaru);
+                            donasi.isSynced = true; 
+                            adaDataBaru = true;
+                        }
+                    });
+
+                    if (adaDataBaru) {
+                        localStorage.setItem('barangList', JSON.stringify(this.barangList));
+                        localStorage.setItem('donasiList', JSON.stringify(donasiList));
+                        
+                        const Toast = Swal.mixin({
+                            toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true
+                        });
+                        Toast.fire({ icon: 'success', title: 'Data Stok Masuk dari Donasi!' });
+                    }
+                },
+                
+                openModal(item, mode) {
+                    // COPY DATA ITEM KE TEMP FORM DATA AGAR MUNCUL DI INPUT
+                    this.tempFormData = { ...item }; 
+                    this.modalMode = mode;
+                    this.editingIndex = this.barangList.indexOf(item);
+                    
+                    // KONVERSI TANGGAL BIAR MUNCUL DI INPUT DATE HTML
+                    // Format tampilan: DD/MM/YYYY -> Format input: YYYY-MM-DD
+                    if (mode === 'edit') {
+                        // Konversi Tanggal Masuk
+                        if (item.tgl_masuk && item.tgl_masuk.includes('/')) {
+                            const parts = item.tgl_masuk.split('/'); // [DD, MM, YYYY]
+                            if(parts.length === 3) {
+                                // YYYY-MM-DD
+                                this.tempFormData.tgl_masuk_raw = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                            }
+                        }
+
+                        // Konversi Tanggal Keluar (kalau ada isinya dan bukan "-")
+                        if (item.tgl_keluar && item.tgl_keluar !== '-' && item.tgl_keluar.includes('/')) {
+                            const parts = item.tgl_keluar.split('/');
+                            if(parts.length === 3) {
+                                this.tempFormData.tgl_keluar_raw = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                            }
+                        }
+                    }
+                    
+                    this.isModalOpen = true;
+                },
+
+                closeModal() { this.isModalOpen = false; },
+                
+                processEdit() {
+                    Swal.fire({
+                        title: 'Simpan Perubahan?', icon: 'question', showCancelButton: true,
+                        confirmButtonColor: '#1a5c7a', cancelButtonColor: '#d33'
+                    }).then((res) => {
+                        if(res.isConfirmed) {
+                            // Format Tanggal (Balikin ke format Indo)
+                            if(this.tempFormData.tgl_masuk_raw) {
+                                let d = new Date(this.tempFormData.tgl_masuk_raw);
+                                let day = String(d.getDate()).padStart(2, '0');
+                                let month = String(d.getMonth() + 1).padStart(2, '0');
+                                let year = d.getFullYear();
+                                this.tempFormData.tgl_masuk = `${day}/${month}/${year}`;
+                            }
+                            
+                            // Format Tanggal Keluar
+                            if(this.tempFormData.tgl_keluar_raw) {
+                                let d = new Date(this.tempFormData.tgl_keluar_raw);
+                                let day = String(d.getDate()).padStart(2, '0');
+                                let month = String(d.getMonth() + 1).padStart(2, '0');
+                                let year = d.getFullYear();
+                                this.tempFormData.tgl_keluar = `${day}/${month}/${year}`;
+                            }
+
+                            if (this.editingIndex !== -1) {
+                                // 1. UPDATE DATA DI ARRAY & STORAGE
+                                this.barangList.splice(this.editingIndex, 1, this.tempFormData);
+                                localStorage.setItem('barangList', JSON.stringify(this.barangList));
+
+                                // 2. --- CATAT LOG AKTIVITAS (EDIT / INPUT STOK) ---
+                                let logs = JSON.parse(localStorage.getItem('activityLog')) || [];
+                                let jam = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                                
+                                // Kita cek: kalau stok awalnya '-' (kosong), berarti ini "Input Stok Awal"
+                                // Kalau sudah ada isinya, berarti ini "Edit Data Biasa"
+                                let pesanAktivitas = (this.tempFormData.brg_masuk === '-' || this.tempFormData.sisa_stok === '-') 
+                                    ? "Admin menginput stok awal" 
+                                    : "Admin mengubah data barang";
+
+                                logs.push({ 
+                                    text: `${pesanAktivitas}: ${this.tempFormData.nama}`, 
+                                    time: jam 
+                                });
+                                localStorage.setItem('activityLog', JSON.stringify(logs));
+                                // --------------------------------------------------
+                            }
+                            this.closeModal();
+                            Swal.fire('Berhasil', 'Data barang berhasil diupdate', 'success');
+                        }
+                    })
+                },
+
+                deleteItem(item) {
+                    Swal.fire({
+                        title: 'Yakin Hapus Barang?', 
+                        text: item.nama,
+                        icon: 'warning', showCancelButton: true,
+                        confirmButtonText: 'Ya, Hapus', confirmButtonColor: '#dc3545'
+                    }).then((res) => {
+                        if(res.isConfirmed) {
+                            // 1. HAPUS DATA DARI ARRAY & STORAGE
+                            this.barangList = this.barangList.filter(i => i !== item);
+                            localStorage.setItem('barangList', JSON.stringify(this.barangList));
+
+                            // 2. --- CATAT LOG AKTIVITAS (HAPUS) ---
+                            let logs = JSON.parse(localStorage.getItem('activityLog')) || [];
+                            let jam = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                            
+                            logs.push({ 
+                                text: `Admin menghapus barang: ${item.nama}`, 
+                                time: jam 
+                            });
+                            localStorage.setItem('activityLog', JSON.stringify(logs));
+                            // ---------------------------------------
+
+                            Swal.fire('Terhapus!', 'Data barang telah dihapus.', 'success');
+                        }
+                    })
+                },
+                prevPage() { if (this.currentPage > 1) this.currentPage--; },
+                nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; }
+            }
+        }).mount('#barangApp');
+    </script>
+</body>
+</html>

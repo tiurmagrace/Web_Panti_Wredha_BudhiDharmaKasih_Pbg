@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Distribusi Donasi - Panti Wredha BDK</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="style-admin.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <script>
+    // --- SECURITY CHECK (SATPAM) ---
+    // Kalau ga ada stempel 'adminLoggedIn', tendang ke login
+    if (!localStorage.getItem('adminLoggedIn')) {
+        window.location.href = 'login.html';
+    }
+    </script>
+
+    <style>
+        .search-wrapper { position: relative; width: 100%; }
+        .search-input-custom { background-color: #f1f5f9; border: 2px solid #21698a; border-radius: 5px; padding: 10px 45px 10px 15px; width: 100%; color: #333; font-size: 0.95rem; transition: 0.3s; }
+        .search-input-custom:focus { background-color: #fff; border-color: #1a5c7a; outline: none; box-shadow: 0 0 5px rgba(33, 105, 138, 0.2); }
+        .search-icon-inside { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #21698a; font-size: 1.1rem; pointer-events: none; }
+
+        /* BUTTONS */
+        .btn-filter { background-color: white; border: 2px solid #21698a; color: #21698a; padding: 8px 30px; border-radius: 5px; font-weight: bold; transition: 0.3s; position: relative; }
+        .btn-filter:hover, .btn-filter.active { background-color: #21698a; color: white; }
+        .btn-cari { background-color: #1a5c7a; color: white; padding: 8px 30px; border-radius: 5px; font-weight: bold; border: none; transition: 0.3s; }
+        .btn-cari:hover { background-color: #14465e; }
+        .btn-generate { border: 2px solid #21698a; color: #21698a; background: white; border-radius: 6px; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .btn-generate:hover { background-color: #21698a; color: white; }
+
+        /* FILTER POPUP & SUBMENUS */
+        .filter-popup {
+            position: absolute; top: 100%; right: 0; width: 260px; background: #fff; border: 1px solid #ccc; border-radius: 8px; padding: 15px; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-top: 10px; display: none;
+        }
+        .filter-popup.show { display: block; }
+        
+        .filter-item { 
+            padding: 10px; border-bottom: 1px solid #eee; color: #1a5c7a; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; 
+        }
+        .filter-item:last-child { border-bottom: none; }
+        .filter-item:hover { background-color: #f0f8ff; }
+
+        .filter-submenu {
+            background-color: #f9f9f9; padding: 10px; border-radius: 4px; margin-top: 5px; border-left: 3px solid #1a5c7a; display: none;
+        }
+        .filter-submenu.show { display: flex; flex-direction: column; gap: 8px; }
+        
+        .custom-select { width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; color: #333; }
+        .filter-option { display: block; padding: 5px; text-decoration: none; color: #555; font-size: 0.9rem; transition: 0.2s; }
+        .filter-option:hover, .filter-option.selected { color: #1a5c7a; font-weight: bold; background-color: #e6f2ff; border-radius: 4px; }
+        .btn-reset { width: 100%; background: #d33; color: white; border: none; padding: 5px; border-radius: 4px; font-size: 0.85rem; margin-top: 10px; cursor: pointer; }
+
+        .table-custom { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .table-custom thead th { border-bottom: 2px solid #21698a; color: #333; font-weight: 700; padding: 12px 8px; white-space: nowrap; text-align: left; }
+        .table-custom tbody td { padding: 12px 8px; vertical-align: middle; color: #21698a; font-weight: 500; white-space: nowrap; }
+    </style>
+</head>
+<body>
+
+    <div id="laporanApp" class="admin-wrapper">
+        <header class="top-header">
+            <div class="header-left"><img src="../assets/images/1.png" alt="Logo BDK" class="header-logo"></div>
+            <div class="header-center"><div class="search-box"><input type="text" placeholder="Search Text" name="search"><i class="fas fa-search"></i></div></div>
+            <div class="header-right"><i class="far fa-bell icon-bell me-3"></i><span class="user-text me-3">Hai, Muhammad Zaenal!</span><i class="fas fa-user-circle icon-profile"></i></div>
+        </header>
+
+        <aside class="sidebar">
+            <ul class="list-unstyled">
+                <li><a href="index.html"><i class="fas fa-folder"></i> Dashboard</a></li>
+                <li>
+                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-file-invoice"></i> Manajemen Data Penghuni</a>
+                    <ul class="collapse list-unstyled sidebar-submenu" id="penghuniSub">
+                        <li><a href="kelola-penghuni.html"><i class="fas fa-list"></i> Data Penghuni</a></li>
+                        <li><a href="tambah-penghuni.html"><i class="fas fa-plus"></i> Tambah Data</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle" aria-expanded="true"><i class="fas fa-box-open"></i> Manajemen Distribusi Donasi</a>
+                    <ul class="collapse show list-unstyled sidebar-submenu" id="donasiSub">
+                        <li><a href="kelola-donasi.html"><i class="fas fa-history"></i> Riwayat</a></li>
+                        <li><a href="tambah-donasi.html"><i class="fas fa-plus"></i> Tambah Donasi</a></li>
+                        <li><a href="laporan-distribusi.html" class="active"><i class="fas fa-file-alt"></i> Laporan</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-boxes"></i> Manajemen Stok Barang</a>
+                    <ul class="collapse list-unstyled sidebar-submenu" id="barangSub">
+                        <li><a href="data-barang.html"><i class="fas fa-clipboard-list"></i> Data Stok Barang</a></li>
+                        <li><a href="tambah-barang.html"><i class="fas fa-plus"></i> Tambah Stok Barang</a></li>
+                        <li><a href="ambil-stok.html"><i class="fas fa-minus-square"></i> Ambil Stok Barang</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="logout-wrapper">
+                <a href="#" onclick="logoutAdmin()" class="text-white text-decoration-none d-flex align-items-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>  
+        </aside>
+
+        <main class="main-content" style="padding: 25px;">
+            <div class="content-body">
+                <div class="page-title-banner" style="margin-bottom: 25px;">Laporan Distribusi Donasi</div>
+                
+                <div v-if="alertStatus === 'sent'" class="alert alert-info text-center fw-bold mb-4" style="background-color: #d1ecf1; color: #0c5460; border-radius: 50px;">Laporan berhasil dikirim! <i class="fas fa-check-circle"></i></div>
+
+                <div class="glass-panel" style="margin-top: 0; background-color: #ffffff; color: #333; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 25px;">
+                    
+                    <div class="row align-items-center mb-4">
+                        <div class="col-md-6">
+                            <div class="search-wrapper">
+                                <input type="text" v-model="searchQuery" class="search-input-custom" placeholder="Cari data (Tanggal, Donatur, Jenis, Jumlah, dll)...">
+                                <i class="fas fa-search search-icon-inside"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex gap-2 position-relative justify-content-end" ref="filterContainer">
+                            <button class="btn-cari">Cari</button>
+                            
+                            <button class="btn-filter" @click="toggleMainFilter" :class="{ active: showMainFilter }">
+                                Filter <i class="fas fa-filter ms-1"></i>
+                            </button>
+                            
+                            <div class="filter-popup" :class="{ show: showMainFilter }">
+                                <div class="filter-item" @click="toggleSubFilter('tanggal')">
+                                    <span>Tanggal (Bulan/Thn)</span>
+                                    <i :class="showTanggalFilter ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i>
+                                </div>
+                                <div class="filter-submenu" :class="{ show: showTanggalFilter }">
+                                    <select v-model="filterBulan" class="custom-select">
+                                        <option value="">-- Pilih Bulan --</option>
+                                        <option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option>
+                                        <option value="04">April</option><option value="05">Mei</option><option value="06">Juni</option>
+                                        <option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option>
+                                        <option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
+                                    </select>
+                                    <select v-model="filterTahun" class="custom-select">
+                                        <option value="">-- Pilih Tahun --</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2024">2024</option>
+                                    </select>
+                                </div>
+
+                                <div class="filter-item" @click="toggleSubFilter('jenis')">
+                                    <span>Jenis Bantuan</span>
+                                    <i :class="showJenisFilter ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i>
+                                </div>
+                                <div class="filter-submenu" :class="{ show: showJenisFilter }">
+                                    <a href="#" class="filter-option" :class="{ selected: filterJenis === '' }" @click.prevent="setJenis('')">Semua</a>
+                                    <a href="#" class="filter-option" :class="{ selected: filterJenis === 'Tunai' }" @click.prevent="setJenis('Tunai')">Tunai</a>
+                                    <a href="#" class="filter-option" :class="{ selected: filterJenis === 'Barang' }" @click.prevent="setJenis('Barang')">Barang</a>
+                                </div>
+
+                                <button v-if="filterJenis || filterBulan || filterTahun" @click="resetFilter" class="btn-reset">Hapus Filter</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-custom align-middle mb-0">
+                            <thead>
+                                <tr><th>NO</th><th>Tanggal</th><th>Donatur</th><th>Jenis Bantuan</th><th>Detail Bantuan</th><th>Jumlah</th><th>Status</th><th>Petugas</th><th class="text-center">Generate Laporan</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, index) in filteredList" :key="index">
+                                    <td>{{ index + 1 }}</td>
+                                    <td>{{ item.tanggal }}</td>
+                                    <td>{{ item.donatur }}</td>
+                                    <td>{{ item.jenis }}</td>
+                                    <td>{{ item.detail }}</td>
+                                    <td>{{ item.jumlah }}</td>
+                                    <td>{{ item.status }}</td>
+                                    <td>{{ item.petugas }}</td>
+                                    <td>
+                                        <div class="d-flex justify-content-center">
+                                            <button @click="goToGeneratePage(item)" class="btn-generate" title="Generate Laporan"><i class="fas fa-edit"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr v-if="filteredList.length === 0"><td colspan="9" class="text-center py-5 text-muted">Data tidak ditemukan.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function logoutAdmin() {
+            Swal.fire({
+                title: 'Keluar?', text: "Sesi admin akan diakhiri.", icon: 'warning',
+                showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Logout'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('adminLoggedIn'); // Hapus sesi
+                    window.location.href = 'login.html'; // Balik ke login
+                }
+            });
+        }
+        
+        const { createApp } = window.Vue;
+        createApp({
+            data() {
+                return {
+                    alertStatus: null, searchQuery: '', 
+                    // Filter UI States
+                    showMainFilter: false, showTanggalFilter: false, showJenisFilter: false,
+                    // Filter Values
+                    filterJenis: '', filterBulan: '', filterTahun: '',
+                    
+                    donasiList: [
+                        { id: 1, tanggal: '12/04/2025', donatur: 'Ganjar', jenis: 'Barang', detail: 'Pakaian', jumlah: '1 Karung', status: 'Langsung', petugas: 'Pak Veri' },
+                        { id: 2, tanggal: '15/04/2025', donatur: 'Hamba Allah', jenis: 'Tunai', detail: 'Uang Tunai', jumlah: '1.000.000', status: 'Tidak Langsung', petugas: 'Pak Veri' },
+                        { id: 3, tanggal: '20/05/2025', donatur: 'Rumah Sakit Margono', jenis: 'Barang', detail: 'Kursi Roda', jumlah: '5 buah', status: 'Tidak Langsung', petugas: 'Pak Veri' },
+                        { id: 4, tanggal: '10/05/2025', donatur: 'Tulus', jenis: 'Barang', detail: 'Mimbar Ibadah', jumlah: '1 buah', status: 'Langsung', petugas: 'Pak Veri' },
+                        { id: 5, tanggal: '12/04/2025', donatur: 'Gibran', jenis: 'Tunai', detail: 'Uang Tunai', jumlah: '15.000.000', status: 'Tidak Langsung', petugas: 'Pak Veri' },
+                    ]
+                }
+            },
+            mounted() {
+                const urlParams = new URLSearchParams(window.location.search);
+                if(urlParams.get('status') === 'sent') {
+                    this.alertStatus = 'sent';
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+                const dataBaru = JSON.parse(localStorage.getItem('donasiList'));
+                if (dataBaru && Array.isArray(dataBaru)) dataBaru.forEach(item => {
+                     if(!this.donasiList.some(d => d.donatur === item.donatur && d.jumlah === item.jumlah)) {
+                         this.donasiList.unshift(item); 
+                     }
+                });
+
+                // CLICK OUTSIDE LISTENER (PENTING!)
+                document.addEventListener('click', this.handleClickOutside);
+            },
+            beforeUnmount() {
+                // Hapus listener pas pindah halaman biar ga bocor memory
+                document.removeEventListener('click', this.handleClickOutside);
+            },
+            computed: {
+                filteredList() {
+                    return this.donasiList.filter(item => {
+                        // 1. GLOBAL SEARCH (Cari di semua kolom)
+                        const search = this.searchQuery.toLowerCase();
+                        const matchSearch = (
+                            (item.donatur && item.donatur.toLowerCase().includes(search)) ||
+                            (item.jenis && item.jenis.toLowerCase().includes(search)) ||
+                            (item.detail && item.detail.toLowerCase().includes(search)) ||
+                            (item.jumlah && item.jumlah.toString().toLowerCase().includes(search)) ||
+                            (item.status && item.status.toLowerCase().includes(search)) ||
+                            (item.petugas && item.petugas.toLowerCase().includes(search)) ||
+                            (item.tanggal && item.tanggal.includes(search))
+                        );
+                        
+                        // 2. Filter Logic
+                        const matchJenis = this.filterJenis ? item.jenis === this.filterJenis : true;
+                        
+                        let matchTanggal = true;
+                        if (this.filterBulan || this.filterTahun) {
+                            const parts = item.tanggal.split('/'); 
+                            const monthData = parts[1];
+                            const yearData = parts[2];
+                            if (this.filterBulan && monthData !== this.filterBulan) matchTanggal = false;
+                            if (this.filterTahun && yearData !== this.filterTahun) matchTanggal = false;
+                        }
+
+                        return matchSearch && matchJenis && matchTanggal;
+                    });
+                }
+            },
+            methods: {
+                toggleMainFilter() { this.showMainFilter = !this.showMainFilter; },
+                toggleSubFilter(type) {
+                    if(type === 'tanggal') this.showTanggalFilter = !this.showTanggalFilter;
+                    if(type === 'jenis') this.showJenisFilter = !this.showJenisFilter;
+                },
+                setJenis(val) { this.filterJenis = val; this.showMainFilter = false; }, // Klik pilihan -> tutup filter
+                resetFilter() {
+                    this.filterJenis = ''; this.filterBulan = ''; this.filterTahun = '';
+                    this.showMainFilter = false;
+                },
+                goToGeneratePage(item) {
+                    localStorage.setItem('selectedDonasiForReport', JSON.stringify(item));
+                    window.location.href = 'generate-laporan.html';
+                },
+                // LOGIC KLIK DI LUAR
+                handleClickOutside(event) {
+                    // Cek apakah element "filterContainer" ada DAN kliknya BUKAN di dalam container itu
+                    const filterEl = this.$refs.filterContainer;
+                    if (filterEl && !filterEl.contains(event.target)) {
+                        this.showMainFilter = false;
+                    }
+                }
+            }
+        }).mount('#laporanApp');
+    </script>
+</body>
+</html>
