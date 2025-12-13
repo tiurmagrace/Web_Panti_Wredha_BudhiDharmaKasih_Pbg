@@ -13,18 +13,17 @@
 
     <script>
     // --- SECURITY CHECK (SATPAM) ---
-    // Kalau ga ada stempel 'adminLoggedIn', tendang ke login
     if (!localStorage.getItem('adminLoggedIn')) {
         window.location.href = 'login.html';
     }
     </script>
 
     <style>
+        .header-left { border-right: none !important; }
         .swal2-container { z-index: 999999 !important; }
         .search-wrapper { position: relative; width: 100%; }
         .search-input-custom { background-color: #f1f5f9; border: 2px solid #21698a; border-radius: 5px; padding: 10px 45px 10px 15px; width: 100%; color: #333; font-size: 0.95rem; transition: 0.3s; }
         .search-input-custom:focus { background-color: #fff; border-color: #1a5c7a; outline: none; box-shadow: 0 0 5px rgba(33, 105, 138, 0.2); }
-        .search-icon-inside { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #21698a; font-size: 1.1rem; pointer-events: none; }
         .stat-card { color: white; border-radius: 8px; padding: 20px; height: 100%; display: flex; flex-direction: column; justify-content: center; }
         .bg-blue-mid { background-color: #2c86b0; }
         .stat-number { font-size: 3rem; font-weight: bold; line-height: 1; margin-bottom: 5px; }
@@ -50,17 +49,59 @@
 <body>
     <div id="barangApp" class="admin-wrapper">
         <header class="top-header">
-            <div class="header-left"><img src="../assets/images/1.png" alt="Logo BDK" class="header-logo"></div>
-            <div class="header-center"><div class="search-box"><input type="text" placeholder="Search Text" v-model="searchQuery"><i class="fas fa-search"></i></div></div>
-            <div class="header-right"><i class="far fa-bell icon-bell me-3"></i><span class="user-text me-3">Hai, Muhammad Zaenal!</span><i class="fas fa-user-circle icon-profile"></i></div>
+            <div class="header-left">
+                <a href="index.html" style="text-decoration: none;">
+                    <img src="../assets/images/1.png" alt="Logo BDK" class="header-logo">
+                </a>
+            </div>
+
+            <div class="header-center">
+                <div class="search-box">
+                    <input type="text" v-model="searchQuery" placeholder="Cari nama, kategori, atau stok..." name="search">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <a href="notifikasi.html" class="text-white text-decoration-none me-3 position-relative" :class="{ active: currentUrl && currentUrl.includes('notifikasi.html') }">
+                    <i class="far fa-bell icon-bell"></i>
+                    <span v-if="unreadCount > 0" 
+                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" 
+                        style="font-size: 0.6rem;">
+                    </span>
+                </a>
+                
+                <span class="user-text me-3">Hai, ADMIN!</span>
+                <i class="fas fa-user-circle icon-profile"></i>
+            </div>
         </header>
+
         <aside class="sidebar">
             <ul class="list-unstyled">
                 <li><a href="index.html"><i class="fas fa-folder"></i> Dashboard</a></li>
-                <li><a href="#penghuniSub" data-bs-toggle="collapse"><i class="fas fa-file-invoice"></i> Manajemen Data Penghuni</a></li>
-                <li><a href="#donasiSub" data-bs-toggle="collapse"><i class="fas fa-box-open"></i> Manajemen Distribusi Donasi</a></li>
                 <li>
-                    <a href="#barangSub" data-bs-toggle="collapse" aria-expanded="true"><i class="fas fa-boxes"></i> Manajemen Stok Barang</a>
+                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle">
+                        <i class="fas fa-file-invoice"></i> Manajemen Data Penghuni
+                    </a>
+                    <ul class="collapse list-unstyled sidebar-submenu" id="penghuniSub">
+                        <li><a href="kelola-penghuni.html"><i class="fas fa-list"></i> Data Penghuni</a></li>
+                        <li><a href="tambah-penghuni.html"><i class="fas fa-plus"></i> Tambah Data</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle">
+                        <i class="fas fa-box-open"></i> Manajemen Distribusi Donasi
+                    </a>
+                    <ul class="collapse list-unstyled sidebar-submenu" id="donasiSub">
+                        <li><a href="kelola-donasi.html"><i class="fas fa-history"></i> Riwayat</a></li>
+                        <li><a href="tambah-donasi.html"><i class="fas fa-plus"></i> Tambah Donasi</a></li>
+                        <li><a href="laporan-donasi.html"><i class="fas fa-file-alt"></i> Laporan</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle" aria-expanded="true">
+                        <i class="fas fa-boxes"></i> Manajemen Stok Barang
+                    </a>
                     <ul class="collapse show list-unstyled sidebar-submenu" id="barangSub">
                         <li><a href="data-barang.html" class="active"><i class="fas fa-clipboard-list"></i> Data Stok Barang</a></li>
                         <li><a href="tambah-barang.html"><i class="fas fa-plus"></i> Tambah Stok Barang</a></li>
@@ -69,10 +110,10 @@
                 </li>
             </ul>
             <div class="logout-wrapper">
-                <a href="#" onclick="logoutAdmin()" class="text-white text-decoration-none d-flex align-items-center gap-2">
+                <a href="javascript:void(0)" @click="logoutAdmin" class="text-white text-decoration-none d-flex align-items-center gap-2">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
-            </div>  
+            </div> 
         </aside>
 
         <main class="main-content" style="padding: 25px;">
@@ -81,33 +122,64 @@
 
                 <div class="row mb-4 g-3">
                     <div class="col-md-4"><div class="stat-card bg-blue-mid"><div class="stat-number">{{ totalStok }}</div><div class="stat-label">Total Stok Item</div></div></div>
-                    <div class="col-md-4"><div class="stat-card bg-blue-mid"><div class="stat-number">10</div><div class="stat-label">Mendekati<br>Kadaluarsa</div></div></div>
                     <div class="col-md-4"><div class="stat-card bg-blue-mid"><div class="stat-number">{{ stokMenipis }}</div><div class="stat-label">Stok Menipis</div></div></div>
+                    <div class="col-md-4"><div class="stat-card bg-blue-mid"><div class="stat-number">{{ jumlahHampirExpired }}</div><div class="stat-label">Mendekati<br>Kadaluwarsa</div></div></div>
                 </div>
 
                 <div class="glass-panel" style="margin-top: 0; background-color: #ffffff; color: #333; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 25px;">
-                    <div class="row align-items-center mb-4">
-                        <div class="col-md-5">
-                            <div class="search-wrapper"><input type="text" v-model="searchQuery" class="search-input-custom" placeholder="Cari Nama barang..."><i class="fas fa-search search-icon-inside"></i></div>
+                    
+                    <div class="row g-2 mb-3 align-items-end p-2" style="background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+                        <div class="col-md-3">
+                            <label class="small fw-bold text-muted">Filter Berdasarkan:</label>
+                            <select v-model="filterType" class="form-select form-select-sm">
+                                <option value="tgl_masuk">Tanggal Masuk</option>
+                                <option value="expired">Tanggal Expired</option>
+                            </select>
                         </div>
-                        <div class="col-md-5 text-end">
-                            <button @click="sinkronDonasi" class="btn btn-outline-secondary btn-sm" title="Refresh"><i class="fas fa-sync"></i> Refresh Data</button>
-                        </div> 
+                        <div class="col-md-3">
+                            <label class="small fw-bold text-muted">Dari Tanggal:</label>
+                            <input type="date" v-model="startDate" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="small fw-bold text-muted">Sampai Tanggal:</label>
+                            <input type="date" v-model="endDate" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <button @click="resetFilter" class="btn btn-sm btn-outline-secondary w-100">
+                                <i class="fas fa-sync-alt"></i> Reset Filter
+                            </button>
+                        </div>
                     </div>
 
                     <div class="table-responsive">
                         <table class="table table-hover table-custom align-middle mb-0">
-                            <thead><tr><th>No</th><th>Nama barang</th><th>Tanggal<br>masuk</th><th>Kategori</th><th>Barang<br>masuk</th><th>Sisa<br>stok</th><th class="text-center">Aksi</th></tr></thead>
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Barang</th>
+                                    <th>Kategori</th>
+                                    <th>Tgl Masuk</th>
+                                    <th>Tgl Expired</th>
+                                    <th>Barang<br>masuk</th>
+                                    <th>Sisa<br>stok</th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
                             <tbody>
                                 <tr v-for="(item, index) in paginatedList" :key="index">
                                     <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
                                     <td>{{ item.nama }}</td>
-                                    <td>{{ item.tgl_masuk }}</td>
                                     <td>{{ item.kategori }}</td>
-                                    
+                                    <td>{{ item.tgl_masuk }}</td>
+                                    <td>
+                                        <span v-if="!item.expired || item.expired === '-'">-</span>
+                                        <span v-else :class="{'text-danger fw-bold': isNearExpiry(item.expired)}">
+                                            {{ item.expired }}
+                                            <i v-if="isNearExpiry(item.expired)" class="fas fa-exclamation-circle text-danger ms-1" title="Segera Expired!"></i>
+                                        </span>
+                                    </td>
                                     <td :class="{'text-danger fw-bold': item.brg_masuk === '-'}">{{ item.brg_masuk }}</td>
                                     <td :class="{'text-danger fw-bold': item.sisa_stok === '-'}">{{ item.sisa_stok }}</td>
-                                    
                                     <td>
                                         <div class="d-flex gap-2 justify-content-center">
                                             <button @click="openModal(item, 'detail')" class="btn-action-custom" title="Detail"><i class="fas fa-eye"></i></button>
@@ -139,6 +211,7 @@
                         <div class="detail-row"><div class="detail-label">Nama Barang</div><div>: {{ tempFormData.nama }}</div></div>
                         <div class="detail-row"><div class="detail-label">Kategori</div><div>: {{ tempFormData.kategori }}</div></div>
                         <div class="detail-row"><div class="detail-label">Tanggal Masuk</div><div>: {{ tempFormData.tgl_masuk }}</div></div>
+                        <div class="detail-row"><div class="detail-label">Tgl Expired</div><div>: {{ tempFormData.expired || '-' }}</div></div>
                         <div class="detail-row"><div class="detail-label">Stok Masuk</div><div class="fw-bold">: {{ tempFormData.brg_masuk }}</div></div>
                         <div class="detail-row"><div class="detail-label">Sisa Stok</div><div class="fw-bold" style="color: #1a5c7a;">: {{ tempFormData.sisa_stok }}</div></div>
                     </div>
@@ -157,6 +230,12 @@
                         </div>
                         <div class="detail-row"><div class="detail-label">Tanggal Masuk</div><input type="date" v-model="tempFormData.tgl_masuk_raw" class="edit-input"></div>
                         
+                        <div class="detail-row">
+                            <div class="detail-label">Tgl Expired</div>
+                            <input type="date" v-model="tempFormData.expired_raw" class="edit-input">
+                            <small class="ms-2 text-muted" style="font-size: 0.7rem;">(Biarkan jika tidak ada)</small>
+                        </div>
+
                         <div class="detail-row">
                             <div class="detail-label">Stok Masuk</div>
                             <input v-model="tempFormData.brg_masuk" class="edit-input" placeholder="Contoh: 5 Dus / 100 Pcs">
@@ -185,8 +264,8 @@
                 confirmButtonText: 'Ya, Logout'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    localStorage.removeItem('adminLoggedIn'); // Hapus sesi
-                    window.location.href = 'login.html'; // Balik ke login
+                    localStorage.removeItem('adminLoggedIn'); 
+                    window.location.href = 'login.html'; 
                 }
             });
         }
@@ -195,32 +274,62 @@
         createApp({
             data() {
                 return {
-                    searchQuery: '', currentPage: 1, itemsPerPage: 10, 
-                    isModalOpen: false, modalMode: 'detail', tempFormData: {}, editingIndex: -1,
+                    // FILTER & SEARCH VARIABLES
+                    searchQuery: '', 
+                    startDate: '',
+                    endDate: '',
+                    filterType: 'tgl_masuk',
+
+                    // PAGINATION & MODAL VARIABLES
+                    currentPage: 1, 
+                    itemsPerPage: 10, 
+                    isModalOpen: false, 
+                    modalMode: 'detail', 
+                    tempFormData: {}, 
+                    editingIndex: -1,
                     
+                    // DATA UTAMA
                     barangList: [
-                        { nama: 'Pampers uk. M', tgl_masuk: '15/05/2025', tgl_keluar: '30/09/2025', brg_masuk: '5 pack', brg_keluar: '2 Pack', sisa_stok: '3 pack' },
-                        { nama: 'Kecap ABC', tgl_masuk: '16/04/2025', tgl_keluar: '30/09/2025', brg_masuk: '10 botol', brg_keluar: '5 botol', sisa_stok: '5 botol' },
-                        { nama: 'Sunlight', tgl_masuk: '15/02/2025', tgl_keluar: '28/02/2025', brg_masuk: '5 sachet', brg_keluar: '3 sachet', sisa_stok: '2 sachet' }
+                        { nama: 'Pampers uk. M', kategori: 'Kesehatan', tgl_masuk: '15/05/2025', tgl_keluar: '30/09/2025', brg_masuk: '5 pack', brg_keluar: '2 Pack', sisa_stok: '3 pack', expired: '-' },
+                        { nama: 'Kecap ABC', kategori: 'Sembako', tgl_masuk: '16/04/2025', tgl_keluar: '30/09/2025', brg_masuk: '10 botol', brg_keluar: '5 botol', sisa_stok: '5 botol', expired: '20/12/2025' }
                     ]
                 }
             },
-            mounted() {
-                // 1. Load Data Barang dari LocalStorage
-                const savedBarang = JSON.parse(localStorage.getItem('barangList'));
-                if (savedBarang && Array.isArray(savedBarang)) {
-                    this.barangList = savedBarang;
-                } else {
-                    localStorage.setItem('barangList', JSON.stringify(this.barangList));
-                }
-
-                // 2. OTOMATIS SINKRON DENGAN DONASI
-                this.sinkronDonasi();
-            },
             computed: {
+                // LOGIC SEARCH & FILTER PINTAR (GABUNGAN)
                 filteredList() {
                     return this.barangList.filter(item => {
-                        return item.nama.toLowerCase().includes(this.searchQuery.toLowerCase());
+                        // 1. LOGIC SEARCH (Nama, Kategori, Barang Masuk, Sisa Stok)
+                        const query = this.searchQuery.toLowerCase();
+                        const matchSearch = 
+                            (item.nama && item.nama.toLowerCase().includes(query)) ||
+                            (item.kategori && item.kategori.toLowerCase().includes(query)) ||
+                            (item.brg_masuk && item.brg_masuk.toLowerCase().includes(query)) ||
+                            (item.sisa_stok && item.sisa_stok.toLowerCase().includes(query));
+
+                        // 2. LOGIC FILTER TANGGAL
+                        let matchDate = true;
+                        if (this.startDate && this.endDate) {
+                            const targetDateStr = this.filterType === 'tgl_masuk' ? item.tgl_masuk : item.expired;
+                            
+                            // Helper convert 'DD/MM/YYYY' ke Date Object
+                            const parseDate = (str) => {
+                                if (!str || str === '-') return null;
+                                const [d, m, y] = str.split('/');
+                                return new Date(`${y}-${m}-${d}`);
+                            };
+
+                            const targetDate = parseDate(targetDateStr);
+                            const start = new Date(this.startDate);
+                            const end = new Date(this.endDate);
+
+                            if (!targetDate) {
+                                matchDate = false; 
+                            } else {
+                                matchDate = targetDate >= start && targetDate <= end;
+                            }
+                        }
+                        return matchSearch && matchDate;
                     });
                 },
                 totalPages() { return Math.ceil(this.filteredList.length / this.itemsPerPage); },
@@ -230,136 +339,132 @@
                     return this.filteredList.slice(start, end);
                 },
                 totalStok() { return this.barangList.length; },
-                stokMenipis() { return this.barangList.filter(i => this.isStokMenipis(i.sisa_stok)).length; }
+                stokMenipis() { return this.barangList.filter(i => this.isStokMenipis(i.sisa_stok)).length; },
+                jumlahHampirExpired() {
+                    let count = 0;
+                    const today = new Date();
+                    this.barangList.forEach(item => {
+                        if (item.expired && item.expired !== '-') {
+                            const parts = item.expired.split('/'); 
+                            const expDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+                            const diffTime = expDate - today;
+                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                            if (diffDays <= 30 && diffDays >= 0) count++;
+                        }
+                    });
+                    return count;
+                }
+            },
+            mounted() {
+                const savedBarang = JSON.parse(localStorage.getItem('barangList'));
+                if (savedBarang && Array.isArray(savedBarang)) {
+                    this.barangList = savedBarang;
+                } else {
+                    localStorage.setItem('barangList', JSON.stringify(this.barangList));
+                }
+                this.sinkronDonasi();
             },
             methods: {
+                resetFilter() {
+                    this.startDate = '';
+                    this.endDate = '';
+                    this.searchQuery = '';
+                    this.filterType = 'tgl_masuk';
+                },
                 isStokMenipis(stokStr) {
                     const num = parseInt(stokStr);
                     return !isNaN(num) && num < 5;
                 },
-
-                // --- MESIN SINKRONISASI CANGGIH ---
                 sinkronDonasi() {
                     let donasiList = JSON.parse(localStorage.getItem('donasiList'));
                     if (!donasiList) return;
-
                     let adaDataBaru = false;
-
                     donasiList.forEach(donasi => {
-                        // SYARAT MASUK: 
-                        // 1. Bukan 'Tunai' (Berarti Barang, Makanan, Obat, dll)
-                        // 2. Belum pernah disinkronkan (!isSynced)
                         if (donasi.jenis !== 'Tunai' && !donasi.isSynced) {
-                            
-                            // AUTO-MAPPING KATEGORI
-                            let kategoriFix = donasi.kategori || 'Lainnya'; // Ambil kategori dari donatur
-
+                            let kategoriFix = donasi.kategori || 'Lainnya';
                             const itemBaru = {
                                 nama: donasi.detail || 'Barang Donasi',
                                 kategori: kategoriFix,
                                 tgl_masuk: donasi.tanggal,
+                                expired: '-', 
                                 tgl_keluar: '-',
-                                brg_masuk: '-', // KOSONG (TUGAS ADMIN INPUT)
+                                brg_masuk: '-', 
                                 brg_keluar: '-',
-                                sisa_stok: '-', // KOSONG (TUGAS ADMIN INPUT)
+                                sisa_stok: '-',
                                 kondisi: 'Baik'
                             };
-
                             this.barangList.unshift(itemBaru);
                             donasi.isSynced = true; 
                             adaDataBaru = true;
                         }
                     });
-
                     if (adaDataBaru) {
                         localStorage.setItem('barangList', JSON.stringify(this.barangList));
                         localStorage.setItem('donasiList', JSON.stringify(donasiList));
-                        
                         const Toast = Swal.mixin({
                             toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true
                         });
                         Toast.fire({ icon: 'success', title: 'Data Stok Masuk dari Donasi!' });
                     }
                 },
-                
                 openModal(item, mode) {
-                    // COPY DATA ITEM KE TEMP FORM DATA AGAR MUNCUL DI INPUT
                     this.tempFormData = { ...item }; 
                     this.modalMode = mode;
                     this.editingIndex = this.barangList.indexOf(item);
-                    
-                    // KONVERSI TANGGAL BIAR MUNCUL DI INPUT DATE HTML
-                    // Format tampilan: DD/MM/YYYY -> Format input: YYYY-MM-DD
                     if (mode === 'edit') {
-                        // Konversi Tanggal Masuk
                         if (item.tgl_masuk && item.tgl_masuk.includes('/')) {
-                            const parts = item.tgl_masuk.split('/'); // [DD, MM, YYYY]
-                            if(parts.length === 3) {
-                                // YYYY-MM-DD
-                                this.tempFormData.tgl_masuk_raw = `${parts[2]}-${parts[1]}-${parts[0]}`;
-                            }
+                            const parts = item.tgl_masuk.split('/');
+                            if(parts.length === 3) this.tempFormData.tgl_masuk_raw = `${parts[2]}-${parts[1]}-${parts[0]}`;
                         }
-
-                        // Konversi Tanggal Keluar (kalau ada isinya dan bukan "-")
-                        if (item.tgl_keluar && item.tgl_keluar !== '-' && item.tgl_keluar.includes('/')) {
-                            const parts = item.tgl_keluar.split('/');
-                            if(parts.length === 3) {
-                                this.tempFormData.tgl_keluar_raw = `${parts[2]}-${parts[1]}-${parts[0]}`;
-                            }
+                        if (item.expired && item.expired !== '-' && item.expired.includes('/')) {
+                            const parts = item.expired.split('/');
+                            if(parts.length === 3) this.tempFormData.expired_raw = `${parts[2]}-${parts[1]}-${parts[0]}`;
                         }
                     }
-                    
                     this.isModalOpen = true;
                 },
-
                 closeModal() { this.isModalOpen = false; },
-                
                 processEdit() {
-                    Swal.fire({
-                        title: 'Simpan Perubahan?', icon: 'question', showCancelButton: true,
-                        confirmButtonColor: '#1a5c7a', cancelButtonColor: '#d33'
+                Swal.fire({
+                    title: 'Simpan Perubahan?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#1a5c7a',
+                    cancelButtonColor: '#d33'
                     }).then((res) => {
-                        if(res.isConfirmed) {
-                            // Format Tanggal (Balikin ke format Indo)
-                            if(this.tempFormData.tgl_masuk_raw) {
+                        if (res.isConfirmed) {
+                            // 1. Format ulang tanggal biar rapi
+                            if (this.tempFormData.tgl_masuk_raw) {
                                 let d = new Date(this.tempFormData.tgl_masuk_raw);
-                                let day = String(d.getDate()).padStart(2, '0');
-                                let month = String(d.getMonth() + 1).padStart(2, '0');
-                                let year = d.getFullYear();
-                                this.tempFormData.tgl_masuk = `${day}/${month}/${year}`;
+                                this.tempFormData.tgl_masuk = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
                             }
-                            
-                            // Format Tanggal Keluar
-                            if(this.tempFormData.tgl_keluar_raw) {
-                                let d = new Date(this.tempFormData.tgl_keluar_raw);
-                                let day = String(d.getDate()).padStart(2, '0');
-                                let month = String(d.getMonth() + 1).padStart(2, '0');
-                                let year = d.getFullYear();
-                                this.tempFormData.tgl_keluar = `${day}/${month}/${year}`;
+                            if (this.tempFormData.expired_raw) {
+                                let d = new Date(this.tempFormData.expired_raw);
+                                this.tempFormData.expired = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+                            } else if (this.tempFormData.expired_raw === '') {
+                                this.tempFormData.expired = '-';
                             }
 
+                            // 2. Simpan data barang yang diedit ke LocalStorage
                             if (this.editingIndex !== -1) {
-                                // 1. UPDATE DATA DI ARRAY & STORAGE
                                 this.barangList.splice(this.editingIndex, 1, this.tempFormData);
                                 localStorage.setItem('barangList', JSON.stringify(this.barangList));
 
-                                // 2. --- CATAT LOG AKTIVITAS (EDIT / INPUT STOK) ---
+                                // 3. CATAT KE LOG AKTIVITAS (Bagian ini yang penting seng!)
                                 let logs = JSON.parse(localStorage.getItem('activityLog')) || [];
-                                let jam = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                                 
-                                // Kita cek: kalau stok awalnya '-' (kosong), berarti ini "Input Stok Awal"
-                                // Kalau sudah ada isinya, berarti ini "Edit Data Biasa"
                                 let pesanAktivitas = (this.tempFormData.brg_masuk === '-' || this.tempFormData.sisa_stok === '-') 
                                     ? "Admin menginput stok awal" 
                                     : "Admin mengubah data barang";
 
                                 logs.push({ 
                                     text: `${pesanAktivitas}: ${this.tempFormData.nama}`, 
-                                    time: jam 
+                                    time: new Date() // <--- NAH INI SUDAH PAKAI TANGGAL LENGKAP
                                 });
+                                
                                 localStorage.setItem('activityLog', JSON.stringify(logs));
-                                // --------------------------------------------------
                             }
+                            
                             this.closeModal();
                             Swal.fire('Berhasil', 'Data barang berhasil diupdate', 'success');
                         }
@@ -368,30 +473,38 @@
 
                 deleteItem(item) {
                     Swal.fire({
-                        title: 'Yakin Hapus Barang?', 
+                        title: 'Yakin Hapus Barang?',
                         text: item.nama,
-                        icon: 'warning', showCancelButton: true,
-                        confirmButtonText: 'Ya, Hapus', confirmButtonColor: '#dc3545'
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, Hapus',
+                        confirmButtonColor: '#dc3545'
                     }).then((res) => {
-                        if(res.isConfirmed) {
-                            // 1. HAPUS DATA DARI ARRAY & STORAGE
+                        if (res.isConfirmed) {
+                            // 1. Hapus barang dari daftar
                             this.barangList = this.barangList.filter(i => i !== item);
                             localStorage.setItem('barangList', JSON.stringify(this.barangList));
 
-                            // 2. --- CATAT LOG AKTIVITAS (HAPUS) ---
+                            // 2. CATAT KE LOG AKTIVITAS (Bagian ini juga!)
                             let logs = JSON.parse(localStorage.getItem('activityLog')) || [];
-                            let jam = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                             
                             logs.push({ 
                                 text: `Admin menghapus barang: ${item.nama}`, 
-                                time: jam 
+                                time: new Date() // <--- INI JUGA SUDAH PAKAI TANGGAL LENGKAP
                             });
+                            
                             localStorage.setItem('activityLog', JSON.stringify(logs));
-                            // ---------------------------------------
-
                             Swal.fire('Terhapus!', 'Data barang telah dihapus.', 'success');
                         }
                     })
+                },
+                isNearExpiry(dateStr) {
+                    if (!dateStr || dateStr === '-') return false;
+                    const parts = dateStr.split('/');
+                    const expDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+                    const today = new Date();
+                    const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+                    return diffDays <= 30;
                 },
                 prevPage() { if (this.currentPage > 1) this.currentPage--; },
                 nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; }

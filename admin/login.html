@@ -12,7 +12,7 @@
     <style>
         body { margin: 0; padding: 0; height: 100vh; font-family: 'Poppins', sans-serif; display: flex; overflow: hidden; }
         
-        /* KIRI: GAMBAR (Sesuai Request) */
+        /* KIRI: GAMBAR */
         .split-left {
             width: 50%;
             background-color: #e6f7ff;
@@ -47,6 +47,12 @@
         }
         .btn-white:hover { background: #f0f0f0; }
 
+        /* Link Lupa Password */
+        .forgot-link {
+            color: rgba(255, 255, 255, 0.8); text-decoration: none; font-size: 0.9rem; margin-bottom: 15px; display: block; text-align: right;
+        }
+        .forgot-link:hover { color: white; text-decoration: underline; }
+
         /* RESPONSIVE */
         @media (max-width: 768px) {
             .split-left { display: none; }
@@ -68,12 +74,18 @@
                     <span class="input-group-text"><i class="fas fa-user"></i></span>
                     <input type="text" class="form-control form-control-auth" id="admUser" placeholder="Username" required>
                 </div>
-                <div class="input-group mb-4">
+                
+                <div class="input-group mb-2">
                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                    <input type="password" class="form-control form-control-auth" id="admPass" placeholder="Password" required>
-                    <span class="input-group-text" style="border-left: none; cursor: pointer;" onclick="togglePw()">
+                    <input type="password" class="form-control form-control-auth" id="admPass" placeholder="Password" required style="border-right: none;">
+                    
+                    <span class="input-group-text" style="border-left: none; border-right: 1px solid white; cursor: pointer;" onclick="togglePw()">
                         <i class="fas fa-eye-slash" id="eyeIcon"></i>
                     </span>
+                </div>
+
+                <div class="text-end w-100">
+                    <a href="lupa-password.html" class="forgot-link">Lupa Password?</a>
                 </div>
 
                 <button type="submit" class="btn btn-white">Login Masuk</button>
@@ -95,13 +107,11 @@
             const p = document.getElementById('admPass').value;
 
             // --- LOGIKA LOGIN ADMIN ---
-            // Kita simpan kredensial di LocalStorage kalau belum ada (Inisialisasi)
-            // Ini menjawab kekhawatiran "Ganti Admin". Nanti bisa dibikin fitur ubah password yg update localStorage ini.
             let adminData = JSON.parse(localStorage.getItem('adminAccount'));
             
             // Default Admin (Kalau belum ada di storage)
             if (!adminData) {
-                adminData = { username: 'admin', password: '123' }; // Password default gampang aja
+                adminData = { username: 'admin', password: '123' }; 
                 localStorage.setItem('adminAccount', JSON.stringify(adminData));
             }
 
@@ -110,9 +120,8 @@
                     icon: 'success', title: 'Login Berhasil', text: 'Selamat Datang Admin!',
                     timer: 1500, showConfirmButton: false
                 }).then(() => {
-                    // SET SESSION
                     localStorage.setItem('adminLoggedIn', 'true');
-                    window.location.href = 'index.html'; // Masuk ke Dashboard
+                    window.location.href = 'index.html'; 
                 });
             } else {
                 Swal.fire('Akses Ditolak', 'Username atau Password salah!', 'error');

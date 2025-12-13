@@ -19,6 +19,7 @@
     </script>
 
     <style>
+        .header-left { border-right: none !important; }
         /* CSS KHUSUS CARD */
         .notif-list-container {
             background-color: #41b6f06a;
@@ -26,7 +27,6 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             padding: 20px;
             
-            /* INI YANG KAMU MAU SENG: JARAK DIKIT AJA KIRI KANAN */
             margin-left: 15px; 
             margin-right: 15px;
             margin-bottom: 25px;
@@ -39,8 +39,10 @@
             align-items: start;
             gap: 15px;
             transition: 0.3s;
+            background-color: rgba(255, 255, 255, 0.4); 
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
-        .notif-item:last-child { border-bottom: none; }
         .notif-item:hover { background-color: #bddef4; }
         
         .notif-icon-box {
@@ -54,8 +56,19 @@
         .bg-soft-orange { background-color: #fff3cd; color: #ffc107; }
         
         .notif-content h6 { font-weight: 700; margin-bottom: 2px; color: #333; }
-        .notif-content p { margin-bottom: 0; font-size: 0.95rem; color: #555; }
-        .notif-date { font-size: 0.8rem; color: #888; white-space: nowrap; }
+        .notif-content p { margin-bottom: 0; font-size: 0.95rem; color: #333; }
+        .notif-date { font-size: 0.8rem; color: #555; white-space: nowrap; font-weight: 600; }
+
+        /* Style Filter Dropdown */
+        .filter-select {
+            border: 2px solid #1a5c7a;
+            border-radius: 6px;
+            padding: 5px 10px;
+            color: #1a5c7a;
+            font-weight: 600;
+            background-color: white;
+            outline: none;
+        }
     </style>
 </head>
 <body>
@@ -64,51 +77,52 @@
         
         <header class="top-header">
             <div class="header-left">
-                <img src="../assets/images/1.png" alt="Logo BDK" class="header-logo">
+                <a href="index.html" style="text-decoration: none;">
+                    <img src="../assets/images/1.png" alt="Logo BDK" class="header-logo">
+                </a>
             </div>
+
             <div class="header-center">
                 <div class="search-box">
-                    <input type="text" placeholder="Search Text" name="search">
+                    <input type="text" v-model="searchQuery" placeholder="Cari info apapun di sini..." name="search">
                     <i class="fas fa-search"></i>
                 </div>
             </div>
+
             <div class="header-right">
-                <a href="notifikasi.html" class="text-white text-decoration-none me-3 position-relative active">
+                <a href="notifikasi.html" class="text-white text-decoration-none me-3 position-relative" :class="{ active: currentUrl && currentUrl.includes('notifikasi.html') }">
                     <i class="far fa-bell icon-bell"></i>
-                    </a>
-                <span class="user-text me-3">Hai, Admin!</span>
+                    <span v-if="unreadCount > 0" 
+                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" 
+                        style="font-size: 0.6rem;">
+                    </span>
+                </a>
+                
+                <span class="user-text me-3">Hai, ADMIN!</span>
                 <i class="fas fa-user-circle icon-profile"></i>
             </div>
         </header>
+
         <aside class="sidebar">
             <ul class="list-unstyled">
                 <li><a href="index.html"><i class="fas fa-folder"></i> Dashboard</a></li>
-                
                 <li>
-                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle">
-                        <i class="fas fa-file-invoice"></i> Manajemen Data Penghuni
-                    </a>
+                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-file-invoice"></i> Manajemen Data Penghuni</a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="penghuniSub">
                         <li><a href="kelola-penghuni.html"><i class="fas fa-list"></i> Data Penghuni</a></li>
                         <li><a href="tambah-penghuni.html"><i class="fas fa-plus"></i> Tambah Data</a></li>
                     </ul>
                 </li>
-
                 <li>
-                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle">
-                        <i class="fas fa-box-open"></i> Manajemen Distribusi Donasi
-                    </a>
+                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-box-open"></i> Manajemen Distribusi Donasi</a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="donasiSub">
                         <li><a href="kelola-donasi.html"><i class="fas fa-history"></i> Riwayat</a></li>
                         <li><a href="tambah-donasi.html"><i class="fas fa-plus"></i> Tambah Donasi</a></li>
                         <li><a href="laporan-donasi.html"><i class="fas fa-file-alt"></i> Laporan</a></li>
                     </ul>
                 </li>
-
                 <li>
-                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle">
-                        <i class="fas fa-boxes"></i> Manajemen Stok Barang
-                    </a>
+                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-boxes"></i> Manajemen Stok Barang</a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="barangSub">
                         <li><a href="data-barang.html"><i class="fas fa-clipboard-list"></i> Data Stok Barang</a></li>
                         <li><a href="tambah-barang.html"><i class="fas fa-plus"></i> Tambah Stok Barang</a></li>
@@ -116,13 +130,11 @@
                     </ul>
                 </li>
             </ul>
-            
             <div class="logout-wrapper">
-                <a href="javascript:void(0)" @click="logoutAdmin" class="text-white text-decoration-none d-flex align-items-center gap-2">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+                <a href="javascript:void(0)" @click="logoutAdmin" class="text-white text-decoration-none d-flex align-items-center gap-2"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div> 
         </aside>
+
         <main class="main-content">
             <div class="content-body">
                 
@@ -132,13 +144,25 @@
 
                 <div class="notif-list-container">
                     
-                    <div v-if="notifications.length === 0" class="text-center py-5 text-muted">
-                        <i class="far fa-bell-slash fa-3x mb-3"></i>
-                        <p>Tidak ada notifikasi baru.</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="text-dark fw-bold">
+                            <i class="fas fa-list me-1"></i> Total: {{ filteredList.length }} Notifikasi
+                        </div>
+                        <div>
+                            <select v-model="filterType" class="filter-select">
+                                <option value="">Semua Tipe</option>
+                                <option value="donasi">Donasi Masuk</option>
+                                <option value="stok">Stok Menipis</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div v-if="filteredList.length === 0" class="text-center py-5 text-muted">
+                        <i class="far fa-bell-slash fa-3x mb-3" style="opacity: 0.5;"></i>
+                        <p class="fw-bold">Tidak ada notifikasi yang cocok.</p>
                     </div>
 
                     <div v-else>
-                        <div v-for="(notif, index) in notifications" :key="index" class="notif-item">
+                        <div v-for="(notif, index) in filteredList" :key="index" class="notif-item">
                             <div class="notif-icon-box" :class="notif.type === 'stok' ? 'bg-soft-orange' : 'bg-soft-green'">
                                 <i v-if="notif.type === 'donasi'" class="fas fa-box-open"></i>
                                 <i v-else class="fas fa-exclamation-triangle"></i>
@@ -149,7 +173,7 @@
                                 <p>{{ notif.text }}</p>
                             </div>
 
-                            <div class="notif-date">{{ notif.date }}</div>
+                            <div class="notif-date">{{ notif.dateDisplay }}</div>
                         </div>
                     </div>
 
@@ -167,44 +191,89 @@
         createApp({
             data() {
                 return {
-                    notifications: []
+                    searchQuery: '',
+                    filterType: '', 
+                    notifications: [],
+                    currentUrl: window.location.href,
+                    unreadCount: 0 
+                }
+            },
+            computed: {
+                // --- INI LOGIC CARI SEMUA KATA ---
+                filteredList() {
+                    return this.notifications.filter(item => {
+                        const query = this.searchQuery.toLowerCase();
+
+                        // 1. Logic Search (Cek SEMUA properti: Judul, Isi, Tipe, Tanggal)
+                        // Kita gabungin semua jadi satu string panjang biar gampang ngeceknya
+                        const allText = (
+                            (item.title || '') + ' ' + 
+                            (item.text || '') + ' ' + 
+                            (item.type || '') + ' ' + 
+                            (item.dateDisplay || '')
+                        ).toLowerCase();
+
+                        const matchSearch = allText.includes(query);
+
+                        // 2. Logic Filter Dropdown
+                        const matchFilter = this.filterType ? item.type === this.filterType : true;
+
+                        return matchSearch && matchFilter;
+                    });
                 }
             },
             mounted() {
+                localStorage.setItem('lastReadTimestamp', Date.now());
                 this.loadAllNotifications();
             },
             methods: {
+                formatDate(timestamp) {
+                    if (!timestamp) return '-';
+                    const date = new Date(timestamp);
+                    return date.toLocaleDateString('id-ID') + ' ' + date.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+                },
+
+                dateToTimestamp(dateStr) {
+                    if (!dateStr || dateStr === '-') return 0;
+                    const parts = dateStr.split('/');
+                    if (parts.length === 3) {
+                        return new Date(parts[2], parts[1] - 1, parts[0]).getTime();
+                    }
+                    return 0;
+                },
+
                 loadAllNotifications() {
                     let allNotifs = [];
 
-                    // 1. Notif Donasi
+                    // --- 1. DATA DONASI ---
                     const donasiList = JSON.parse(localStorage.getItem('donasiList')) || [];
                     donasiList.forEach(d => {
+                        let time = d.id || this.dateToTimestamp(d.tanggal);
                         allNotifs.push({
                             title: 'Donasi Masuk',
                             text: `Diterima dari ${d.donatur} berupa ${d.jenis} (${d.detail || d.jumlah}).`,
                             type: 'donasi',
-                            timestamp: d.id,
-                            date: d.tanggal
+                            timestamp: time,
+                            dateDisplay: this.formatDate(time) 
                         });
                     });
 
-                    // 2. Notif Stok
+                    // --- 2. DATA STOK (Menipis) ---
                     const barangList = JSON.parse(localStorage.getItem('barangList')) || [];
                     barangList.forEach(b => {
                         let stok = parseInt(b.sisa_stok);
                         if (!isNaN(stok) && stok < 5) {
+                            let time = this.dateToTimestamp(b.tgl_masuk);
                             allNotifs.push({
                                 title: 'Stok Menipis',
                                 text: `Stok barang "${b.nama}" tersisa ${b.sisa_stok}. Segera restock!`,
                                 type: 'stok',
-                                timestamp: Date.now(),
-                                date: 'Hari ini'
+                                timestamp: time,
+                                dateDisplay: b.tgl_masuk 
                             });
                         }
                     });
 
-                    // Urutkan (Terbaru di atas)
                     this.notifications = allNotifs.sort((a, b) => b.timestamp - a.timestamp);
                 },
 

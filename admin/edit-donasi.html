@@ -19,6 +19,7 @@
     </script>
 
     <style>
+        .header-left { border-right: none !important; }
         .form-container { background-color: #f8fbfd; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-height: 600px; }
         .section-header-teal { background-color: #1a5c7a; color: white; padding: 10px 20px; border-radius: 6px; font-weight: 600; font-size: 1rem; display: inline-block; margin-bottom: 25px; min-width: 200px; text-align: center; }
         .form-group-row { display: flex; align-items: center; margin-bottom: 15px; }
@@ -34,34 +35,82 @@
 <body>
     <div id="editDonasiApp" class="admin-wrapper">
         <header class="top-header">
-            <div class="header-left"><img src="../assets/images/1.png" alt="Logo BDK" class="header-logo"></div>
-            <div class="header-center"><div class="search-box"><input type="text" placeholder="Search Text" name="search"><i class="fas fa-search"></i></div></div>
-            <div class="header-right"><i class="far fa-bell icon-bell me-3"></i><span class="user-text me-3">Hai, Muhammad Zaenal!</span><i class="fas fa-user-circle icon-profile"></i></div>
+            <div class="header-left">
+                <a href="index.html" style="text-decoration: none;">
+                    <img src="../assets/images/1.png" alt="Logo BDK" class="header-logo">
+                </a>
+            </div>
+
+            <div class="header-center">
+                <div class="search-box">
+                    <input type="text" v-model="searchQuery" placeholder="Cari data di halaman ini..." name="search">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <a href="notifikasi.html" class="text-white text-decoration-none me-3 position-relative" :class="{ active: currentUrl && currentUrl.includes('notifikasi.html') }">
+                    <i class="far fa-bell icon-bell"></i>
+                    <span v-if="unreadCount > 0" 
+                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" 
+                        style="font-size: 0.6rem;">
+                    </span>
+                </a>
+                
+                <span class="user-text me-3">Hai, ADMIN!</span>
+                <i class="fas fa-user-circle icon-profile"></i>
+            </div>
         </header>
+
         <aside class="sidebar">
             <ul class="list-unstyled">
-                <li><a href="index.html"><i class="fas fa-folder"></i> Dashboard</a></li>
-                <li><a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-file-invoice"></i> Manajemen Data Penghuni</a>
+                <li>
+                    <a href="index.html">
+                        <i class="fas fa-folder"></i> Dashboard
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle">
+                        <i class="fas fa-file-invoice"></i> Manajemen Data Penghuni
+                    </a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="penghuniSub">
                         <li><a href="kelola-penghuni.html"><i class="fas fa-list"></i> Data Penghuni</a></li>
                         <li><a href="tambah-penghuni.html"><i class="fas fa-plus"></i> Tambah Data</a></li>
                     </ul>
                 </li>
-                <li><a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle" aria-expanded="true"><i class="fas fa-box-open"></i> Manajemen Distribusi Donasi</a>
+
+                <li>
+                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle" aria-expanded="true">
+                        <i class="fas fa-box-open"></i> Manajemen Distribusi Donasi
+                    </a>
+                    
                     <ul class="collapse show list-unstyled sidebar-submenu" id="donasiSub">
+                        
                         <li><a href="kelola-donasi.html" class="active"><i class="fas fa-history"></i> Riwayat</a></li>
+                        
                         <li><a href="tambah-donasi.html"><i class="fas fa-plus"></i> Tambah Donasi</a></li>
                         <li><a href="laporan-donasi.html"><i class="fas fa-file-alt"></i> Laporan</a></li>
                     </ul>
                 </li>
-                <li><a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-boxes"></i> Manajemen Stok Barang</a></li>
-                
+
+                <li>
+                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle">
+                        <i class="fas fa-boxes"></i> Manajemen Stok Barang
+                    </a>
+                    <ul class="collapse list-unstyled sidebar-submenu" id="barangSub">
+                        <li><a href="data-barang.html"><i class="fas fa-clipboard-list"></i> Data Stok Barang</a></li>
+                        <li><a href="tambah-barang.html"><i class="fas fa-plus"></i> Tambah Stok Barang</a></li>
+                        <li><a href="ambil-stok.html"><i class="fas fa-minus-square"></i> Ambil Stok Barang</a></li>
+                    </ul>
+                </li>
             </ul>
+            
             <div class="logout-wrapper">
-                <a href="#" onclick="logoutAdmin()" class="text-white text-decoration-none d-flex align-items-center gap-2">
+                <a href="javascript:void(0)" @click="logoutAdmin" class="text-white text-decoration-none d-flex align-items-center gap-2">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
-            </div>  
+            </div> 
         </aside>
 
         <main class="main-content" style="padding: 25px;">
@@ -79,7 +128,23 @@
                             <option>Barang</option><option>Tunai</option>
                         </select>
                     </div>
-                    <div class="form-group-row"><label class="label-custom">Detail Bantuan</label><input type="text" class="input-custom" v-model="form.detail"></div>
+                    <div class="form-group-row"><label class="label-custom">Detail Bantuan</label>
+    
+                        <select v-if="form.jenis === 'Barang'" class="input-custom" v-model="form.detail">
+                            <option disabled value="">-- Pilih Kategori --</option>
+                            <option>Sembako</option>
+                            <option>Pakaian</option>
+                            <option>Alat Kebersihan</option>
+                            <option>Alat Kesehatan</option>
+                            <option>Peralatan Rumah Tangga</option>
+                            <option>Elektronik</option>
+                            <option>Perlengkapan Tidur</option>
+                            <option>Buku & Hiburan</option>
+                            <option>Perlengkapan Medis</option>
+                        </select>
+
+                        <input v-else type="text" class="input-custom" v-model="form.detail" placeholder="Contoh: Transfer Bank BCA / Cash">
+                    </div>
                     <div class="form-group-row"><label class="label-custom">Jumlah</label><input type="text" class="input-custom" v-model="form.jumlah"></div>
                     <div class="form-group-row"><label class="label-custom">Tanggal Distribusi</label><input type="date" class="input-custom" v-model="form.tanggal_raw"></div>
                     <div class="form-group-row"><label class="label-custom">Status</label>
@@ -128,9 +193,23 @@
         createApp({
             data() {
                 return {
+                    searchQuery: '',
                     form: {},
                     editIndex: -1,
                     previewImage: null
+                }
+            },
+            computed: {
+                filteredList() {
+                    // Logic filter ini akan otomatis membaca ketikan di Header
+                    return this.barangList.filter(item => {
+                        return item.nama.toLowerCase().includes(this.searchQuery.toLowerCase());
+                    });
+                }
+            },
+            watch: { // <-- TAMBAHKAN BLOK INI
+                'form.jenis'(newValue) {
+                    this.form.detail = ''; // Kosongkan detail saat jenis diganti
                 }
             },
             mounted() {
@@ -191,13 +270,12 @@
 
                                 // 2. --- CATAT LOG AKTIVITAS (DISINI LETAKNYA) ---
                                 let logs = JSON.parse(localStorage.getItem('activityLog')) || [];
-                                let jam = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                                
                                 logs.push({ 
                                     text: `Admin mengubah data donasi dari: ${this.form.donatur}`, 
-                                    time: jam 
+                                    // GANTI 'jam' JADI 'new Date()'
+                                    time: new Date() 
                                 });
-                                
+
                                 localStorage.setItem('activityLog', JSON.stringify(logs));
                                 // -----------------------------------------------
 

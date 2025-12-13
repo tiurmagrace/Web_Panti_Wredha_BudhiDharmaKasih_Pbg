@@ -25,21 +25,28 @@
         
         <header class="top-header">
             <div class="header-left">
-                <img src="../assets/images/1.png" alt="Logo BDK" class="header-logo">
+                <a href="index.html" style="text-decoration: none;">
+                    <img src="../assets/images/1.png" alt="Logo BDK" class="header-logo">
+                </a>
             </div>
+
             <div class="header-center">
                 <div class="search-box">
-                    <input type="text" placeholder="Search Text" name="search">
+                    <input type="text" v-model="searchQuery" placeholder="Cari data di halaman ini..." name="search">
                     <i class="fas fa-search"></i>
                 </div>
             </div>
+
             <div class="header-right">
-                <a href="notifikasi.html" class="text-white text-decoration-none me-3 position-relative">
+                <a href="notifikasi.html" class="text-white text-decoration-none me-3 position-relative" :class="{ active: currentUrl && currentUrl.includes('notifikasi.html') }">
                     <i class="far fa-bell icon-bell"></i>
-                    <span v-if="notifications.length > 0" class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" style="font-size: 0.6rem;"></span>
+                    <span v-if="unreadCount > 0" 
+                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" 
+                        style="font-size: 0.6rem;">
+                    </span>
                 </a>
                 
-                <span class="user-text me-3">Hai, Muhammad Zaenal!</span>
+                <span class="user-text me-3">Hai, ADMIN!</span>
                 <i class="fas fa-user-circle icon-profile"></i>
             </div>
         </header>
@@ -112,9 +119,12 @@
                         <div class="info-box-middle">
                             <div class="info-box-content">
                                 <div>🎁 Total Stok Barang : {{ totalStok }}</div>
-                                <div>🟠 Hampir Habis: {{ stokMenipis }} Jenis</div>
+                                <div>🟠 Stok Menipis : {{ stokMenipis }} Jenis</div>
+                                <div style="margin-top: 5px; color: #ffeb3b; font-weight: bold;">
+                                    ⚠️ Mendekati Expired : {{ jumlahHampirExpired }} Jenis
+                                </div>
                             </div>
-                            <div class="info-box-footer">Stok Barang Tersedia / Hampir Habis</div>
+                            <div class="info-box-footer">Status Stok Gudang</div>
                         </div>
                     </div>
                 </div>
@@ -127,13 +137,17 @@
                     <table v-else class="table-transparent table-hover" style="cursor: pointer;">
                         <thead><tr><th>Nama Donatur</th><th>Tanggal</th><th>Pesan</th></tr></thead>
                         <tbody>
-                            <tr v-for="item in feedbacks" :key="item.id" @click="showFullMessage(item)">
+                            <tr v-for="item in filteredFeedbacks" :key="item.id" @click="showFullMessage(item)">
                                 <td>{{ item.nama }}</td>
                                 <td>{{ item.tanggal }}</td>
                                 <td>{{ truncateText(item.pesan, 50) }}</td> 
                             </tr>
                         </tbody>
                     </table>
+
+                    <div v-if="searchQuery && filteredFeedbacks.length === 0" class="text-center py-3 text-muted">
+                        Tidak ada pesan yang cocok dengan "{{ searchQuery }}"
+                    </div>
                     
                     <div class="text-end mt-2 fw-bold" v-if="feedbacks.length > 0">
                         <a href="semua-feedback.html" class="text-decoration-none" style="color: #1a5c7a;">dst >></a>
@@ -146,10 +160,13 @@
                         <h5>AKTIVITAS TERAKHIR</h5>
                         <div v-if="activities.length === 0" class="text-muted fst-italic">Belum ada aktivitas tercatat.</div>
                         <ol v-else>
-                            <li v-for="(act, index) in activities" :key="index" class="mb-1">
+                            <li v-for="(act, index) in filteredActivities" :key="index" class="mb-1">
                                 {{ act.text }} <span style="font-size: 0.75rem; color: #888;">({{ act.time }})</span>
                             </li>
                         </ol>
+                        <div v-if="searchQuery && filteredActivities.length === 0" class="text-center text-muted small">
+                            Tidak ada aktivitas "{{ searchQuery }}"
+                        </div>
                         <div class="text-end mt-2 fw-bold" v-if="activities.length > 0"> 
                             <a href="semua-aktivitas.html" class="text-decoration-none" style="color: #21698a;">dst >></a>
                         </div>
@@ -159,23 +176,23 @@
                         <h5>NOTIFIKASI TERBARU</h5>
                         <div v-if="notifications.length === 0" class="text-muted fst-italic">Belum ada notifikasi baru.</div>
                         <ol v-else>
-                            <li v-for="(notif, index) in displayedNotifications" :key="index" class="mb-2">
+                            <li v-for="(notif, index) in filteredNotifications" :key="index" class="mb-2">
                                 <span v-if="notif.type === 'donasi'" style="color: #27ae60;">🟢</span> 
                                 <span v-else-if="notif.type === 'stok'" style="color: #e67e22;">🟠</span>
                                 {{ notif.text }} 
-                                <span style="font-size: 0.75rem; color: #888;"></span>
                             </li>
                         </ol>
+                        <div v-if="searchQuery && filteredNotifications.length === 0" class="text-center text-muted small">
+                            Tidak ada notifikasi "{{ searchQuery }}"
+                        </div>
                         <div class="dst-mark" v-if="notifications.length > 5">
                             <a href="notifikasi.html" class="text-decoration-none fw-bold" style="color: #21698a;">dst >></a>
                         </div>
                     </div>
                 </div>
-
             </div>
         </main>
-        
-    </div> 
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -185,13 +202,50 @@
     createApp({
         data() {
             return {
+                searchQuery: '',
                 notifications: [],
                 displayedNotifications: [],
+                unreadCount: 0,
                 activities: [], 
                 feedbacks: [], 
                 totalPenghuni: 0, totalUang: 0, totalBarang: 0, 
-                totalStok: 0, stokMenipis: 0, 
+                totalStok: 0, stokMenipis: 0, jumlahHampirExpired: 0,
                 totalSembako: 0, totalPakaian: 0, totalObat: 0
+            }
+        },
+        computed: {
+            filteredFeedbacks() {
+                if (!this.searchQuery) return this.feedbacks;
+                const query = this.searchQuery.toLowerCase();
+                
+                return this.feedbacks.filter(item => {
+                    return (item.nama && item.nama.toLowerCase().includes(query)) ||
+                           (item.pesan && item.pesan.toLowerCase().includes(query)) ||
+                           (item.tanggal && item.tanggal.toLowerCase().includes(query));
+                });
+            },
+
+            // 2. Filter untuk Aktivitas Terakhir
+            filteredActivities() {
+                if (!this.searchQuery) return this.activities;
+                const query = this.searchQuery.toLowerCase();
+
+                return this.activities.filter(act => {
+                    return (act.text && act.text.toLowerCase().includes(query)) ||
+                           (act.time && act.time.toLowerCase().includes(query));
+                });
+            },
+
+            // 3. Filter untuk Notifikasi
+            filteredNotifications() {
+                // Kalau tidak nyari, tampilkan 'displayedNotifications' (top 5).
+                // Kalau lagi nyari, cari dari 'notifications' (semua data) biar ketemu walau data lama.
+                const source = this.searchQuery ? this.notifications : this.displayedNotifications;
+                const query = this.searchQuery.toLowerCase();
+
+                return source.filter(notif => {
+                    return notif.text && notif.text.toLowerCase().includes(query);
+                });
             }
         },
         mounted() {
@@ -201,7 +255,24 @@
             this.calculateStats();
         },
         methods: {
-            formatRupiah(angka) { return new Intl.NumberFormat('id-ID').format(angka); },
+            formatRupiah(angka) {
+                return new Intl.NumberFormat('id-ID').format(angka);
+            },
+
+            parseNumber(str) {
+                if (!str) return 0;
+                return parseInt(str.toString().replace(/\D/g, '')) || 0;
+            },
+
+            // FUNGSI KONVERSI TANGGAL (Hanya dipakai untuk Stok, karena Donasi punya ID)
+            dateToTimestamp(dateStr) {
+                if (!dateStr || dateStr === '-') return 0;
+                const parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    return new Date(parts[2], parts[1] - 1, parts[0]).getTime();
+                }
+                return 0;
+            },
 
             truncateText(text, length) {
                 if (!text) return '-';
@@ -242,37 +313,156 @@
             loadNotifications() {
                 let allNotifs = [];
                 const donasiList = JSON.parse(localStorage.getItem('donasiList')) || [];
-                donasiList.forEach(d => {
-                    allNotifs.push({ text: `Donasi masuk dari ${d.donatur} (${d.jenis}: ${d.detail || d.jumlah})`, type: 'donasi', timestamp: d.id, date: d.tanggal });
-                });
                 const barangList = JSON.parse(localStorage.getItem('barangList')) || [];
+
+                // --- 1. NOTIFIKASI DONASI ---
+                donasiList.forEach(d => {
+                    // FIX: Gunakan d.id (karena d.id = Date.now() saat donasi dibuat)
+                    // Jika d.id tidak ada (data lama), fallback ke tanggal manual
+                    let time = d.id || this.dateToTimestamp(d.tanggal);
+                    
+                    allNotifs.push({
+                        text: `Donasi masuk dari ${d.donatur} (${d.jenis}: ${d.detail || d.jumlah})`,
+                        type: 'donasi',
+                        timestamp: time
+                    });
+                });
+
+                // --- 2. NOTIFIKASI STOK (Menipis & Expired) ---
                 barangList.forEach(b => {
+                    // Logic: Gunakan tgl_masuk sebagai penanda waktu
+                    // Jadi barang lama yg menipis TIDAK akan memicu badge merah lagi (sesuai standar notif)
+                    let itemTime = this.dateToTimestamp(b.tgl_masuk);
+
+                    // Cek Stok Menipis
                     let stok = parseInt(b.sisa_stok);
                     if (!isNaN(stok) && stok < 5) {
-                        allNotifs.push({ text: `Stok ${b.nama} Menipis! (Sisa: ${b.sisa_stok})`, type: 'stok', timestamp: Date.now(), date: 'Hari ini' });
+                        allNotifs.push({
+                            text: `Stok ${b.nama} Menipis! (Sisa: ${b.sisa_stok})`,
+                            type: 'stok',
+                            timestamp: itemTime
+                        });
+                    }
+                    
+                    // Cek Expired
+                    if (b.expired && b.expired !== '-') {
+                        const parts = b.expired.split('/'); 
+                        const expDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+                        const today = new Date();
+                        const diffTime = expDate - today;
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                        if (diffDays <= 30 && diffDays >= 0) {
+                            allNotifs.push({
+                                text: `⚠️ ${b.nama} Segera Expired (${b.expired})`,
+                                type: 'stok', 
+                                timestamp: itemTime
+                            });
+                        }
                     }
                 });
-                this.notifications = allNotifs.sort((a, b) => b.timestamp - a.timestamp);
+
+                // --- 3. SORTING (Yang paling baru ID/Timestamp-nya di atas) ---
+                // Karena d.id itu angka besar (ms), dia akan selalu lebih besar dari tanggal biasa
+                this.notifications = allNotifs.sort((a, b) => b.timestamp - a.timestamp); 
                 this.displayedNotifications = this.notifications.slice(0, 5);
+
+                // --- 4. HITUNG UNREAD (BADGE MERAH) ---
+                const lastRead = parseInt(localStorage.getItem('lastReadTimestamp')) || 0;
+                
+                // Bandingkan ID Donasi vs Kapan Terakhir Buka Menu Notif
+                // Jika ID Donasi > Last Read, berarti itu Donasi Baru -> Muncul Badge
+                this.unreadCount = allNotifs.filter(n => n.timestamp > lastRead).length;
             },
 
             calculateStats() {
+                const penghuniList = JSON.parse(localStorage.getItem('penghuniBaru'));
+                this.totalPenghuni = (penghuniList && Array.isArray(penghuniList)) ? penghuniList.length : 0;
+
                 const donasiList = JSON.parse(localStorage.getItem('donasiList')) || [];
+                const now = new Date();
+                const currentMonth = now.getMonth() + 1;
+                const currentYear = now.getFullYear();
+
+                let hitungUangBulanIni = 0;
+                let hitungSembako = 0;
+                let hitungPakaian = 0;
+                let hitungObat = 0;
+                let hitungBarangAllTime = 0; 
+
+                donasiList.forEach(d => {
+                    if (d.jenis === 'Barang') {
+                        let qty = parseInt(d.jumlah) || 1; 
+                        hitungBarangAllTime += qty;
+                    }
+
+                    let isThisMonth = false;
+                    if (d.tanggal && d.tanggal.includes('/')) {
+                        const parts = d.tanggal.split('/'); 
+                        const dMonth = parseInt(parts[1]);
+                        const dYear = parseInt(parts[2]);
+                        if (dMonth === currentMonth && dYear === currentYear) {
+                            isThisMonth = true;
+                        }
+                    }
+
+                    if (isThisMonth) {
+                        if (d.jenis === 'Tunai') {
+                            hitungUangBulanIni += this.parseNumber(d.jumlah);
+                        }
+                        if (d.jenis === 'Barang') {
+                            let detail = d.detail ? d.detail.toLowerCase() : '';
+                            if (detail.includes('sembako') || detail.includes('makanan') || detail.includes('minuman')) {
+                                hitungSembako++;
+                            } else if (detail.includes('pakaian') || detail.includes('baju') || detail.includes('celana')) {
+                                hitungPakaian++;
+                            } else if (detail.includes('obat') || detail.includes('kesehatan') || detail.includes('medis')) {
+                                hitungObat++;
+                            }
+                        }
+                    }
+                });
+
+                this.totalUang = hitungUangBulanIni;
+                this.totalBarang = hitungBarangAllTime;
+                this.totalSembako = hitungSembako;
+                this.totalPakaian = hitungPakaian;
+                this.totalObat = hitungObat;
+
                 const barangList = JSON.parse(localStorage.getItem('barangList')) || [];
-                const penghuniList = JSON.parse(localStorage.getItem('penghuniBaru')) || [];
-                
-                this.totalPenghuni = 50 + penghuniList.length;
-                this.totalBarang = donasiList.filter(d => d.jenis !== 'Tunai').length;
-                this.totalSembako = donasiList.filter(d => d.kategori === 'Sembako').length;
-                this.totalPakaian = donasiList.filter(d => d.kategori === 'Pakaian').length;
-                this.totalObat = donasiList.filter(d => d.kategori === 'Obat' || d.kategori === 'Obat-obatan').length;
-                this.totalUang = 1500000; 
                 this.totalStok = barangList.length;
-                this.stokMenipis = barangList.filter(b => parseInt(b.sisa_stok) < 5).length;
+                this.stokMenipis = barangList.filter(b => {
+                    let sisa = parseInt(b.sisa_stok);
+                    return !isNaN(sisa) && sisa < 5;
+                }).length;
+
+                let countExp = 0;
+                const today = new Date();
+                barangList.forEach(item => {
+                    if (item.expired && item.expired !== '-') {
+                        const parts = item.expired.split('/'); 
+                        const expDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+                        const diffTime = expDate - today;
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        if (diffDays <= 30 && diffDays >= 0) {
+                            countExp++;
+                        }
+                    }
+                });
+                this.jumlahHampirExpired = countExp;
             },
 
             logoutAdmin() {
-                Swal.fire({ title: 'Keluar?', text: "Sesi admin akan diakhiri.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6', confirmButtonText: 'Ya, Logout' }).then((result) => { if (result.isConfirmed) { localStorage.removeItem('adminLoggedIn'); window.location.href = 'login.html'; } });
+                Swal.fire({
+                    title: 'Keluar?', text: "Sesi admin akan diakhiri.", icon: 'warning',
+                    showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Logout'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        localStorage.removeItem('adminLoggedIn');
+                        window.location.href = 'login.html';
+                    }
+                });
             }
         }
     }).mount('#adminApp');

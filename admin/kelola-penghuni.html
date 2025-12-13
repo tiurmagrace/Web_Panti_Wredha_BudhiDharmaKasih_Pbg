@@ -20,6 +20,7 @@
     </script>
 
     <style>
+        .header-left { border-right: none !important; }
         .swal2-container { z-index: 999999 !important; }
         .modal-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
@@ -95,29 +96,83 @@
 
     <div id="penghuniApp" class="admin-wrapper">
         <header class="top-header">
-            <div class="header-left"><img src="../assets/images/1.png" alt="Logo BDK" class="header-logo"></div>
-            <div class="header-center"><div class="search-box"><input type="text" placeholder="Search Text" name="search" v-model="searchQuery"><i class="fas fa-search"></i></div></div>
-            <div class="header-right"><i class="far fa-bell icon-bell me-3"></i><span class="user-text me-3">Hai, Muhammad Zaenal!</span><i class="fas fa-user-circle icon-profile"></i></div>
+            <div class="header-left">
+                <a href="index.html" style="text-decoration: none;">
+                    <img src="../assets/images/1.png" alt="Logo BDK" class="header-logo">
+                </a>
+            </div>
+
+            <div class="header-center">
+                <div class="search-box">
+                    <input type="text" v-model="searchQuery" placeholder="Cari data di halaman ini..." name="search">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <a href="notifikasi.html" class="text-white text-decoration-none me-3 position-relative" :class="{ active: currentUrl && currentUrl.includes('notifikasi.html') }">
+                    <i class="far fa-bell icon-bell"></i>
+                    <span v-if="unreadCount > 0" 
+                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" 
+                        style="font-size: 0.6rem;">
+                    </span>
+                </a>
+                
+                <span class="user-text me-3">Hai, ADMIN!</span>
+                <i class="fas fa-user-circle icon-profile"></i>
+            </div>
         </header>
 
         <aside class="sidebar">
             <ul class="list-unstyled">
-                <li><a href="index.html"><i class="fas fa-folder"></i> Dashboard</a></li>
+                
                 <li>
-                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle" aria-expanded="true"><i class="fas fa-file-invoice"></i> Manajemen Data Penghuni</a>
+                    <a href="index.html">
+                        <i class="fas fa-folder"></i> Dashboard
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle" aria-expanded="true">
+                        <i class="fas fa-file-invoice"></i> Manajemen Data Penghuni
+                    </a>
+                    
                     <ul class="collapse show list-unstyled sidebar-submenu" id="penghuniSub">
+                        
                         <li><a href="kelola-penghuni.html" class="active"><i class="fas fa-list"></i> Data Penghuni</a></li>
+                        
                         <li><a href="tambah-penghuni.html"><i class="fas fa-plus"></i> Tambah Data</a></li>
                     </ul>
                 </li>
-                <li><a href="#donasiSub" data-bs-toggle="collapse"><i class="fas fa-box-open"></i> Manajemen Distribusi Donasi</a></li>
-                <li><a href="#barangSub" data-bs-toggle="collapse"><i class="fas fa-boxes"></i> Manajemen Stok Barang</a></li>
+
+                <li>
+                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle">
+                        <i class="fas fa-box-open"></i> Manajemen Distribusi Donasi
+                    </a>
+                    <ul class="collapse list-unstyled sidebar-submenu" id="donasiSub">
+                        <li><a href="kelola-donasi.html"><i class="fas fa-history"></i> Riwayat</a></li>
+                        <li><a href="tambah-donasi.html"><i class="fas fa-plus"></i> Tambah Donasi</a></li>
+                        <li><a href="laporan-donasi.html"><i class="fas fa-file-alt"></i> Laporan</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle">
+                        <i class="fas fa-boxes"></i> Manajemen Stok Barang
+                    </a>
+                    <ul class="collapse list-unstyled sidebar-submenu" id="barangSub">
+                        <li><a href="data-barang.html"><i class="fas fa-clipboard-list"></i> Data Stok Barang</a></li>
+                        <li><a href="tambah-barang.html"><i class="fas fa-plus"></i> Tambah Stok Barang</a></li>
+                        <li><a href="ambil-stok.html"><i class="fas fa-minus-square"></i> Ambil Stok Barang</a></li>
+                    </ul>
+                </li>
             </ul>
+            
             <div class="logout-wrapper">
                 <a href="javascript:void(0)" @click="logoutAdmin" class="text-white text-decoration-none d-flex align-items-center gap-2">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
-            </div>  
+            </div> 
         </aside>
 
         <main class="main-content" style="padding: 25px;">
@@ -125,12 +180,33 @@
                 <div class="page-title-banner" style="margin-bottom: 25px;">Data Penghuni Panti Wredha “Budi Dharma Kasih” Purbalingga</div>
 
                 <div class="glass-panel" style="margin-top: 0; background-color: #ffffff; color: #333; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 25px;">
-                    <div class="row align-items-center mb-4">
-                        <div class="col-md-12">
-                            <div class="search-wrapper">
-                                <input type="text" v-model="searchQuery" class="search-input-custom" placeholder="Cari data">
-                                <i class="fas fa-search search-icon-inside"></i>
-                            </div>
+                    <div class="row mb-3 g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="fw-bold small text-muted mb-1">Filter Paviliun</label>
+                            <select v-model="filterPaviliun" class="form-select border-primary text-primary" style="font-size: 0.9rem;">
+                                <option value="">Semua Paviliun</option>
+                                <option>ANGGREK</option>
+                                <option>BOUGENVILLE 1</option>
+                                <option>BOUGENVILLE 2</option>
+                                <option>MAWAR</option>
+                                <option>SNEEK</option>
+                                <option>BETHESDA</option>
+                                <option>DAHLIA</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="fw-bold small text-muted mb-1">Tahun Masuk</label>
+                            <select v-model="filterTahun" class="form-select border-primary text-primary" style="font-size: 0.9rem;">
+                                <option value="">Semua Tahun</option>
+                                <option v-for="thn in uniqueYears" :key="thn" :value="thn">{{ thn }}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <button v-if="filterPaviliun || filterTahun" @click="resetFilter" class="btn btn-outline-danger btn-sm w-100" style="height: 38px;">
+                                <i class="fas fa-times"></i> Reset Filter
+                            </button>
                         </div>
                     </div>
 
@@ -300,16 +376,75 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const { createApp } = window.Vue;
+        
         createApp({
             data() {
                 return {
-                    alertStatus: null, isModalOpen: false, modalMode: 'detail', searchQuery: '', currentPage: 1, itemsPerPage: 20, tempFormData: {}, editingIndex: -1, 
-                    penghuniList: [ /* DUMMY BIAR GA KOSONG PAS AWAL */
+                    // DATA UTAMA
+                    alertStatus: null, 
+                    isModalOpen: false, 
+                    modalMode: 'detail', 
+                    currentPage: 1, 
+                    itemsPerPage: 20, 
+                    tempFormData: {}, 
+                    editingIndex: -1, 
+                    
+                    // DATA PENCARIAN & FILTER (INI YG BARU)
+                    searchQuery: '', 
+                    filterPaviliun: '', // Menampung pilihan paviliun
+                    filterTahun: '',    // Menampung pilihan tahun
+                    
+                    // DUMMY DATA
+                    penghuniList: [
                         { nik: '1234567890123456', nama: 'tino prasetyo', ttl: 'majenang, 25/05/1957', usia: 67, kota: 'purwokerto', tahun: '2024', paviliun: 'bougenville 1', agama: 'katolik', alamat: 'jl. kenanga no. 3', gender: 'pria', status: 'duda', pj: 'budi (anak)', hubungan: 'anak', telp: '08123456789', alamat_pj: 'jakarta', penyakit: 'stroke ringan', alergi: 'ayam', kebutuhan: 'walker', obat: 'simvastatin', status_sehat: 'stabil', tgl_masuk: '2024-01-01', rujukan: 'keluarga', catatan: '-', foto: null },
                         { nik: '3302055505570001', nama: 'arifin', ttl: 'majenang, 25/05/1957', usia: 67, kota: 'purwokerto', tahun: '2024', paviliun: 'bougenville 1', agama: 'islam', alamat: 'jl. merdeka no. 1', gender: 'pria', status: 'menikah', pj: 'siti (istri)', hubungan: 'istri', telp: '0812999999', alamat_pj: 'purwokerto', penyakit: 'diabetes', alergi: '-', kebutuhan: '-', obat: 'metformin', status_sehat: 'perlu kontrol', tgl_masuk: '2024-02-15', rujukan: 'dinas sosial', catatan: '-', foto: null },
                     ]
                 }
             },
+            
+            computed: {
+                // 1. AMBIL TAHUN UNIK DARI DATA (UTK DROPDOWN)
+                uniqueYears() {
+                    if (!this.penghuniList) return [];
+                    const years = this.penghuniList.map(item => item.tahun);
+                    // Hapus duplikat dan urutkan dari tahun terbaru
+                    return [...new Set(years)].sort((a, b) => b - a);
+                },
+
+                // 2. LOGIC FILTER GABUNGAN (SEARCH + PAVILIUN + TAHUN)
+                filteredList() {
+                    return this.penghuniList.filter(item => {
+                        const search = this.searchQuery.toLowerCase();
+                        
+                        // A. Logika Search Bar
+                        const matchSearch = (item.nik && item.nik.toString().toLowerCase().includes(search)) ||
+                                            (item.nama && item.nama.toLowerCase().includes(search)) ||
+                                            (item.kota && item.kota.toLowerCase().includes(search));
+
+                        // B. Logika Filter Paviliun
+                        const matchPaviliun = this.filterPaviliun === '' || 
+                                            (item.paviliun && item.paviliun.toUpperCase() === this.filterPaviliun.toUpperCase());
+
+                        // C. Logika Filter Tahun
+                        const matchTahun = this.filterTahun === '' || 
+                                        (item.tahun && item.tahun.toString() === this.filterTahun.toString());
+
+                        // Return TRUE jika SEMUA kondisi terpenuhi
+                        return matchSearch && matchPaviliun && matchTahun;
+                    });
+                },
+
+                // 3. PAGINATION
+                totalPages() { 
+                    return Math.ceil(this.filteredList.length / this.itemsPerPage); 
+                },
+                paginatedList() {
+                    const start = (this.currentPage - 1) * this.itemsPerPage;
+                    const end = start + this.itemsPerPage;
+                    return this.filteredList.slice(start, end);
+                }
+            },
+
             mounted() {
                 const urlParams = new URLSearchParams(window.location.search);
                 if(urlParams.get('status') === 'success') {
@@ -323,27 +458,19 @@
                     localStorage.setItem('penghuniBaru', JSON.stringify(this.penghuniList));
                 }
             },
-            computed: {
-                filteredList() {
-                    return this.penghuniList.filter(item => {
-                        const search = this.searchQuery.toLowerCase();
-                        return (item.nik && item.nik.toString().toLowerCase().includes(search)) ||
-                               (item.nama && item.nama.toLowerCase().includes(search)) ||
-                               (item.kota && item.kota.toLowerCase().includes(search)) ||
-                               (item.paviliun && item.paviliun.toLowerCase().includes(search));
-                    });
-                },
-                totalPages() { return Math.ceil(this.filteredList.length / this.itemsPerPage); },
-                paginatedList() {
-                    const start = (this.currentPage - 1) * this.itemsPerPage;
-                    const end = start + this.itemsPerPage;
-                    return this.filteredList.slice(start, end);
-                }
-            },
+
             methods: {
                 formatUpperCase(str) { return str ? String(str).toUpperCase() : '-'; },
                 formatTitleCase(str) { return str ? String(str).toLowerCase().replace(/(?:^|\s)\w/g, m => m.toUpperCase()) : '-'; },
                 
+                // METHOD BARU: RESET FILTER
+                resetFilter() {
+                    this.filterPaviliun = '';
+                    this.filterTahun = '';
+                    this.searchQuery = '';
+                    this.currentPage = 1; // Balik ke halaman 1 biar ga bingung
+                },
+
                 triggerFileInput() {
                     if (this.modalMode === 'edit') { this.$refs.fileInput.click(); }
                 },
@@ -357,7 +484,6 @@
                 },
 
                 openModal(item, mode) {
-                    // COPY DATA DENGAN AMAN BIAR GA NYANTOL
                     this.tempFormData = JSON.parse(JSON.stringify(item));
                     this.modalMode = mode;
                     this.editingIndex = this.penghuniList.findIndex(p => p.nik === item.nik);
@@ -373,15 +499,14 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             if (this.editingIndex !== -1) { 
-                                // 1. UPDATE DATA DI ARRAY
                                 this.penghuniList.splice(this.editingIndex, 1, { ...this.tempFormData }); 
-                                
-                                // 2. SIMPAN KE LOCALSTORAGE
                                 localStorage.setItem('penghuniBaru', JSON.stringify(this.penghuniList));
 
-                                // 3. CATAT LOG AKTIVITAS (SINKRON KE DASHBOARD)
                                 let logs = JSON.parse(localStorage.getItem('activityLog')) || [];
-                                let jam = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                                let jam = new Date().toLocaleString('id-ID', { 
+                                    day: 'numeric', month: 'short', year: 'numeric', 
+                                    hour: '2-digit', minute: '2-digit' 
+                                });
                                 logs.push({ text: `Admin mengubah data penghuni: ${this.tempFormData.nama}`, time: jam });
                                 localStorage.setItem('activityLog', JSON.stringify(logs));
                             }

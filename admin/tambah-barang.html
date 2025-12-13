@@ -21,6 +21,7 @@
     </script>
 
     <style>
+        .header-left { border-right: none !important; }
         /* FORM STYLES */
         .swal2-container { z-index: 999999 !important; }
         .form-container { background-color: #f8fbfd; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-height: 600px; }
@@ -63,43 +64,83 @@
 
     <div id="tambahBarangApp" class="admin-wrapper">
         <header class="top-header">
-            <div class="header-left"><img src="../assets/images/1.png" alt="Logo BDK" class="header-logo"></div>
-            <div class="header-center"><div class="search-box"><input type="text" placeholder="Search Text" name="search"><i class="fas fa-search"></i></div></div>
-            <div class="header-right"><i class="far fa-bell icon-bell me-3"></i><span class="user-text me-3">Hai, Muhammad Zaenal!</span><i class="fas fa-user-circle icon-profile"></i></div>
+            <div class="header-left">
+                <a href="index.html" style="text-decoration: none;">
+                    <img src="../assets/images/1.png" alt="Logo BDK" class="header-logo">
+                </a>
+            </div>
+
+            <!-- <div class="header-center">
+                <div class="search-box">
+                    <input type="text" v-model="searchQuery" placeholder="Cari data di halaman ini..." name="search">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div> -->
+
+            <div class="header-right">
+                <a href="notifikasi.html" class="text-white text-decoration-none me-3 position-relative" :class="{ active: currentUrl && currentUrl.includes('notifikasi.html') }">
+                    <i class="far fa-bell icon-bell"></i>
+                    <span v-if="unreadCount > 0" 
+                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" 
+                        style="font-size: 0.6rem;">
+                    </span>
+                </a>
+                
+                <span class="user-text me-3">Hai, ADMIN!</span>
+                <i class="fas fa-user-circle icon-profile"></i>
+            </div>
         </header>
 
         <aside class="sidebar">
             <ul class="list-unstyled">
-                <li><a href="index.html"><i class="fas fa-folder"></i> Dashboard</a></li>
+                
                 <li>
-                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-file-invoice"></i> Manajemen Data Penghuni</a>
+                    <a href="index.html">
+                        <i class="fas fa-folder"></i> Dashboard
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle">
+                        <i class="fas fa-file-invoice"></i> Manajemen Data Penghuni
+                    </a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="penghuniSub">
                         <li><a href="kelola-penghuni.html"><i class="fas fa-list"></i> Data Penghuni</a></li>
                         <li><a href="tambah-penghuni.html"><i class="fas fa-plus"></i> Tambah Data</a></li>
                     </ul>
                 </li>
+
                 <li>
-                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-box-open"></i> Manajemen Distribusi Donasi</a>
+                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle">
+                        <i class="fas fa-box-open"></i> Manajemen Distribusi Donasi
+                    </a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="donasiSub">
                         <li><a href="kelola-donasi.html"><i class="fas fa-history"></i> Riwayat</a></li>
                         <li><a href="tambah-donasi.html"><i class="fas fa-plus"></i> Tambah Donasi</a></li>
                         <li><a href="laporan-donasi.html"><i class="fas fa-file-alt"></i> Laporan</a></li>
                     </ul>
                 </li>
+
                 <li>
-                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle" aria-expanded="true"><i class="fas fa-boxes"></i> Manajemen Stok Barang</a>
+                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle" aria-expanded="true">
+                        <i class="fas fa-boxes"></i> Manajemen Stok Barang
+                    </a>
+                    
                     <ul class="collapse show list-unstyled sidebar-submenu" id="barangSub">
                         <li><a href="data-barang.html"><i class="fas fa-clipboard-list"></i> Data Stok Barang</a></li>
+                        
                         <li><a href="tambah-barang.html" class="active"><i class="fas fa-plus"></i> Tambah Stok Barang</a></li>
+                        
                         <li><a href="ambil-stok.html"><i class="fas fa-minus-square"></i> Ambil Stok Barang</a></li>
                     </ul>
                 </li>
             </ul>
+            
             <div class="logout-wrapper">
-                <a href="#" onclick="logoutAdmin()" class="text-white text-decoration-none d-flex align-items-center gap-2">
+                <a href="javascript:void(0)" @click="logoutAdmin" class="text-white text-decoration-none d-flex align-items-center gap-2">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
-            </div>  
+            </div> 
         </aside>
 
         <main class="main-content" style="padding: 25px;">
@@ -166,6 +207,19 @@
                             <option>Perlu Perbaikan</option>
                         </select>
                     </div>
+
+                    <div class="form-group-row">
+                        <label class="label-custom">Opsi Expired</label>
+                        <div style="flex: 1; display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="cekExpired" v-model="hasExpired" style="width: 20px; height: 20px; cursor: pointer;">
+                            <label for="cekExpired" style="cursor: pointer; color: #333;">Barang ini ada masa kadaluwarsa?</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group-row" v-if="hasExpired">
+                        <label class="label-custom">Tgl. Kadaluwarsa</label>
+                        <input type="date" class="input-custom" v-model="form.expired_raw">
+                    </div>
                     
                     <div class="form-group-row" style="align-items: flex-start;">
                         <label class="label-custom" style="padding-top: 10px;">Foto Barang</label>
@@ -208,13 +262,24 @@
         createApp({
             data() {
                 return {
+                    searchQuery: '',
                     showError: false, previewImage: null,
+                    hasExpired: false,
                     form: {
                         kode: '', 
                         nama: '', kategori: '', satuan: '', 
                         stok: '', tgl_masuk_raw: '', kondisi: 'Baik',
+                        expired_raw: '',
                         tgl_keluar: '-', brg_masuk: '', brg_keluar: '-', sisa_stok: ''
                     }
+                }
+            },
+            computed: {
+                filteredList() {
+                    // Logic filter ini akan otomatis membaca ketikan di Header
+                    return this.barangList.filter(item => {
+                        return item.nama.toLowerCase().includes(this.searchQuery.toLowerCase());
+                    });
                 }
             },
             watch: {
@@ -246,18 +311,30 @@
                 },
 
                 validateAndSubmit() {
-                    // Validasi
+                    // Validasi dasar
                     if (!this.form.nama || !this.form.kategori || !this.form.stok || !this.form.tgl_masuk_raw) {
                         this.showError = true; return;
                     }
+                    
+                    // Validasi Tambahan: Kalau dicentang tapi tanggal kosong, marahin adminnya
+                    if (this.hasExpired && !this.form.expired_raw) {
+                        Swal.fire('Ups!', 'Kamu mencentang opsi Expired, tolong isi tanggal kadaluwarsanya!', 'warning');
+                        return;
+                    }
+
                     this.showError = false;
 
-                    // Format Tanggal
+                    // Format Tanggal Masuk (Sama kayak kodemu)
                     let d = new Date(this.form.tgl_masuk_raw);
-                    let day = String(d.getDate()).padStart(2, '0');
-                    let month = String(d.getMonth() + 1).padStart(2, '0');
-                    let year = d.getFullYear();
-                    let tglFormatted = `${day}/${month}/${year}`;
+                    let tglFormatted = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+
+                    // --- LOGIKA EXPIRED DATE ---
+                    let expiredFix = '-'; // Default strip buat Pakaian dkk
+                    if (this.hasExpired && this.form.expired_raw) {
+                        let e = new Date(this.form.expired_raw);
+                        expiredFix = `${String(e.getDate()).padStart(2, '0')}/${String(e.getMonth() + 1).padStart(2, '0')}/${e.getFullYear()}`;
+                    }
+                    // ---------------------------
 
                     const newData = {
                         kode: this.form.kode,
@@ -265,7 +342,7 @@
                         kategori: this.form.kategori,
                         satuan: this.form.satuan,
                         kondisi: this.form.kondisi,
-                        // Data untuk Tabel
+                        expired: expiredFix, // <--- MASUKKAN KE DATA YANG DISIMPAN
                         tgl_masuk: tglFormatted,
                         tgl_keluar: '-', 
                         brg_masuk: this.form.stok + ' ' + this.form.satuan, 
@@ -287,13 +364,12 @@
 
                             // 2. --- CATAT AKTIVITAS (TARUH DI SINI SENG) ---
                             let logs = JSON.parse(localStorage.getItem('activityLog')) || [];
-                            let jam = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                            
                             logs.push({ 
                                 text: `Admin menambahkan stok barang baru: ${this.form.nama} (${this.form.stok} ${this.form.satuan})`, 
-                                time: jam 
+                                // GANTI 'jam' JADI 'new Date()'
+                                time: new Date() 
                             });
-                            
+
                             localStorage.setItem('activityLog', JSON.stringify(logs));
                             // ------------------------------------------------
 
