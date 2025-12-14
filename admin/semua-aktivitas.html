@@ -4,12 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log Aktivitas Admin - Panti Wredha BDK</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-    <link rel="stylesheet" href="style-admin.css">
+    
+    <link rel="stylesheet" href="assets/css/style-admin.css">
+    
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>if(!localStorage.getItem('adminLoggedIn')){window.location.href='login.html';}</script>
+    
+    <script>
+    // --- SECURITY CHECK (SATPAM) ---
+    // UPDATE PATH LOGIN: Masuk ke folder auth
+    if (!localStorage.getItem('adminLoggedIn')) {
+        window.location.href = 'auth/login.html';
+    }
+    </script>
     
     <style>
         .header-left { border-right: none !important; }
@@ -40,7 +50,7 @@
         .filter-select:focus { border-color: #1a5c7a; background-color: #f0f9ff; }
     </style>
 </head>
-<body>
+<body class="bg-admin">
     <div id="activityApp" class="admin-wrapper">
         
         <header class="top-header">
@@ -70,23 +80,32 @@
         <aside class="sidebar">
             <ul class="list-unstyled">
                 <li><a href="index.html"><i class="fas fa-folder"></i> Dashboard</a></li>
+                
                 <li>
-                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-file-invoice"></i> Manajemen Data Penghuni</a>
+                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle">
+                        <i class="fas fa-file-invoice"></i> Manajemen Data Penghuni
+                    </a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="penghuniSub">
                         <li><a href="kelola-penghuni.html"><i class="fas fa-list"></i> Data Penghuni</a></li>
                         <li><a href="tambah-penghuni.html"><i class="fas fa-plus"></i> Tambah Data</a></li>
                     </ul>
                 </li>
+
                 <li>
-                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-box-open"></i> Manajemen Distribusi Donasi</a>
+                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle">
+                        <i class="fas fa-box-open"></i> Manajemen Distribusi Donasi
+                    </a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="donasiSub">
                         <li><a href="kelola-donasi.html"><i class="fas fa-history"></i> Riwayat</a></li>
                         <li><a href="tambah-donasi.html"><i class="fas fa-plus"></i> Tambah Donasi</a></li>
                         <li><a href="laporan-donasi.html"><i class="fas fa-file-alt"></i> Laporan</a></li>
                     </ul>
                 </li>
+
                 <li>
-                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-boxes"></i> Manajemen Stok Barang</a>
+                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle">
+                        <i class="fas fa-boxes"></i> Manajemen Stok Barang
+                    </a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="barangSub">
                         <li><a href="data-barang.html"><i class="fas fa-clipboard-list"></i> Data Stok Barang</a></li>
                         <li><a href="tambah-barang.html"><i class="fas fa-plus"></i> Tambah Stok Barang</a></li>
@@ -94,8 +113,11 @@
                     </ul>
                 </li>
             </ul>
+            
             <div class="logout-wrapper">
-                <a href="javascript:void(0)" @click="logoutAdmin" class="text-white text-decoration-none d-flex align-items-center gap-2"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                <a href="javascript:void(0)" @click="logoutAdmin" class="text-white text-decoration-none d-flex align-items-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
             </div> 
         </aside>
 
@@ -153,7 +175,8 @@
                 return {
                     searchQuery: '',
                     filterKategori: '', 
-                    activities: []
+                    activities: [],
+                    currentUrl: window.location.href // Untuk notif badge di header (optional)
                 }
             },
             computed: {
@@ -175,22 +198,30 @@
                 this.activities = logs.reverse(); 
             },
             methods: {
-                // Tambahkan fungsi ini seng:
+                // FUNGSI FORMAT TANGGAL BIAR RAPI
                 formatTanggal(waktu) {
                     // Cek dulu, kalau datanya cuma jam (format lama, misal "14.21"), balikin aja langsung
                     // Biar data lama gak error
-                    if (!waktu || waktu.length < 8) return waktu;
+                    if (!waktu || typeof waktu === 'string' && waktu.length < 10) return waktu;
 
-                    // Kalau datanya format baru (lengkap), kita format jadi "13 Des 2025, 14:21"
-                    const date = new Date(waktu);
-                    return date.toLocaleDateString('id-ID', {
-                        day: 'numeric',
-                        month: 'short', 
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
+                    // Kalau datanya format baru (Date string), kita format jadi "13 Des 2025, 14:21"
+                    try {
+                        const date = new Date(waktu);
+                        // Cek validitas date
+                        if(isNaN(date.getTime())) return waktu; 
+
+                        return date.toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'short', 
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    } catch (e) {
+                        return waktu;
+                    }
                 },
+
                 logoutAdmin() {
                     Swal.fire({
                         title: 'Keluar?', text: "Sesi admin akan diakhiri.", icon: 'warning',
@@ -199,7 +230,8 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             localStorage.removeItem('adminLoggedIn'); 
-                            window.location.href = 'login.html'; 
+                            // UPDATE PATH LOGOUT: Masuk ke folder auth
+                            window.location.href = 'auth/login.html'; 
                         }
                     });
                 }

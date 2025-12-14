@@ -4,12 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Semua Pesan Masuk - Panti Wredha BDK</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-    <link rel="stylesheet" href="style-admin.css">
+    
+    <link rel="stylesheet" href="assets/css/style-admin.css">
+    
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>if(!localStorage.getItem('adminLoggedIn')){window.location.href='login.html';}</script>
+    
+    <script>
+    // --- SECURITY CHECK (SATPAM) ---
+    // UPDATE PATH LOGIN: Masuk ke folder auth
+    if (!localStorage.getItem('adminLoggedIn')) {
+        window.location.href = 'auth/login.html';
+    }
+    </script>
     
     <style>
         .header-left { border-right: none !important; }
@@ -54,7 +64,7 @@
         .form-select-sm { border-color: #1a5c7a; color: #1a5c7a; }
     </style>
 </head>
-<body>
+<body class="bg-admin">
     <div id="feedbackApp" class="admin-wrapper">
         
         <header class="top-header">
@@ -181,16 +191,17 @@
         createApp({
             data() {
                 return {
-                    searchQuery: '', // Search Bar Header
+                    searchQuery: '', 
                     feedbacks: [],
                     
                     // Variable Filter Baru
                     filterBulan: '',
-                    filterTahun: ''
+                    filterTahun: '',
+                    currentUrl: window.location.href, // Biar navbar aktif (optional)
+                    unreadCount: 0
                 }
             },
             computed: {
-                // LOGIC FILTER YANG SUDAH DIPERBAIKI
                 filteredList() {
                     return this.feedbacks.filter(item => {
                         // 1. Filter Search (Header)
@@ -201,7 +212,6 @@
                         // 2. Filter Dropdown (Bulan & Tahun)
                         let matchDate = true;
                         
-                        // Cek apakah data tanggal valid (Format asumsi: DD/MM/YYYY)
                         if (this.filterBulan || this.filterTahun) {
                             if (item.tanggal && item.tanggal.includes('/')) {
                                 const parts = item.tanggal.split('/'); 
@@ -211,7 +221,6 @@
                                 if (this.filterBulan && monthData !== this.filterBulan) matchDate = false;
                                 if (this.filterTahun && yearData !== this.filterTahun) matchDate = false;
                             } else {
-                                // Kalau format tanggal di data kacau/beda format, anggap tidak match
                                 matchDate = false;
                             }
                         }
@@ -240,7 +249,8 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             localStorage.removeItem('adminLoggedIn'); 
-                            window.location.href = 'login.html'; 
+                            // UPDATE PATH LOGOUT: Masuk ke folder auth
+                            window.location.href = 'auth/login.html'; 
                         }
                     });
                 }

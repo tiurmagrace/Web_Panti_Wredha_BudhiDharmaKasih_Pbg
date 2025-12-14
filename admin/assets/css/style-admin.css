@@ -24,6 +24,48 @@ body {
     overflow-x: hidden; /* MATIKAN SCROLL KANAN-KIRI */
     display: flex;
     flex-direction: column;
+
+    background-image: url('../images/2.png'); /* Mundur dari folder css, masuk images */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
+
+/* --- Background untuk Halaman Admin Utama --- */
+body.bg-admin {
+    /* Penjelasan Path: 
+       ../   (keluar dari folder css)
+       ../../ (keluar dari folder assets - punya admin)
+       ../../../ (keluar dari folder admin - sekarang di root project)
+       lalu masuk ke assets/images/2.png
+    */
+    background-image: url('../../../assets/images/2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Biar background diam pas discroll */
+}
+
+/* --- Background untuk Halaman Auth (Login/Lupa Password) --- */
+body.bg-auth {
+    background-image: url('../../../assets/images/loginadmin.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* === BIAR KONTEN GAK TENGGELAM (Optional) === */
+/* Tambahkan background putih transparan ke container utama biar tulisan kebaca */
+.admin-wrapper, .main-content, .card, .form-container {
+    background-color: rgba(248, 251, 253, 0.95); /* Putih agak transparan */
+}
+
+/* Khusus Wrapper Admin biasanya transparan aja biar background kelihatan di pinggir */
+.admin-wrapper {
+    background-color: transparent !important;
 }
 
 #adminApp {
