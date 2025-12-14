@@ -1,0 +1,25 @@
+/* Style khusus input OTP */
+.otp-input-group { 
+    display: flex; 
+    justify-content: center; 
+    gap: 15px; 
+    margin-bottom: 2rem; 
+}
+
+.otp-box { 
+    width: 50px; 
+    height: 50px; 
+    border: 1px solid #1D4E89; 
+    border-radius: 5px; 
+    text-align: center; 
+    font-size: 1.5rem; 
+    font-weight: 700; 
+    color: #1D4E89; 
+    transition: all 0.3s;
+}
+
+.otp-box:focus { 
+    outline: none; 
+    box-shadow: 0 0 5px rgba(29, 78, 137, 0.5); 
+    border-color: #4A90E2;
+}

@@ -1,0 +1,241 @@
+/* ========================================
+   KELOLA PENGHUNI - CUSTOM STYLES
+   ======================================== */
+
+/* Header & Basic Fixes */
+.header-left { 
+    border-right: none !important; 
+}
+
+.swal2-container { 
+    z-index: 999999 !important; 
+}
+
+/* Modal Overlay */
+.modal-overlay { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0, 0, 0, 0.5); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 10000; 
+}
+
+/* Modal Card */
+.modal-teal-card {
+    width: 600px; 
+    max-width: 95%; 
+    max-height: 90vh; 
+    overflow-y: auto;
+    background-color: #1a5c7a; 
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 20px;
+}
+
+/* Photo Frame */
+.photo-frame-square {
+    width: 140px; 
+    height: 140px; 
+    background: #e2e8f0; 
+    border-radius: 10px;
+    border: 4px solid white;
+    margin: 25px auto 15px auto; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-size: 3rem; 
+    color: #1a5c7a;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 2; 
+    flex-shrink: 0; 
+    overflow: hidden; 
+    position: relative;
+}
+
+.photo-img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
+
+/* Detail White Box */
+.detail-white-box {
+    background-color: white; 
+    margin: 0 20px; 
+    border-radius: 10px;
+    padding: 30px; 
+    padding-top: 20px; 
+    display: flex; 
+    flex-direction: column;
+}
+
+/* Search Wrapper */
+.search-wrapper { 
+    position: relative; 
+    width: 100%; 
+}
+
+.search-input-custom { 
+    background-color: #f1f5f9; 
+    border: 2px solid #21698a; 
+    border-radius: 5px; 
+    padding: 10px 45px 10px 15px; 
+    width: 100%; 
+    color: #333; 
+    font-size: 0.95rem; 
+    transition: 0.3s; 
+}
+
+.search-input-custom:focus { 
+    background-color: #fff; 
+    border-color: #1a5c7a; 
+    outline: none; 
+    box-shadow: 0 0 5px rgba(33, 105, 138, 0.2); 
+}
+
+.search-icon-inside { 
+    position: absolute; 
+    right: 15px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    color: #21698a; 
+    font-size: 1.1rem; 
+    pointer-events: none; 
+}
+
+/* Table Custom */
+.table-custom { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+
+.table-custom thead th { 
+    border-bottom: 2px solid #21698a; 
+    color: #333; 
+    font-weight: 700; 
+    padding: 12px 8px; 
+    font-size: 0.9rem; 
+    white-space: nowrap; 
+    text-align: left; 
+}
+
+.table-custom tbody td { 
+    padding: 10px 8px; 
+    vertical-align: middle; 
+    color: #21698a; 
+    font-weight: 500; 
+    font-size: 0.85rem; 
+    white-space: nowrap; 
+}
+
+/* Action Buttons */
+.btn-action-custom { 
+    border: 2px solid #21698a; 
+    color: #21698a; 
+    background: transparent; 
+    border-radius: 6px; 
+    width: 32px; 
+    height: 32px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    transition: 0.3s; 
+    padding: 0; 
+}
+
+.btn-action-custom:hover { 
+    background-color: #21698a; 
+    color: white; 
+}
+
+/* Pagination */
+.pagination-box { 
+    background-color: #f1f5f9; 
+    padding: 6px 14px; 
+    border-radius: 6px; 
+    font-weight: bold; 
+    color: #333; 
+    font-size: 0.9rem; 
+    cursor: pointer; 
+    margin: 0 3px; 
+    transition: 0.2s; 
+}
+
+.pagination-box.active { 
+    background-color: #21698a; 
+    color: white; 
+}
+
+/* Modal Form Styles */
+.edit-input { 
+    width: 100%; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    padding: 6px 10px; 
+    font-size: 0.9rem; 
+    color: #333; 
+}
+
+.edit-input:focus { 
+    border-color: #21698a; 
+    outline: none; 
+}
+
+.btn-modal-action { 
+    padding: 8px 30px; 
+    border: none; 
+    border-radius: 5px; 
+    color: white; 
+    font-weight: bold; 
+    cursor: pointer; 
+    transition: 0.3s; 
+    font-size: 1rem; 
+    min-width: 100px; 
+}
+
+.btn-modal-action:hover { 
+    opacity: 0.9; 
+    transform: translateY(-2px); 
+}
+
+/* Modal Section Title */
+.modal-section-title { 
+    color: #1a5c7a; 
+    font-weight: 700; 
+    font-size: 1rem; 
+    border-bottom: 2px solid #e0e0e0; 
+    margin-top: 20px; 
+    margin-bottom: 15px; 
+    padding-bottom: 5px; 
+}
+
+/* Detail Rows */
+.detail-row { 
+    display: flex; 
+    margin-bottom: 8px; 
+    align-items: center; 
+}
+
+.detail-label { 
+    width: 140px; 
+    font-weight: 600; 
+    color: #555; 
+    font-size: 0.9rem; 
+    flex-shrink: 0; 
+}
+
+.detail-value { 
+    flex: 1; 
+    font-size: 0.9rem; 
+    color: #333; 
+    display: flex; 
+    align-items: center; 
+}

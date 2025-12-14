@@ -8,45 +8,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     
-    <link rel="stylesheet" href="assets/css/style-admin.css">
+    <link rel="stylesheet" href="../assets/css/style-admin.css">
+    <link rel="stylesheet" href="../assets/css/kelola-donasi.css">
     
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-    // --- SECURITY CHECK (SATPAM) ---
-    // UPDATE PATH LOGIN: Masuk ke folder auth
-    if (!localStorage.getItem('adminLoggedIn')) {
-        window.location.href = 'auth/login.html';
-    }
-    </script>
-
-    <style>
-        .header-left { border-right: none !important; }
-        .search-wrapper { position: relative; width: 100%; }
-        .search-input-custom { background-color: #f1f5f9; border: 2px solid #21698a; border-radius: 5px; padding: 10px 45px 10px 15px; width: 100%; color: #333; font-size: 0.95rem; transition: 0.3s; }
-        .search-input-custom:focus { background-color: #fff; border-color: #1a5c7a; outline: none; box-shadow: 0 0 5px rgba(33, 105, 138, 0.2); }
-        .search-icon-inside { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #21698a; font-size: 1.1rem; pointer-events: none; }
-        .table-custom { width: 100%; border-collapse: collapse; }
-        .table-custom thead th { border-bottom: 2px solid #21698a; color: #333; font-weight: 700; padding: 12px 8px; font-size: 0.9rem; white-space: nowrap; text-align: left; }
-        .table-custom tbody td { padding: 10px 8px; vertical-align: middle; color: #21698a; font-weight: 500; font-size: 0.85rem; white-space: nowrap; }
-        .btn-action-custom { border: 2px solid #21698a; color: #21698a; background: transparent; border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; transition: 0.3s; padding: 0; }
-        .btn-action-custom:hover { background-color: #21698a; color: white; }
-        .pagination-box { background-color: #f1f5f9; padding: 6px 14px; border-radius: 6px; font-weight: bold; color: #333; font-size: 0.9rem; cursor: pointer; margin: 0 3px; transition: 0.2s; }
-        .pagination-box.active { background-color: #21698a; color: white; }
-        
-        /* FILTER SECTION STYLES */
-        .filter-section { background-color: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 2px solid #e0e7ed; }
-        .filter-label { font-weight: 600; color: #1a5c7a; font-size: 0.9rem; margin-bottom: 8px; display: block; }
-        .filter-select, .filter-input { background-color: white; border: 2px solid #21698a; border-radius: 5px; padding: 8px 12px; font-size: 0.9rem; color: #333; transition: 0.3s; width: 100%; }
-        .filter-select:focus, .filter-input:focus { border-color: #1a5c7a; outline: none; box-shadow: 0 0 5px rgba(33, 105, 138, 0.2); }
-        .btn-reset-filter { background-color: #6c757d; color: white; border: none; border-radius: 5px; padding: 8px 20px; font-size: 0.9rem; transition: 0.3s; }
-        .btn-reset-filter:hover { background-color: #5a6268; }
-        .active-filter-badge { background-color: #21698a; color: white; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; display: inline-block; margin-right: 5px; margin-bottom: 5px; }
-        .filter-toggle-btn { background-color: #21698a; color: white; border: none; border-radius: 5px; padding: 10px 20px; font-size: 0.95rem; margin-bottom: 15px; transition: 0.3s; }
-        .filter-toggle-btn:hover { background-color: #1a5c7a; }
-        .filter-toggle-btn i { margin-right: 8px; }
-    </style>
 </head>
 <body class="bg-admin">
     <div id="donasiApp" class="admin-wrapper">
@@ -56,23 +22,17 @@
                     <img src="../assets/images/1.png" alt="Logo BDK" class="header-logo">
                 </a>
             </div>
-
             <div class="header-center">
                 <div class="search-box">
                     <input type="text" v-model="searchQuery" placeholder="Cari donatur, detail, jumlah, petugas..." name="search">
                     <i class="fas fa-search"></i>
                 </div>
             </div>
-
             <div class="header-right">
                 <a href="notifikasi.html" class="text-white text-decoration-none me-3 position-relative" :class="{ active: currentUrl && currentUrl.includes('notifikasi.html') }">
                     <i class="far fa-bell icon-bell"></i>
-                    <span v-if="unreadCount > 0" 
-                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" 
-                        style="font-size: 0.6rem;">
-                    </span>
+                    <span v-if="unreadCount > 0" class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" style="font-size: 0.6rem;"></span>
                 </a>
-                
                 <span class="user-text me-3">Hai, ADMIN!</span>
                 <i class="fas fa-user-circle icon-profile"></i>
             </div>
@@ -80,41 +40,24 @@
 
         <aside class="sidebar">
             <ul class="list-unstyled">
-                
+                <li><a href="index.html"><i class="fas fa-folder"></i> Dashboard</a></li>
                 <li>
-                    <a href="index.html">
-                        <i class="fas fa-folder"></i> Dashboard
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle">
-                        <i class="fas fa-file-invoice"></i> Manajemen Data Penghuni
-                    </a>
+                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-file-invoice"></i> Manajemen Data Penghuni</a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="penghuniSub">
                         <li><a href="kelola-penghuni.html"><i class="fas fa-list"></i> Data Penghuni</a></li>
                         <li><a href="tambah-penghuni.html"><i class="fas fa-plus"></i> Tambah Data</a></li>
                     </ul>
                 </li>
-
                 <li>
-                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle" aria-expanded="true">
-                        <i class="fas fa-box-open"></i> Manajemen Distribusi Donasi
-                    </a>
-                    
+                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle" aria-expanded="true"><i class="fas fa-box-open"></i> Manajemen Distribusi Donasi</a>
                     <ul class="collapse show list-unstyled sidebar-submenu" id="donasiSub">
-                        
                         <li><a href="kelola-donasi.html" class="active"><i class="fas fa-history"></i> Riwayat</a></li>
-                        
                         <li><a href="tambah-donasi.html"><i class="fas fa-plus"></i> Tambah Donasi</a></li>
                         <li><a href="laporan-donasi.html"><i class="fas fa-file-alt"></i> Laporan</a></li>
                     </ul>
                 </li>
-
                 <li>
-                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle">
-                        <i class="fas fa-boxes"></i> Manajemen Stok Barang
-                    </a>
+                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-boxes"></i> Manajemen Stok Barang</a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="barangSub">
                         <li><a href="data-barang.html"><i class="fas fa-clipboard-list"></i> Data Stok Barang</a></li>
                         <li><a href="tambah-barang.html"><i class="fas fa-plus"></i> Tambah Stok Barang</a></li>
@@ -122,11 +65,8 @@
                     </ul>
                 </li>
             </ul>
-            
             <div class="logout-wrapper">
-                <a href="javascript:void(0)" @click="logoutAdmin" class="text-white text-decoration-none d-flex align-items-center gap-2">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+                <a href="javascript:void(0)" @click="logoutAdmin" class="text-white text-decoration-none d-flex align-items-center gap-2"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div> 
         </aside>
 
@@ -143,114 +83,65 @@
 
                 <div class="glass-panel" style="margin-top: 0; background-color: #ffffff; color: #333; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 25px;">
                     <div class="mb-4">
-                        <a href="tambah-donasi.html" class="btn btn-lg text-white" style="background-color: #1a5c7a; border-radius: 5px; font-size: 1rem;">
-                            <i class="fas fa-plus me-2"></i> Tambah Donasi
-                        </a>
+                        <a href="tambah-donasi.html" class="btn btn-lg text-white" style="background-color: #1a5c7a; border-radius: 5px; font-size: 1rem;"><i class="fas fa-plus me-2"></i> Tambah Donasi</a>
                     </div>
 
                     <button @click="showFilter = !showFilter" class="filter-toggle-btn">
-                        <i class="fas" :class="showFilter ? 'fa-filter-slash' : 'fa-filter'"></i>
-                        {{ showFilter ? 'Sembunyikan Filter' : 'Tampilkan Filter' }}
+                        <i class="fas" :class="showFilter ? 'fa-filter-slash' : 'fa-filter'"></i> {{ showFilter ? 'Sembunyikan Filter' : 'Tampilkan Filter' }}
                     </button>
 
                     <div v-show="showFilter" class="filter-section">
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <label class="filter-label">
-                                    <i class="fas fa-box me-1"></i> Jenis Bantuan
-                                </label>
+                                <label class="filter-label"><i class="fas fa-box me-1"></i> Jenis Bantuan</label>
                                 <select v-model="filterJenis" class="filter-select">
                                     <option value="">Semua Jenis</option>
-                                    <option v-for="jenis in uniqueJenis" :key="jenis" :value="jenis">
-                                        {{ formatTitleCase(jenis) }}
-                                    </option>
+                                    <option v-for="jenis in uniqueJenis" :key="jenis" :value="jenis">{{ formatTitleCase(jenis) }}</option>
                                 </select>
                             </div>
-
                             <div class="col-md-3 mb-3">
-                                <label class="filter-label">
-                                    <i class="fas fa-info-circle me-1"></i> Status
-                                </label>
+                                <label class="filter-label"><i class="fas fa-info-circle me-1"></i> Status</label>
                                 <select v-model="filterStatus" class="filter-select">
                                     <option value="">Semua Status</option>
-                                    <option v-for="status in uniqueStatus" :key="status" :value="status">
-                                        {{ formatTitleCase(status) }}
-                                    </option>
+                                    <option v-for="status in uniqueStatus" :key="status" :value="status">{{ formatTitleCase(status) }}</option>
                                 </select>
                             </div>
-
                             <div class="col-md-3 mb-3">
-                                <label class="filter-label">
-                                    <i class="fas fa-user-tie me-1"></i> Nama Petugas
-                                </label>
+                                <label class="filter-label"><i class="fas fa-user-tie me-1"></i> Nama Petugas</label>
                                 <select v-model="filterPetugas" class="filter-select">
                                     <option value="">Semua Petugas</option>
-                                    <option v-for="petugas in uniquePetugas" :key="petugas" :value="petugas">
-                                        {{ formatTitleCase(petugas) }}
-                                    </option>
+                                    <option v-for="petugas in uniquePetugas" :key="petugas" :value="petugas">{{ formatTitleCase(petugas) }}</option>
                                 </select>
                             </div>
-
                             <div class="col-md-3 mb-3 d-flex align-items-end">
-                                <button @click="resetFilter" class="btn-reset-filter w-100">
-                                    <i class="fas fa-redo me-2"></i> Reset Filter
-                                </button>
+                                <button @click="resetFilter" class="btn-reset-filter w-100"><i class="fas fa-redo me-2"></i> Reset Filter</button>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <label class="filter-label">
-                                    <i class="fas fa-calendar-alt me-1"></i> Dari Tanggal
-                                </label>
+                                <label class="filter-label"><i class="fas fa-calendar-alt me-1"></i> Dari Tanggal</label>
                                 <input type="date" v-model="filterTanggalMulai" class="filter-input">
                             </div>
                             <div class="col-md-3 mb-3">
-                                <label class="filter-label">
-                                    <i class="fas fa-calendar-alt me-1"></i> Sampai Tanggal
-                                </label>
+                                <label class="filter-label"><i class="fas fa-calendar-alt me-1"></i> Sampai Tanggal</label>
                                 <input type="date" v-model="filterTanggalSelesai" class="filter-input">
                             </div>
                         </div>
-
                         <div v-if="activeFiltersCount > 0" class="mt-3">
                             <small class="text-muted"><i class="fas fa-filter me-1"></i> Filter Aktif:</small>
                             <div class="mt-2">
-                                <span v-if="filterJenis" class="active-filter-badge">
-                                    Jenis: {{ formatTitleCase(filterJenis) }}
-                                </span>
-                                <span v-if="filterStatus" class="active-filter-badge">
-                                    Status: {{ formatTitleCase(filterStatus) }}
-                                </span>
-                                <span v-if="filterPetugas" class="active-filter-badge">
-                                    Petugas: {{ formatTitleCase(filterPetugas) }}
-                                </span>
-                                <span v-if="filterTanggalMulai || filterTanggalSelesai" class="active-filter-badge">
-                                    Tanggal: {{ filterTanggalMulai || '...' }} s/d {{ filterTanggalSelesai || '...' }}
-                                </span>
+                                <span v-if="filterJenis" class="active-filter-badge">Jenis: {{ formatTitleCase(filterJenis) }}</span>
+                                <span v-if="filterStatus" class="active-filter-badge">Status: {{ formatTitleCase(filterStatus) }}</span>
+                                <span v-if="filterPetugas" class="active-filter-badge">Petugas: {{ formatTitleCase(filterPetugas) }}</span>
+                                <span v-if="filterTanggalMulai || filterTanggalSelesai" class="active-filter-badge">Tanggal: {{ filterTanggalMulai || '...' }} s/d {{ filterTanggalSelesai || '...' }}</span>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="alert alert-light border mb-3" v-if="filteredList.length !== donasiList.length">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Menampilkan <strong>{{ filteredList.length }}</strong> dari <strong>{{ donasiList.length }}</strong> data
                     </div>
 
                     <div class="table-responsive">
                         <table class="table table-hover table-custom align-middle mb-0">
                             <thead>
-                                <tr>
-                                    <th>NO</th>
-                                    <th>Tanggal</th>
-                                    <th>Donatur</th>
-                                    <th>Jenis Bantuan</th>
-                                    <th>Detail Bantuan</th>
-                                    <th>Jumlah</th>
-                                    <th>Status</th>
-                                    <th>Petugas</th>
-                                    <th class="text-center">Aksi</th>
-                                </tr>
+                                <tr><th>NO</th><th>Tanggal</th><th>Donatur</th><th>Jenis Bantuan</th><th>Detail Bantuan</th><th>Jumlah</th><th>Status</th><th>Petugas</th><th class="text-center">Aksi</th></tr>
                             </thead>
                             <tbody>
                                 <tr v-for="(item, index) in paginatedList" :key="index">
@@ -264,214 +155,25 @@
                                     <td>{{ formatTitleCase(item.petugas) }}</td>
                                     <td>
                                         <div class="d-flex gap-2 justify-content-center">
-                                            <button @click="goToEditPage(item)" class="btn-action-custom" title="Edit/Detail">
-                                                <i class="fas fa-file-invoice"></i>
-                                            </button>
+                                            <button @click="goToEditPage(item)" class="btn-action-custom" title="Edit/Detail"><i class="fas fa-file-invoice"></i></button>
                                         </div>
                                     </td>
                                 </tr>
-                                <tr v-if="paginatedList.length === 0">
-                                    <td colspan="9" class="text-center py-5 text-muted">
-                                        <i class="fas fa-search fa-3x mb-3 d-block" style="opacity: 0.3;"></i>
-                                        Data tidak ditemukan.
-                                    </td>
-                                </tr>
+                                <tr v-if="paginatedList.length === 0"><td colspan="9" class="text-center py-5 text-muted"><i class="fas fa-search fa-3x mb-3 d-block" style="opacity: 0.3;"></i> Data tidak ditemukan.</td></tr>
                             </tbody>
                         </table>
                     </div>
 
                     <div class="d-flex justify-content-end align-items-center mt-4" v-if="totalPages > 1">
-                        <button @click="prevPage" :disabled="currentPage === 1" class="btn btn-link text-dark text-decoration-none btn-sm">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <div v-for="page in totalPages" :key="page" @click="currentPage = page" :class="['pagination-box', { active: currentPage === page }]">
-                            {{ page }}
-                        </div>
-                        <button @click="nextPage" :disabled="currentPage === totalPages" class="btn btn-link text-dark text-decoration-none btn-sm">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
+                        <button @click="prevPage" :disabled="currentPage === 1" class="btn btn-link text-dark text-decoration-none btn-sm"><i class="fas fa-chevron-left"></i></button>
+                        <div v-for="page in totalPages" :key="page" @click="currentPage = page" :class="['pagination-box', { active: currentPage === page }]">{{ page }}</div>
+                        <button @click="nextPage" :disabled="currentPage === totalPages" class="btn btn-link text-dark text-decoration-none btn-sm"><i class="fas fa-chevron-right"></i></button>
                     </div>
                 </div>
             </div>
         </main>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // UPDATE PATH LOGOUT: Masuk ke folder auth
-        function logoutAdmin() {
-            Swal.fire({
-                title: 'Keluar?', 
-                text: "Sesi admin akan diakhiri.", 
-                icon: 'warning',
-                showCancelButton: true, 
-                confirmButtonColor: '#d33', 
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Logout'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    localStorage.removeItem('adminLoggedIn');
-                    window.location.href = 'auth/login.html';
-                }
-            });
-        }
-        
-        const { createApp } = window.Vue;
-        createApp({
-            data() {
-                return {
-                    searchQuery: '',
-                    alertStatus: null,
-                    currentPage: 1,
-                    itemsPerPage: 20,
-                    showFilter: false,
-                    
-                    // Filter States
-                    filterJenis: '',
-                    filterStatus: '',
-                    filterPetugas: '',
-                    filterTanggalMulai: '',
-                    filterTanggalSelesai: '',
-                    
-                    donasiList: [
-                        { id: 1, tanggal: '12/04/2025', tanggal_raw: '2025-04-12', donatur: 'Ganjar', jenis: 'Barang', detail: 'Pakaian', jumlah: '1 Karung', status: 'Langsung', petugas: 'Pak Veri' },
-                        { id: 2, tanggal: '12/04/2025', tanggal_raw: '2025-04-12', donatur: 'Prabowo', jenis: 'Barang', detail: 'Sembako', jumlah: '1 Paket', status: 'Langsung', petugas: 'Pak Veri' },
-                        { id: 3, tanggal: '15/04/2025', tanggal_raw: '2025-04-15', donatur: 'Anies', jenis: 'Uang', detail: 'Tunai', jumlah: 'Rp 5.000.000', status: 'Tertunda', petugas: 'Bu Siti' },
-                        { id: 4, tanggal: '18/04/2025', tanggal_raw: '2025-04-18', donatur: 'Ridwan Kamil', jenis: 'Barang', detail: 'Obat-obatan', jumlah: '2 Kotak', status: 'Langsung', petugas: 'Pak Budi' },
-                        { id: 5, tanggal: '20/04/2025', tanggal_raw: '2025-04-20', donatur: 'Ahok', jenis: 'Uang', detail: 'Transfer Bank', jumlah: 'Rp 3.000.000', status: 'Langsung', petugas: 'Bu Siti' },
-                    ]
-                }
-            },
-            computed: {
-                // Unique values untuk dropdown filter
-                uniqueJenis() {
-                    return [...new Set(this.donasiList.map(item => item.jenis))];
-                },
-                uniqueStatus() {
-                    return [...new Set(this.donasiList.map(item => item.status))];
-                },
-                uniquePetugas() {
-                    return [...new Set(this.donasiList.map(item => item.petugas))];
-                },
-                
-                // Hitung berapa filter yang aktif
-                activeFiltersCount() {
-                    let count = 0;
-                    if (this.filterJenis) count++;
-                    if (this.filterStatus) count++;
-                    if (this.filterPetugas) count++;
-                    if (this.filterTanggalMulai || this.filterTanggalSelesai) count++;
-                    return count;
-                },
-                
-                filteredList() {
-                    return this.donasiList.filter(item => {
-                        // Search query (donatur, detail, jumlah, petugas)
-                        const search = this.searchQuery.toLowerCase();
-                        const matchSearch = 
-                            (item.donatur && item.donatur.toLowerCase().includes(search)) ||
-                            (item.detail && item.detail.toLowerCase().includes(search)) ||
-                            (item.jumlah && item.jumlah.toLowerCase().includes(search)) ||
-                            (item.petugas && item.petugas.toLowerCase().includes(search));
-                        
-                        // Filter Jenis
-                        const matchJenis = !this.filterJenis || item.jenis === this.filterJenis;
-                        
-                        // Filter Status
-                        const matchStatus = !this.filterStatus || item.status === this.filterStatus;
-                        
-                        // Filter Petugas
-                        const matchPetugas = !this.filterPetugas || item.petugas === this.filterPetugas;
-                        
-                        // Filter Tanggal Range
-                        let matchTanggal = true;
-                        if (this.filterTanggalMulai || this.filterTanggalSelesai) {
-                            const itemDate = new Date(item.tanggal_raw);
-                            
-                            if (this.filterTanggalMulai) {
-                                const startDate = new Date(this.filterTanggalMulai);
-                                if (itemDate < startDate) matchTanggal = false;
-                            }
-                            
-                            if (this.filterTanggalSelesai) {
-                                const endDate = new Date(this.filterTanggalSelesai);
-                                if (itemDate > endDate) matchTanggal = false;
-                            }
-                        }
-                        
-                        return matchSearch && matchJenis && matchStatus && matchPetugas && matchTanggal;
-                    });
-                },
-                
-                totalPages() {
-                    return Math.ceil(this.filteredList.length / this.itemsPerPage);
-                },
-                
-                paginatedList() {
-                    const start = (this.currentPage - 1) * this.itemsPerPage;
-                    const end = start + this.itemsPerPage;
-                    return this.filteredList.slice(start, end);
-                }
-            },
-            
-            watch: {
-                // Reset ke halaman 1 kalau filter berubah
-                filteredList() {
-                    this.currentPage = 1;
-                }
-            },
-            
-            mounted() {
-                // Cek URL params untuk alert
-                const urlParams = new URLSearchParams(window.location.search);
-                if(urlParams.get('status') === 'success') this.alertStatus = 'success';
-                if(urlParams.get('status') === 'edited') this.alertStatus = 'edited';
-                if(this.alertStatus) window.history.replaceState({}, document.title, window.location.pathname);
-
-                // Load Data dari localStorage
-                const dataBaru = JSON.parse(localStorage.getItem('donasiList'));
-                if (dataBaru && Array.isArray(dataBaru)) {
-                    this.donasiList = dataBaru;
-                } else {
-                    localStorage.setItem('donasiList', JSON.stringify(this.donasiList));
-                }
-            },
-            
-            methods: {
-                formatTitleCase(str) {
-                    if (!str) return '-';
-                    return String(str).toLowerCase().replace(/(?:^|\s)\w/g, m => m.toUpperCase());
-                },
-                
-                resetFilter() {
-                    this.filterJenis = '';
-                    this.filterStatus = '';
-                    this.filterPetugas = '';
-                    this.filterTanggalMulai = '';
-                    this.filterTanggalSelesai = '';
-                    this.searchQuery = '';
-                },
-                
-                goToEditPage(item) {
-                    const realIndex = this.donasiList.findIndex(x => x === item);
-                    const editData = { index: realIndex, data: item };
-                    localStorage.setItem('editDonasiData', JSON.stringify(editData));
-                    window.location.href = 'edit-donasi.html';
-                },
-                
-                prevPage() {
-                    if (this.currentPage > 1) this.currentPage--;
-                },
-                
-                nextPage() {
-                    if (this.currentPage < this.totalPages) this.currentPage++;
-                },
-                
-                logoutAdmin() {
-                    logoutAdmin();
-                }
-            }
-        }).mount('#donasiApp');
-    </script>
+    <script src="../assets/js/kelola-donasi.js"></script>
 </body>
 </html>

@@ -7,31 +7,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/style.css">
     
-    <style>
-        .otp-input-group { display: flex; justify-content: center; gap: 15px; margin-bottom: 2rem; }
-        .otp-box { width: 50px; height: 50px; border: 1px solid #1D4E89; border-radius: 5px; text-align: center; font-size: 1.5rem; font-weight: 700; color: #1D4E89; }
-        .otp-box:focus { outline: none; box-shadow: 0 0 5px rgba(29, 78, 137, 0.5); }
-    </style>
+    <link rel="stylesheet" href="../assets/css/style-donatur.css">
+    <link rel="stylesheet" href="../assets/css/auth-otp.css">
+    
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 <body>
-
     <div id="verifyApp" v-cloak class="auth-split-container">
         <div class="auth-form-side">
             <div class="auth-card-figma">
                 <h2 style="font-size: 1.5rem;">Enter Confirmation Code</h2>
-                <p style="text-align: center; font-size: 0.9rem; margin-bottom: 2rem; color: #333;">
-                    Lihat Gmail anda untuk melihat code
-                </p>
-
+                <p style="text-align: center; font-size: 0.9rem; margin-bottom: 2rem; color: #333;">Lihat Gmail anda untuk melihat code</p>
                 <form @submit.prevent="submitCode"> 
                     <div class="otp-input-group">
-                        <input v-for="(n, index) in 4" :key="index"
-                               type="text" class="otp-box" maxlength="1"
-                               @input="handleInput($event, index)"
-                               ref="otpInputs" required>
+                        <input v-for="(n, index) in 4" :key="index" type="text" class="otp-box" maxlength="1" @input="handleInput($event, index)" ref="otpInputs" required>
                     </div>
                     <button type="submit" class="btn-figma-outline">SELANJUTNYA</button>
                 </form>
@@ -39,24 +29,7 @@
         </div>
         <div class="auth-image-side login-mode"></div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        const { createApp } = Vue;
-        createApp({
-            methods: {
-                handleInput(e, index) {
-                    if (e.target.value.length === 1 && index < 3) {
-                        this.$refs.otpInputs[index + 1].focus();
-                    }
-                },
-                submitCode() {
-                    alert("Kode Terverifikasi!");
-                    window.location.href = 'reset-password-baru.html';
-                }
-            }
-        }).mount('#verifyApp');
-    </script>
+    <script src="../assets/js/verifikasi-kode.js"></script>
 </body>
 </html>

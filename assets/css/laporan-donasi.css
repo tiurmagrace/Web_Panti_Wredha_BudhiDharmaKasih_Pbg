@@ -1,0 +1,29 @@
+/* Style Khusus Laporan Donasi */
+.header-left { border-right: none !important; }
+.swal2-container { z-index: 999999 !important; }
+
+/* Filter Styles */
+.filter-label { font-size: 0.85rem; font-weight: bold; color: #555; margin-bottom: 5px; display: block; }
+.filter-select {
+    width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; outline: none; font-size: 0.9rem;
+}
+.filter-select:focus { border-color: #1a5c7a; box-shadow: 0 0 0 2px rgba(26, 92, 122, 0.1); }
+
+.btn-reset-filter {
+    background-color: #e2e6ea; border: none; color: #495057; padding: 8px 15px; width: 100%;
+    border-radius: 4px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.3s;
+}
+.btn-reset-filter:hover { background-color: #dbe2e8; }
+
+/* Table Styles */
+.table-custom { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.table-custom thead th {
+    background-color: #eaf4f4; color: #333; font-weight: 700; padding: 12px 10px; border-bottom: 2px solid #1a5c7a; text-transform: uppercase; font-size: 0.85rem;
+}
+.table-custom tbody td { padding: 12px 10px; border-bottom: 1px solid #eee; color: #444; }
+
+.btn-generate {
+    border: none; color: white; background-color: #e74c3c; border-radius: 4px;
+    width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: 0.2s;
+}
+.btn-generate:hover { background-color: #c0392b; transform: scale(1.05); }

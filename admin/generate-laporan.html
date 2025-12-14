@@ -8,47 +8,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     
-    <link rel="stylesheet" href="assets/css/style-admin.css">
+    <link rel="stylesheet" href="../assets/css/style-admin.css">
+    <link rel="stylesheet" href="../assets/css/generate-laporan.css">
     
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <script>
-    // --- SECURITY CHECK (SATPAM) ---
-    // UPDATE PATH LOGIN: Masuk ke folder auth
-    if (!localStorage.getItem('adminLoggedIn')) {
-        window.location.href = 'auth/login.html';
-    }
-    </script>
-
-    <style>
-        .header-left { border-right: none !important; }
-        .swal2-container { z-index: 999999 !important; }
-        .form-container { background-color: #f8fbfd; border-radius: 8px; padding: 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); min-height: 600px; }
-        .section-badge { background-color: #1a5c7a; color: white; padding: 8px 20px; border-radius: 5px; font-weight: bold; display: inline-block; margin-bottom: 30px; font-size: 1rem; }
-        .form-row-custom { display: flex; align-items: flex-start; margin-bottom: 30px; }
-        .label-custom { width: 250px; font-size: 1.1rem; color: #333; padding-top: 10px; }
-        .input-area { flex: 1; }
-        
-        /* Input Email */
-        .input-text-custom { width: 100%; padding: 10px; border: 1px solid #1a5c7a; border-radius: 4px; background-color: #f0f8ff; color: #333; font-size: 1rem; }
-        
-        .textarea-custom { width: 100%; height: 250px; border: 1px solid #1a5c7a; border-radius: 4px; padding: 15px; resize: none; background-color: #f0f8ff; color: #333; font-size: 1rem; line-height: 1.6; }
-        
-        .photo-box { width: 250px; height: 160px; border: 2px solid #1a5c7a; background-color: #f0f8ff; border-radius: 8px; display: flex; justify-content: center; align-items: center; cursor: pointer; overflow: hidden; position: relative; }
-        .photo-preview { width: 100%; height: 100%; object-fit: cover; }
-        .camera-icon { font-size: 3.5rem; color: #000; }
-        
-        .file-input-row { display: flex; align-items: center; gap: 10px; margin-top: 5px; }
-        .btn-choose { background-color: #d1d1d1; border: none; padding: 8px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; color: #000; font-size: 0.95rem; }
-        
-        .btn-kirim { background-color: #1a5c7a; color: white; padding: 10px 50px; border: none; border-radius: 8px; font-size: 1.2rem; font-weight: 500; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .btn-kirim:hover { background-color: #14465e; transform: translateY(-2px); }
-    </style>
 </head>
 <body class="bg-admin">
-
     <div id="generateApp" class="admin-wrapper">
         <header class="top-header">
             <div class="header-left">
@@ -56,23 +23,12 @@
                     <img src="../assets/images/1.png" alt="Logo BDK" class="header-logo">
                 </a>
             </div>
-
-            <div class="header-center">
-                <div class="search-box">
-                    <input type="text" v-model="searchQuery" placeholder="Cari data di halaman ini..." name="search">
-                    <i class="fas fa-search"></i>
-                </div>
-            </div>
-
+            <div class="header-center"></div>
             <div class="header-right">
                 <a href="notifikasi.html" class="text-white text-decoration-none me-3 position-relative" :class="{ active: currentUrl && currentUrl.includes('notifikasi.html') }">
                     <i class="far fa-bell icon-bell"></i>
-                    <span v-if="unreadCount > 0" 
-                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" 
-                        style="font-size: 0.6rem;">
-                    </span>
+                    <span v-if="unreadCount > 0" class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" style="font-size: 0.6rem;"></span>
                 </a>
-                
                 <span class="user-text me-3">Hai, ADMIN!</span>
                 <i class="fas fa-user-circle icon-profile"></i>
             </div>
@@ -80,40 +36,24 @@
 
         <aside class="sidebar">
             <ul class="list-unstyled">
-                
+                <li><a href="index.html"><i class="fas fa-folder"></i> Dashboard</a></li>
                 <li>
-                    <a href="index.html">
-                        <i class="fas fa-folder"></i> Dashboard
-                    </a>
-                </li>
-                
-                <li>
-                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle">
-                        <i class="fas fa-file-invoice"></i> Manajemen Data Penghuni
-                    </a>
+                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-file-invoice"></i> Manajemen Data Penghuni</a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="penghuniSub">
                         <li><a href="kelola-penghuni.html"><i class="fas fa-list"></i> Data Penghuni</a></li>
                         <li><a href="tambah-penghuni.html"><i class="fas fa-plus"></i> Tambah Data</a></li>
                     </ul>
                 </li>
-
                 <li>
-                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle" aria-expanded="true">
-                        <i class="fas fa-box-open"></i> Manajemen Distribusi Donasi
-                    </a>
-                    
+                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle" aria-expanded="true"><i class="fas fa-box-open"></i> Manajemen Distribusi Donasi</a>
                     <ul class="collapse show list-unstyled sidebar-submenu" id="donasiSub">
                         <li><a href="kelola-donasi.html"><i class="fas fa-history"></i> Riwayat</a></li>
                         <li><a href="tambah-donasi.html"><i class="fas fa-plus"></i> Tambah Donasi</a></li>
-                        
                         <li><a href="laporan-donasi.html" class="active"><i class="fas fa-file-alt"></i> Laporan</a></li>
                     </ul>
                 </li>
-
                 <li>
-                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle">
-                        <i class="fas fa-boxes"></i> Manajemen Stok Barang
-                    </a>
+                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-boxes"></i> Manajemen Stok Barang</a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="barangSub">
                         <li><a href="data-barang.html"><i class="fas fa-clipboard-list"></i> Data Stok Barang</a></li>
                         <li><a href="tambah-barang.html"><i class="fas fa-plus"></i> Tambah Stok Barang</a></li>
@@ -121,41 +61,31 @@
                     </ul>
                 </li>
             </ul>
-            
             <div class="logout-wrapper">
-                <a href="javascript:void(0)" @click="logoutAdmin" class="text-white text-decoration-none d-flex align-items-center gap-2">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+                <a href="javascript:void(0)" @click="logoutAdmin" class="text-white text-decoration-none d-flex align-items-center gap-2"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div> 
         </aside>
 
         <main class="main-content" style="padding: 25px;">
             <div class="content-body">
                 <div class="page-title-banner" style="background-color: #1a5c7a; color: white; padding: 15px; text-align: center; border-radius: 6px; font-weight: bold; font-size: 1.2rem; margin-bottom: 20px;">Generate Laporan</div>
-
+                
                 <div class="form-container">
                     <div class="section-badge">Form Laporan</div>
-
+                    
                     <div class="form-row-custom">
                         <label class="label-custom">Email Donatur</label>
-                        <div class="input-area">
-                            <input type="email" class="input-text-custom" v-model="emailDonatur" placeholder="Contoh: donatur@email.com">
-                        </div>
+                        <div class="input-area"><input type="email" class="input-text-custom" v-model="emailDonatur" placeholder="Contoh: donatur@email.com"></div>
                     </div>
-
                     <div class="form-row-custom">
                         <label class="label-custom">Isi Laporan</label>
-                        <div class="input-area">
-                            <textarea class="textarea-custom" v-model="isiLaporan"></textarea>
-                        </div>
+                        <div class="input-area"><textarea class="textarea-custom" v-model="isiLaporan"></textarea></div>
                     </div>
-
                     <div class="form-row-custom">
                         <label class="label-custom">Upload Bukti Terima Donasi</label>
                         <div class="input-area upload-wrapper">
                             <div class="photo-box" @click="$refs.fileInput.click()">
-                                <img v-if="previewImage" :src="previewImage" class="photo-preview">
-                                <i v-else class="fas fa-camera camera-icon"></i>
+                                <img v-if="previewImage" :src="previewImage" class="photo-preview"><i v-else class="fas fa-camera camera-icon"></i>
                             </div>
                             <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" accept="image/*">
                             <div class="file-input-row">
@@ -164,159 +94,12 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="text-end mt-5">
-                        <button @click="generateAndSendPDF" class="btn-kirim">Kirim & Generate PDF</button>
-                    </div>
+                    <div class="text-end mt-5"><button @click="generateAndSendPDF" class="btn-kirim"><i class="fas fa-paper-plane me-2"></i> Kirim & Generate PDF</button></div>
                 </div>
             </div>
         </main>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function logoutAdmin() {
-            Swal.fire({
-                title: 'Keluar?', text: "Sesi admin akan diakhiri.", icon: 'warning',
-                showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Logout'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    localStorage.removeItem('adminLoggedIn'); 
-                    // UPDATE PATH LOGOUT: Masuk ke folder auth
-                    window.location.href = 'auth/login.html'; 
-                }
-            });
-        }
-        
-        const { createApp } = window.Vue;
-        const { jsPDF } = window.jspdf;
-
-        createApp({
-            data() {
-                return {
-                    searchQuery: '',
-                    isiLaporan: '', previewImage: null, fileName: '', item: null,
-                    emailDonatur: '',
-                    currentUrl: window.location.href
-                }
-            },
-            computed: {
-                filteredList() {
-                    // Logic filter ini akan otomatis membaca ketikan di Header
-                    // (Note: Di halaman ini tidak ada list data, jadi ini optional/placeholder)
-                    return [];
-                }
-            },
-            mounted() {
-                // 1. Ambil data donasi yang diklik dari halaman tabel sebelumnya
-                const selectedItem = JSON.parse(localStorage.getItem('selectedDonasiForReport'));
-                
-                if (selectedItem) {
-                    this.item = selectedItem;
-                    
-                    // --- LOGIC OTOMATIS ISI EMAIL ---
-                    // Cek apakah data ini punya email? (Baik dari donatur web atau input admin)
-                    if (this.item.email) {
-                        this.emailDonatur = this.item.email;
-                    } else {
-                        this.emailDonatur = ''; // Kosongin kalau emang gak ada datanya
-                    }
-
-                    // Isi Template Laporan
-                    this.isiLaporan = 
-`Terimakasih kepada ${this.item.donatur}
-Bantuanmu telah kami terima dan akan segera kami distribusikan kepada lansia yang membutuhkan.
-
-Detail Donasi:
-· Tanggal Donasi: ${this.item.tanggal}
-· Jenis Bantuan: ${this.item.jenis}
-· Jumlah: ${this.item.jumlah}
-
-Doa dan bantuanmu sangat berarti bagi mereka.
-Semoga kebaikanmu dibalas dengan berlipat ganda.`;
-                } else {
-                    // Kalau user maksa buka halaman ini tanpa pilih data, tendang balik
-                    window.location.href = './laporan-donasi.html';
-                }
-            },
-            methods: {
-                handleFileUpload(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            this.previewImage = e.target.result;
-                            this.fileName = file.name;
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                },
-
-                async generateAndSendPDF() {
-                    // Validasi
-                    if (!this.emailDonatur || !this.isiLaporan || !this.previewImage) {
-                        Swal.fire('Data Belum Lengkap', 'Harap pastikan Email terisi dan Bukti Foto diupload!', 'error');
-                        return;
-                    }
-
-                    Swal.fire({
-                        title: 'Mengirim Laporan...',
-                        html: 'Sedang membuat PDF dan mengirim ke <b>' + this.emailDonatur + '</b>',
-                        allowOutsideClick: false,
-                        didOpen: () => { Swal.showLoading(); }
-                    });
-
-                    setTimeout(() => {
-                        const doc = new jsPDF();
-                        
-                        // Header
-                        doc.setFontSize(16); doc.setTextColor(26, 92, 122); 
-                        doc.text("LAPORAN DISTRIBUSI DONASI", 105, 20, null, null, "center");
-                        doc.text("PANTI WREDHA BDK", 105, 30, null, null, "center");
-                        doc.setDrawColor(0); doc.line(20, 35, 190, 35);
-
-                        // Isi
-                        doc.setFontSize(12); doc.setTextColor(0, 0, 0);
-                        const splitText = doc.splitTextToSize(this.isiLaporan, 170);
-                        doc.text(splitText, 20, 50);
-
-                        // Foto
-                        if (this.previewImage) {
-                            try {
-                                doc.addImage(this.previewImage, 'JPEG', 55, 130, 100, 80);
-                                doc.setFontSize(10);
-                                doc.text("Bukti Penerimaan Donasi", 105, 220, null, null, "center");
-                            } catch (err) { console.log("Error gambar PDF"); }
-                        }
-
-                        // Download PDF
-                        doc.save(`Laporan_Donasi_${this.item.donatur}.pdf`); 
-
-                        // --- CATAT AKTIVITAS ---
-                        let logs = JSON.parse(localStorage.getItem('activityLog')) || [];
-                        logs.push({ 
-                            text: `Admin mengirim laporan donasi kepada: ${this.emailDonatur}`, 
-                            time: new Date() 
-                        });
-
-                        localStorage.setItem('activityLog', JSON.stringify(logs));
-                        // ------------------------------------------
-
-                        Swal.fire({
-                            title: 'Terkirim!',
-                            text: `Laporan PDF telah dikirim ke ${this.emailDonatur}`,
-                            icon: 'success',
-                            confirmButtonColor: '#1a5c7a'
-                        }).then(() => {
-                            localStorage.removeItem('selectedDonasiForReport');
-                            window.location.href = './laporan-donasi.html?status=sent';
-                        });
-
-                    }, 2000); 
-                }
-            }
-        }).mount('#generateApp');
-    </script>
+    <script src="../assets/js/generate-laporan.js"></script>
 </body>
 </html>

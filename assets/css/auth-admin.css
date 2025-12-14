@@ -1,0 +1,188 @@
+/* ===================================
+   AUTH ADMIN - SHARED STYLES
+   Path: C:\xampp\htdocs\PantiWredhaBudhiDharmaKasih\assets\css\auth-admin.css
+   Untuk: login.html, lupa-password.html, reset-password.html
+   =================================== */
+
+/* ===================================
+   BASIC LAYOUT
+   =================================== */
+body { 
+    margin: 0; 
+    padding: 0; 
+    height: 100vh; 
+    font-family: 'Poppins', sans-serif; 
+    display: flex; 
+    overflow: hidden; 
+}
+
+/* ===================================
+   SPLIT SCREEN - LEFT (GAMBAR)
+   =================================== */
+.split-left {
+    width: 50%;
+    background-color: #e6f7ff;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+}
+
+.split-left img {
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover;
+}
+
+/* ===================================
+   SPLIT SCREEN - RIGHT (FORM)
+   =================================== */
+.split-right {
+    width: 50%;
+    background-color: #1a5c7a; /* Warna Teal Khas BDK */
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    color: white;
+    position: relative;
+}
+
+/* ===================================
+   AUTH BOX CONTAINER
+   =================================== */
+.auth-box { 
+    width: 60%; 
+    max-width: 400px; 
+    text-align: center; 
+}
+
+.auth-title { 
+    font-size: 2.5rem; 
+    font-weight: bold; 
+    margin-bottom: 40px; 
+}
+
+/* Untuk halaman lupa password & reset password */
+.auth-title-small {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.auth-subtitle { 
+    margin-bottom: 40px; 
+    color: rgba(255, 255, 255, 0.8); 
+    font-size: 0.9rem; 
+}
+
+/* ===================================
+   INPUT GROUP STYLES
+   =================================== */
+.input-group-text { 
+    background: transparent; 
+    border: 1px solid white; 
+    color: white; 
+    border-right: none; 
+}
+
+.form-control-auth {
+    background: transparent; 
+    border: 1px solid white; 
+    border-left: none; 
+    color: white; 
+    padding: 12px;
+}
+
+.form-control-auth::placeholder { 
+    color: rgba(255, 255, 255, 0.7); 
+}
+
+.form-control-auth:focus { 
+    background: rgba(255, 255, 255, 0.1); 
+    color: white; 
+    border-color: white; 
+    box-shadow: none; 
+}
+
+/* ===================================
+   BUTTON STYLES
+   =================================== */
+.btn-white {
+    background: white; 
+    color: #1a5c7a; 
+    font-weight: bold; 
+    width: 100%; 
+    padding: 12px; 
+    border-radius: 6px; 
+    border: none; 
+    margin-top: 20px; 
+    transition: 0.3s;
+}
+
+.btn-white:hover { 
+    background: #f0f0f0; 
+}
+
+/* ===================================
+   LINK STYLES
+   =================================== */
+/* Link Lupa Password */
+.forgot-link {
+    color: rgba(255, 255, 255, 0.8); 
+    text-decoration: none; 
+    font-size: 0.9rem; 
+    margin-bottom: 15px; 
+    display: block; 
+    text-align: right;
+}
+
+.forgot-link:hover { 
+    color: white; 
+    text-decoration: underline; 
+}
+
+/* Link Kembali (untuk lupa password page) */
+.link-back { 
+    color: white; 
+    text-decoration: none; 
+    margin-top: 20px; 
+    display: inline-block; 
+    font-size: 0.9rem; 
+}
+
+.link-back:hover { 
+    text-decoration: underline; 
+    color: #ddd; 
+}
+
+/* ===================================
+   FIX MATA DOBEL (IE/Edge Native)
+   =================================== */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none;
+}
+
+/* ===================================
+   FIX AUTOFILL BACKGROUND COLOR
+   =================================== */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #1a5c7a inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+@media (max-width: 768px) {
+    .split-left { 
+        display: none; 
+    }
+    
+    .split-right { 
+        width: 100%; 
+    }
+}

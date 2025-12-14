@@ -21,6 +21,7 @@ body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
+    /* PATH BACKGROUND DIPERBAIKI: Naik satu level dari folder css */
     background: url('../images/2.png') center/cover fixed no-repeat;
     font-family: var(--font-body);
     font-weight: 400;
@@ -282,6 +283,7 @@ h2 {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     z-index: 1;
+    /* PATH GAMBAR DIPERBAIKI */
     background: url('../images/lope.png') center/contain no-repeat;
     opacity: 0.3;
 }
@@ -511,6 +513,7 @@ h2 {
     background-repeat: no-repeat;
 }
 
+/* PATH GAMBAR DIPERBAIKI */
 .auth-image-side.login-mode { background-image: url('../images/login.png'); }
 .auth-image-side.signup-mode { background-image: url('../images/signup.png'); }
 
@@ -636,6 +639,7 @@ input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:
 
 /* Visi Misi & Sejarah Styles */
 .visi-misi-bg {
+    /* PATH GAMBAR DIPERBAIKI */
     background: url('../images/visimisi.png') no-repeat center top; background-size: cover;
     min-height: 100vh; padding-top: 80px; padding-bottom: 80px; background-color: rgba(255, 255, 255, 0.25);
 }
@@ -663,6 +667,7 @@ input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:
 
 /* Contact Page Specifics */
 .contact-hero {
+    /* PATH GAMBAR DIPERBAIKI */
     background: url('../images/kontak.png') no-repeat center center; background-size: cover;
     height: 400px; position: relative; display: flex; align-items: center; justify-content: center; text-align: center;
 }
@@ -731,6 +736,14 @@ input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:
 
 .footer-copyright { padding-top: 15px; text-align: center; font-size: 12px; color: rgba(255, 255, 255, 0.5); }
 
+/* Style untuk hasil pencarian */
+.highlight-text {
+    background-color: #ffeb3b; /* Warna kuning stabilo */
+    color: #000;
+    font-weight: bold;
+    padding: 0 2px;
+    border-radius: 2px;
+}
 /* ==========================================================================
    10. MEDIA QUERIES (RESPONSIVE)
    ========================================================================== */
@@ -801,7 +814,6 @@ input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:
     }
 }
 
-/* Tambahkan ini di style.css */
 .gallery-item {
     display: none; /* Default sembunyi */
     animation: fadeIn 0.5s ease-in-out;
@@ -816,19 +828,23 @@ input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* PENTING: Ini obat anti kedip/patah-patah */
 @view-transition {
     navigation: auto;
 }
 
-/* Opsional: Biar navbar-nya dikunci browser biar gak ikut goyang */
 .navbar {
     view-transition-name: main-navbar;
 }
 
-/* ==========================================================================
-   OBAT ANTI GLITCH VUE (v-cloak)
-   ========================================================================== */
 [v-cloak] {
     display: none !important;
+}
+
+/* Style untuk hasil pencarian */
+.highlight-text {
+    background-color: #ffeb3b; /* Warna kuning stabilo */
+    color: #000;
+    font-weight: bold;
+    padding: 0 2px;
+    border-radius: 2px;
 }

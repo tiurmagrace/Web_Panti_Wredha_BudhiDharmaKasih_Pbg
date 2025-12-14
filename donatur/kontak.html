@@ -9,7 +9,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@700&family=Poppins:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/style.css">
+    
+    <link rel="stylesheet" href="../assets/css/style-donatur.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
@@ -20,7 +22,7 @@
 
         <nav class="navbar navbar-expand-lg sticky-top" data-bs-theme="dark">
             <div class="container-fluid px-4">
-                <a class="navbar-brand" href="index.html">
+                <a class="navbar-brand" href="../index.html">
                     <img src="../assets/images/1.png" alt="Logo Panti Wredha">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -29,7 +31,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mx-auto">
-                        <li class="nav-item"><a class="nav-link" href="index.html">BERANDA</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../index.html">BERANDA</a></li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">PROFIL</a>
                             <ul class="dropdown-menu">
@@ -45,7 +47,7 @@
                 </div>
 
                 <div class="nav-actions d-flex align-items-center ms-lg-auto">
-                    <a href="../auth/notifikasi.html" class="notif-icon" title="Notifikasi">
+                    <a href="../donatur/notifikasi.html" class="notif-icon" title="Notifikasi">
                         <img src="../assets/images/3.png" alt="Notifikasi">
                     </a>
 
@@ -174,8 +176,8 @@
                         <h2>Panti Wredha BDK</h2>
                         <p class="footer-text">"Kasih Kristus Untuk Semua" Melayani dan mendampingi para lansia menjalani hari tua dengan penuh makna.</p>
                         <div class="footer-search">
-                            <form action="#">
-                                <input type="text" placeholder="Cari informasi..." required>
+                            <form @submit.prevent="performSearch">
+                                <input type="text" v-model="searchQuery" placeholder="Cari informasi di halaman ini..." required>
                                 <button type="submit"><i class="fas fa-search"></i></button>
                             </form>
                         </div>
@@ -183,7 +185,7 @@
                     <div class="col-lg-2 col-md-6 footer-col-mobile">
                         <h5 class="footer-heading">NAVIGASI</h5>
                         <ul class="footer-links">
-                            <li><a href="index.html">Beranda</a></li>
+                            <li><a href="../index.html">Beranda</a></li>
                             <li><a href="sejarah.html">Profil Kami</a></li>
                             <li><a href="donasi.html">Donasi</a></li>
                             <li><a href="kontak.html">Hubungi Kami</a></li>
@@ -237,95 +239,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        const { createApp } = Vue;
-
-        createApp({
-            data() {
-                return {
-                    isLoggedIn: false,
-                    currentUser: null,
-                    logoutModalInstance: null,
-                    // DATA BARU UNTUK FORM KONTAK
-                    form: {
-                        nama: '',
-                        email: '',
-                        telepon: '',
-                        pesan: ''
-                    }
-                }
-            },
-            mounted() {
-                // Cek Login (Kode Lama)
-                const status = localStorage.getItem('isLoggedIn');
-                const userData = localStorage.getItem('user_sementara');
-
-                if (status === 'true' && userData) {
-                    this.isLoggedIn = true;
-                    this.currentUser = JSON.parse(userData);
-                    // Otomatis isi nama & email kalau udah login
-                    this.form.nama = this.currentUser.username;
-                    this.form.email = this.currentUser.email;
-                }
-            },
-            methods: {
-                // --- FUNGSI KIRIM PESAN (BARU) ---
-                kirimPesan() {
-                    // 1. Validasi Input
-                    if (!this.form.nama || !this.form.pesan) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Data Belum Lengkap',
-                            text: 'Harap isi Nama dan Pesan Anda!',
-                            confirmButtonColor: '#1a5c7a'
-                        });
-                        return;
-                    }
-
-                    // 2. Ambil data lama
-                    let feedbackList = JSON.parse(localStorage.getItem('feedbackList')) || [];
-
-                    // 3. Buat objek pesan baru
-                    let pesanBaru = {
-                        id: Date.now(),
-                        nama: this.form.nama,
-                        email: this.form.email,
-                        telepon: this.form.telepon,
-                        pesan: this.form.pesan,
-                        tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
-                        jam: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-                    };
-
-                    // 4. Simpan
-                    feedbackList.push(pesanBaru);
-                    localStorage.setItem('feedbackList', JSON.stringify(feedbackList));
-
-                    // 5. POP-UP TJAKEP (Ganti alert biasa)
-                    Swal.fire({
-                        title: 'Pesan Terkirim!',
-                        text: 'Terima kasih atas masukan dan dukungan Anda.',
-                        icon: 'success',
-                        confirmButtonColor: '#1a5c7a', // Warna Teal sesuai tema
-                        confirmButtonText: 'Sama-sama'
-                    });
-
-                    // Reset form
-                    this.form.pesan = ''; 
-                },
-                // ---------------------------------
-
-                showLogoutModal() {
-                    const modalEl = document.getElementById('logoutModal');
-                    this.logoutModalInstance = new bootstrap.Modal(modalEl);
-                    this.logoutModalInstance.show();
-                },
-                confirmLogout() {
-                    window.location.href = "index.html"; 
-                }
-            }
-        }).mount('#kontakApp');
-    </script>
+    
+    <script src="../assets/js/kontak.js"></script>
 
 </body>
 </html>

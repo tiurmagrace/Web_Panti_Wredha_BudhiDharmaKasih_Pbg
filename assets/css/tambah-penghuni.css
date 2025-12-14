@@ -1,0 +1,211 @@
+/* ========================================
+   TAMBAH PENGHUNI - CUSTOM STYLES
+   ======================================== */
+
+/* Header & Basic Fixes */
+.header-left { 
+    border-right: none !important; 
+}
+
+.swal2-container { 
+    z-index: 999999 !important; 
+}
+
+/* Header tanpa search bar */
+.header-center-empty {
+    flex: 1;
+}
+
+/* Form Container */
+.form-container { 
+    background-color: #f8fbfd; 
+    border-radius: 8px; 
+    padding: 30px; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+    min-height: 600px; 
+    position: relative; 
+}
+
+/* Section Header */
+.section-header-teal { 
+    background-color: #1a5c7a; 
+    color: white; 
+    padding: 10px 20px; 
+    border-radius: 6px; 
+    font-weight: 600; 
+    font-size: 1rem; 
+    display: inline-block; 
+    margin-bottom: 25px; 
+    min-width: 200px; 
+    text-align: center; 
+}
+
+/* Form Group Row */
+.form-group-row { 
+    display: flex; 
+    align-items: center; 
+    margin-bottom: 15px; 
+}
+
+/* Label Custom */
+.label-custom { 
+    width: 250px; 
+    font-size: 1rem; 
+    color: #333; 
+    font-weight: 500; 
+}
+
+/* Input Custom */
+.input-custom { 
+    flex: 1; 
+    background-color: #f0f8ff; 
+    border: 1px solid #1a5c7a; 
+    border-radius: 4px; 
+    padding: 8px 12px; 
+    color: #333; 
+    outline: none; 
+    transition: 0.3s; 
+}
+
+.input-custom:focus { 
+    background-color: #fff; 
+    box-shadow: 0 0 0 2px rgba(26, 92, 122, 0.2); 
+}
+
+.input-error { 
+    border-color: red !important; 
+    background-color: #fff5f5 !important; 
+}
+
+/* Photo Upload Box */
+.photo-upload-box { 
+    width: 150px; 
+    height: 120px; 
+    border: 2px solid #1a5c7a; 
+    background-color: #f0f8ff; 
+    border-radius: 6px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    cursor: pointer; 
+    position: relative; 
+    overflow: hidden; 
+}
+
+.photo-preview { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
+
+.camera-icon { 
+    font-size: 2.5rem; 
+    color: #333; 
+}
+
+/* Navigation Buttons */
+.nav-buttons { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    margin-top: 40px; 
+    gap: 20px; 
+}
+
+.btn-nav-text { 
+    background: none; 
+    border: none; 
+    color: #1a5c7a; 
+    font-weight: 600; 
+    font-size: 1.1rem; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+}
+
+.btn-submit-custom { 
+    background-color: #1a5c7a; 
+    color: white; 
+    padding: 10px 40px; 
+    border: none; 
+    border-radius: 6px; 
+    font-size: 1.1rem; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: 0.3s; 
+}
+
+.btn-submit-custom:hover { 
+    background-color: #14465e; 
+}
+
+/* Error Text */
+.error-text-small { 
+    color: red; 
+    font-size: 0.8rem; 
+    margin-left: 250px; 
+    display: block; 
+    margin-top: -10px; 
+    margin-bottom: 10px; 
+}
+
+/* Progress Indicator Styles */
+.progress-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 15px;
+}
+
+.progress-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+}
+
+.step-circle.active {
+    background-color: #1a5c7a;
+    color: white;
+    box-shadow: 0 4px 8px rgba(26, 92, 122, 0.3);
+}
+
+.step-circle.completed {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.step-label {
+    font-weight: 600;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.step-label.active {
+    color: #1a5c7a;
+}
+
+.step-divider {
+    width: 60px;
+    height: 2px;
+    background-color: #e0e0e0;
+}
+
+.step-divider.completed {
+    background-color: #2ecc71;
+}

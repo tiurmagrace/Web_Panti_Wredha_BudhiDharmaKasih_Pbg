@@ -1,0 +1,99 @@
+/* ===================================
+   SEMUA AKTIVITAS - CUSTOM STYLES
+   Path: C:\xampp\htdocs\PantiWredhaBudhiDharmaKasih\assets\css\semua-aktivitas.css
+   =================================== */
+
+.header-left { 
+    border-right: none !important; 
+}
+
+.glass-panel { 
+    background: white; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
+    padding: 25px; 
+    margin-bottom: 30px; 
+}
+
+/* ===================================
+   LOG ITEM STYLES
+   =================================== */
+.log-item { 
+    padding: 15px; 
+    border-bottom: 1px solid #eee; 
+    display: flex; 
+    gap: 15px; 
+    align-items: center; 
+    transition: 0.3s; 
+}
+
+.log-item:hover { 
+    background-color: #f8fbfd; 
+}
+
+.log-item:last-child { 
+    border-bottom: none; 
+}
+
+/* ===================================
+   ICON STYLE
+   =================================== */
+.log-icon { 
+    width: 42px; 
+    height: 42px; 
+    background: #e0f2fe; 
+    color: #1a5c7a; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 1.1rem; 
+    flex-shrink: 0; 
+}
+
+/* ===================================
+   CONTENT STYLE
+   =================================== */
+.log-content { 
+    flex: 1; 
+}
+
+.log-text { 
+    font-weight: 600; 
+    color: #333; 
+    margin-bottom: 2px; 
+    font-size: 0.95rem; 
+}
+
+/* ===================================
+   TIME STYLE (Biar Rapi & Muat Tanggal Panjang)
+   =================================== */
+.log-time { 
+    font-size: 0.8rem; 
+    color: #666; 
+    font-weight: 500;
+    background-color: #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap; /* Biar tanggal gak turun baris */
+}
+
+/* ===================================
+   FILTER SELECT STYLE
+   =================================== */
+.filter-select { 
+    border: 2px solid #e0f2fe; 
+    border-radius: 8px; 
+    padding: 6px 12px; 
+    color: #1a5c7a; 
+    font-weight: 600; 
+    font-size: 0.9rem; 
+    cursor: pointer; 
+    outline: none; 
+    transition: 0.3s; 
+}
+
+.filter-select:focus { 
+    border-color: #1a5c7a; 
+    background-color: #f0f9ff; 
+}

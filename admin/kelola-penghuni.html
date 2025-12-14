@@ -8,91 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     
-    <link rel="stylesheet" href="assets/css/style-admin.css">
-    
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-    // --- SECURITY CHECK (SATPAM) ---
-    // UPDATE PATH LOGIN: Masuk ke folder auth
-    if (!localStorage.getItem('adminLoggedIn')) {
-        window.location.href = 'auth/login.html';
-    }
-    </script>
-
-    <style>
-        .header-left { border-right: none !important; }
-        .swal2-container { z-index: 999999 !important; }
-        .modal-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0, 0, 0, 0.5); 
-            display: flex; justify-content: center; align-items: center; 
-            z-index: 10000; 
-        }
-
-        /* MODAL CARD */
-        .modal-teal-card {
-            width: 600px; 
-            max-width: 95%; 
-            max-height: 90vh; 
-            overflow-y: auto;
-            background-color: #1a5c7a; 
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            padding-bottom: 20px;
-        }
-
-        /* FOTO FRAME */
-        .photo-frame-square {
-            width: 140px; height: 140px; 
-            background: #e2e8f0; 
-            border-radius: 10px;
-            border: 4px solid white;
-            margin: 25px auto 15px auto; 
-            display: flex; align-items: center; justify-content: center;
-            font-size: 3rem; color: #1a5c7a;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            z-index: 2; flex-shrink: 0; 
-            overflow: hidden; position: relative;
-        }
-        .photo-img { width: 100%; height: 100%; object-fit: cover; }
-
-        .detail-white-box {
-            background-color: white; margin: 0 20px; border-radius: 10px;
-            padding: 30px; padding-top: 20px; display: flex; flex-direction: column;
-        }
-
-        /* Search & Table Styles */
-        .search-wrapper { position: relative; width: 100%; }
-        .search-input-custom { background-color: #f1f5f9; border: 2px solid #21698a; border-radius: 5px; padding: 10px 45px 10px 15px; width: 100%; color: #333; font-size: 0.95rem; transition: 0.3s; }
-        .search-input-custom:focus { background-color: #fff; border-color: #1a5c7a; outline: none; box-shadow: 0 0 5px rgba(33, 105, 138, 0.2); }
-        .search-icon-inside { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #21698a; font-size: 1.1rem; pointer-events: none; }
-
-        .table-custom { width: 100%; border-collapse: collapse; }
-        .table-custom thead th { border-bottom: 2px solid #21698a; color: #333; font-weight: 700; padding: 12px 8px; font-size: 0.9rem; white-space: nowrap; text-align: left; }
-        .table-custom tbody td { padding: 10px 8px; vertical-align: middle; color: #21698a; font-weight: 500; font-size: 0.85rem; white-space: nowrap; }
-        .btn-action-custom { border: 2px solid #21698a; color: #21698a; background: transparent; border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; transition: 0.3s; padding: 0; }
-        .btn-action-custom:hover { background-color: #21698a; color: white; }
-        
-        .pagination-box { background-color: #f1f5f9; padding: 6px 14px; border-radius: 6px; font-weight: bold; color: #333; font-size: 0.9rem; cursor: pointer; margin: 0 3px; transition: 0.2s; }
-        .pagination-box.active { background-color: #21698a; color: white; }
-
-        /* Modal Form Styles */
-        .edit-input { width: 100%; border: 1px solid #ccc; border-radius: 4px; padding: 6px 10px; font-size: 0.9rem; color: #333; }
-        .edit-input:focus { border-color: #21698a; outline: none; }
-        
-        .btn-modal-action { padding: 8px 30px; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; min-width: 100px; }
-        .btn-modal-action:hover { opacity: 0.9; transform: translateY(-2px); }
-        
-        .modal-section-title { color: #1a5c7a; font-weight: 700; font-size: 1rem; border-bottom: 2px solid #e0e0e0; margin-top: 20px; margin-bottom: 15px; padding-bottom: 5px; }
-        .detail-row { display: flex; margin-bottom: 8px; align-items: center; }
-        .detail-label { width: 140px; font-weight: 600; color: #555; font-size: 0.9rem; flex-shrink: 0; }
-        .detail-value { flex: 1; font-size: 0.9rem; color: #333; display: flex; align-items: center; }
-    </style>
+    <link rel="stylesheet" href="../assets/css/style-admin.css">
+    <link rel="stylesheet" href="../assets/css/kelola-penghuni.css">
 </head>
 <body class="bg-admin">
 
@@ -127,7 +44,6 @@
 
         <aside class="sidebar">
             <ul class="list-unstyled">
-                
                 <li>
                     <a href="index.html">
                         <i class="fas fa-folder"></i> Dashboard
@@ -138,11 +54,8 @@
                     <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle" aria-expanded="true">
                         <i class="fas fa-file-invoice"></i> Manajemen Data Penghuni
                     </a>
-                    
                     <ul class="collapse show list-unstyled sidebar-submenu" id="penghuniSub">
-                        
                         <li><a href="kelola-penghuni.html" class="active"><i class="fas fa-list"></i> Data Penghuni</a></li>
-                        
                         <li><a href="tambah-penghuni.html"><i class="fas fa-plus"></i> Tambah Data</a></li>
                     </ul>
                 </li>
@@ -179,9 +92,12 @@
 
         <main class="main-content" style="padding: 25px;">
             <div class="content-body">
-                <div class="page-title-banner" style="margin-bottom: 25px;">Data Penghuni Panti Wredha “Budi Dharma Kasih” Purbalingga</div>
+                <div class="page-title-banner" style="margin-bottom: 25px;">
+                    Data Penghuni Panti Wredha "Budi Dharma Kasih" Purbalingga
+                </div>
 
                 <div class="glass-panel" style="margin-top: 0; background-color: #ffffff; color: #333; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 25px;">
+                    
                     <div class="row mb-3 g-3 align-items-end">
                         <div class="col-md-3">
                             <label class="fw-bold small text-muted mb-1">Filter Paviliun</label>
@@ -215,7 +131,15 @@
                     <div class="table-responsive">
                         <table class="table table-hover table-custom align-middle mb-0">
                             <thead>
-                                <tr><th>NIK</th><th>Nama</th><th>TTL</th><th>Kota Asal</th><th>Tahun Masuk</th><th>Paviliun</th><th class="text-center">Aksi</th></tr>
+                                <tr>
+                                    <th>NIK</th>
+                                    <th>Nama</th>
+                                    <th>TTL</th>
+                                    <th>Kota Asal</th>
+                                    <th>Tahun Masuk</th>
+                                    <th>Paviliun</th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="item in paginatedList" :key="item.nik">
@@ -227,20 +151,32 @@
                                     <td>{{ formatUpperCase(item.paviliun) }}</td>
                                     <td>
                                         <div class="d-flex gap-2 justify-content-center">
-                                            <button @click="openModal(item, 'detail')" class="btn-action-custom" title="Detail"><i class="fas fa-file-alt"></i></button>
-                                            <button @click="openModal(item, 'edit')" class="btn-action-custom" title="Edit"><i class="fas fa-edit"></i></button>
+                                            <button @click="openModal(item, 'detail')" class="btn-action-custom" title="Detail">
+                                                <i class="fas fa-file-alt"></i>
+                                            </button>
+                                            <button @click="openModal(item, 'edit')" class="btn-action-custom" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
-                                <tr v-if="paginatedList.length === 0"><td colspan="7" class="text-center py-5 text-muted">Data tidak ditemukan.</td></tr>
+                                <tr v-if="paginatedList.length === 0">
+                                    <td colspan="7" class="text-center py-5 text-muted">Data tidak ditemukan.</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
 
                     <div class="d-flex justify-content-end align-items-center mt-4" v-if="totalPages > 1">
-                        <button @click="prevPage" :disabled="currentPage === 1" class="btn btn-link text-dark text-decoration-none btn-sm"><i class="fas fa-chevron-left"></i></button>
-                        <div v-for="page in totalPages" :key="page" @click="currentPage = page" :class="['pagination-box', { active: currentPage === page }]">{{ page }}</div>
-                        <button @click="nextPage" :disabled="currentPage === totalPages" class="btn btn-link text-dark text-decoration-none btn-sm"><i class="fas fa-chevron-right"></i></button>
+                        <button @click="prevPage" :disabled="currentPage === 1" class="btn btn-link text-dark text-decoration-none btn-sm">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div v-for="page in totalPages" :key="page" @click="currentPage = page" :class="['pagination-box', { active: currentPage === page }]">
+                            {{ page }}
+                        </div>
+                        <button @click="nextPage" :disabled="currentPage === totalPages" class="btn btn-link text-dark text-decoration-none btn-sm">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -305,8 +241,14 @@
                             <div class="detail-label">Agama</div>
                             <div class="detail-value">
                                 <select v-model="tempFormData.agama" class="edit-input">
-                                    <option>Kristen Protestan</option><option>Katholik</option><option>Islam</option>
-                                    <option>Hindu</option><option>Budha</option><option>Konghucu</option><option>Kepercayaan Terhadap Tuhan YME</option><option>Tidak Beragama</option>
+                                    <option>Kristen Protestan</option>
+                                    <option>Katholik</option>
+                                    <option>Islam</option>
+                                    <option>Hindu</option>
+                                    <option>Budha</option>
+                                    <option>Konghucu</option>
+                                    <option>Kepercayaan Terhadap Tuhan YME</option>
+                                    <option>Tidak Beragama</option>
                                 </select>
                             </div>
                         </div>
@@ -314,7 +256,10 @@
                         <div class="detail-row">
                             <div class="detail-label">Gender</div>
                             <div class="detail-value">
-                                <select v-model="tempFormData.gender" class="edit-input"><option>Pria</option><option>Wanita</option></select>
+                                <select v-model="tempFormData.gender" class="edit-input">
+                                    <option>Pria</option>
+                                    <option>Wanita</option>
+                                </select>
                             </div>
                         </div>
                         
@@ -322,7 +267,10 @@
                             <div class="detail-label">Status</div>
                             <div class="detail-value">
                                 <select v-model="tempFormData.status" class="edit-input">
-                                    <option>Belum Kawin</option><option>Kawin</option><option>Janda</option><option>Duda</option>
+                                    <option>Belum Kawin</option>
+                                    <option>Kawin</option>
+                                    <option>Janda</option>
+                                    <option>Duda</option>
                                 </select>
                             </div>
                         </div>
@@ -346,8 +294,13 @@
                             <div class="detail-label">Sumber Rujukan</div>
                             <div class="detail-value">
                                 <select v-model="tempFormData.rujukan" class="edit-input">
-                                    <option>Yang Bersangkutan Sendiri</option><option>Kerabat/Tetangga</option><option>Dinas Sosial</option>
-                                    <option>Lembaga Kesehatan</option><option>Komunitas sosial</option><option>Pusat layanan terpadu</option><option>Lembaga Keagamaan</option>
+                                    <option>Yang Bersangkutan Sendiri</option>
+                                    <option>Kerabat/Tetangga</option>
+                                    <option>Dinas Sosial</option>
+                                    <option>Lembaga Kesehatan</option>
+                                    <option>Komunitas sosial</option>
+                                    <option>Pusat layanan terpadu</option>
+                                    <option>Lembaga Keagamaan</option>
                                 </select>
                             </div>
                         </div>
@@ -355,8 +308,13 @@
                             <div class="detail-label">Paviliun</div>
                             <div class="detail-value">
                                 <select v-model="tempFormData.paviliun" class="edit-input">
-                                    <option>ANGGREK</option><option>BOUGENVILLE 1</option><option>BOUGENVILLE 2</option>
-                                    <option>MAWAR</option><option>SNEEK</option><option>BETHESDA</option><option>DAHLIA</option>
+                                    <option>ANGGREK</option>
+                                    <option>BOUGENVILLE 1</option>
+                                    <option>BOUGENVILLE 2</option>
+                                    <option>MAWAR</option>
+                                    <option>SNEEK</option>
+                                    <option>BETHESDA</option>
+                                    <option>DAHLIA</option>
                                 </select>
                             </div>
                         </div>
@@ -376,176 +334,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const { createApp } = window.Vue;
-        
-        createApp({
-            data() {
-                return {
-                    // DATA UTAMA
-                    alertStatus: null, 
-                    isModalOpen: false, 
-                    modalMode: 'detail', 
-                    currentPage: 1, 
-                    itemsPerPage: 20, 
-                    tempFormData: {}, 
-                    editingIndex: -1, 
-                    
-                    // DATA PENCARIAN & FILTER (INI YG BARU)
-                    searchQuery: '', 
-                    filterPaviliun: '', // Menampung pilihan paviliun
-                    filterTahun: '',    // Menampung pilihan tahun
-                    
-                    // DUMMY DATA
-                    penghuniList: [
-                        { nik: '1234567890123456', nama: 'tino prasetyo', ttl: 'majenang, 25/05/1957', usia: 67, kota: 'purwokerto', tahun: '2024', paviliun: 'bougenville 1', agama: 'katolik', alamat: 'jl. kenanga no. 3', gender: 'pria', status: 'duda', pj: 'budi (anak)', hubungan: 'anak', telp: '08123456789', alamat_pj: 'jakarta', penyakit: 'stroke ringan', alergi: 'ayam', kebutuhan: 'walker', obat: 'simvastatin', status_sehat: 'stabil', tgl_masuk: '2024-01-01', rujukan: 'keluarga', catatan: '-', foto: null },
-                        { nik: '3302055505570001', nama: 'arifin', ttl: 'majenang, 25/05/1957', usia: 67, kota: 'purwokerto', tahun: '2024', paviliun: 'bougenville 1', agama: 'islam', alamat: 'jl. merdeka no. 1', gender: 'pria', status: 'menikah', pj: 'siti (istri)', hubungan: 'istri', telp: '0812999999', alamat_pj: 'purwokerto', penyakit: 'diabetes', alergi: '-', kebutuhan: '-', obat: 'metformin', status_sehat: 'perlu kontrol', tgl_masuk: '2024-02-15', rujukan: 'dinas sosial', catatan: '-', foto: null },
-                    ],
-                    currentUrl: window.location.href // Biar nav aktif (optional)
-                }
-            },
-            
-            computed: {
-                // 1. AMBIL TAHUN UNIK DARI DATA (UTK DROPDOWN)
-                uniqueYears() {
-                    if (!this.penghuniList) return [];
-                    const years = this.penghuniList.map(item => item.tahun);
-                    // Hapus duplikat dan urutkan dari tahun terbaru
-                    return [...new Set(years)].sort((a, b) => b - a);
-                },
-
-                // 2. LOGIC FILTER GABUNGAN (SEARCH + PAVILIUN + TAHUN + SORTING)
-                filteredList() {
-                    // TAHAP 1: FILTERING (Saring data dulu)
-                    const hasilFilter = this.penghuniList.filter(item => {
-                        const search = this.searchQuery.toLowerCase();
-                        
-                        // A. Logika Search Bar
-                        const matchSearch = (item.nik && item.nik.toString().toLowerCase().includes(search)) ||
-                                            (item.nama && item.nama.toLowerCase().includes(search)) ||
-                                            (item.kota && item.kota.toLowerCase().includes(search));
-
-                        // B. Logika Filter Paviliun
-                        const matchPaviliun = this.filterPaviliun === '' || 
-                                            (item.paviliun && item.paviliun.toUpperCase() === this.filterPaviliun.toUpperCase());
-
-                        // C. Logika Filter Tahun
-                        const matchTahun = this.filterTahun === '' || 
-                                            (item.tahun && item.tahun.toString() === this.filterTahun.toString());
-
-                        // Return TRUE jika SEMUA kondisi terpenuhi
-                        return matchSearch && matchPaviliun && matchTahun;
-                    });
-
-                    // TAHAP 2: SORTING (Urutkan hasil saringan dari Tgl Masuk Terbaru)
-                    return hasilFilter.sort((a, b) => {
-                        // Ubah string tanggal jadi object Date biar bisa dihitung
-                        const dateA = new Date(a.tgl_masuk);
-                        const dateB = new Date(b.tgl_masuk);
-                        
-                        // Rumus: Tanggal B - Tanggal A (Descending/Terbesar ke Terkecil)
-                        return dateB - dateA;
-                    });
-                },
-
-                // 3. PAGINATION
-                totalPages() { 
-                    return Math.ceil(this.filteredList.length / this.itemsPerPage); 
-                },
-                paginatedList() {
-                    const start = (this.currentPage - 1) * this.itemsPerPage;
-                    const end = start + this.itemsPerPage;
-                    return this.filteredList.slice(start, end);
-                }
-            },
-
-            mounted() {
-                const urlParams = new URLSearchParams(window.location.search);
-                if(urlParams.get('status') === 'success') {
-                    this.alertStatus = 'success';
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                }
-                const dataBaru = JSON.parse(localStorage.getItem('penghuniBaru'));
-                if (dataBaru && Array.isArray(dataBaru) && dataBaru.length > 0) {
-                    this.penghuniList = dataBaru;
-                } else {
-                    localStorage.setItem('penghuniBaru', JSON.stringify(this.penghuniList));
-                }
-            },
-
-            methods: {
-                formatUpperCase(str) { return str ? String(str).toUpperCase() : '-'; },
-                formatTitleCase(str) { return str ? String(str).toLowerCase().replace(/(?:^|\s)\w/g, m => m.toUpperCase()) : '-'; },
-                
-                resetFilter() {
-                    this.filterPaviliun = '';
-                    this.filterTahun = '';
-                    this.searchQuery = '';
-                    this.currentPage = 1; 
-                },
-
-                triggerFileInput() {
-                    if (this.modalMode === 'edit') { this.$refs.fileInput.click(); }
-                },
-                handlePhotoUpload(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => { this.tempFormData.foto = e.target.result; };
-                        reader.readAsDataURL(file);
-                    }
-                },
-
-                openModal(item, mode) {
-                    this.tempFormData = JSON.parse(JSON.stringify(item));
-                    this.modalMode = mode;
-                    this.editingIndex = this.penghuniList.findIndex(p => p.nik === item.nik);
-                    this.isModalOpen = true;
-                },
-                closeModal() { this.isModalOpen = false; this.editingIndex = -1; },
-                
-                processEdit() {
-                    Swal.fire({
-                        title: 'Simpan Perubahan?', text: "Pastikan data yang diubah sudah benar.", icon: 'question', 
-                        showCancelButton: true, confirmButtonText: 'Ya, Simpan', cancelButtonText: 'Batal',
-                        confirmButtonColor: '#21698a', cancelButtonColor: '#d33', reverseButtons: true
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            if (this.editingIndex !== -1) { 
-                                this.penghuniList.splice(this.editingIndex, 1, { ...this.tempFormData }); 
-                                localStorage.setItem('penghuniBaru', JSON.stringify(this.penghuniList));
-
-                                let logs = JSON.parse(localStorage.getItem('activityLog')) || [];
-                                let jam = new Date().toLocaleString('id-ID', { 
-                                    day: 'numeric', month: 'short', year: 'numeric', 
-                                    hour: '2-digit', minute: '2-digit' 
-                                });
-                                logs.push({ text: `Admin mengubah data penghuni: ${this.tempFormData.nama}`, time: jam });
-                                localStorage.setItem('activityLog', JSON.stringify(logs));
-                            }
-                            this.closeModal();
-                            Swal.fire({ title: 'Berhasil!', text: 'Data penghuni berhasil diperbarui.', icon: 'success', timer: 2000, showConfirmButton: false });
-                        }
-                    });
-                },
-                
-                logoutAdmin() {
-                    Swal.fire({
-                        title: 'Keluar?', text: "Sesi admin akan diakhiri.", icon: 'warning',
-                        showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Ya, Logout'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            localStorage.removeItem('adminLoggedIn'); 
-                            window.location.href = 'auth/login.html'; 
-                        }
-                    });
-                },
-                
-                prevPage() { if (this.currentPage > 1) this.currentPage--; },
-                nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; }
-            }
-        }).mount('#penghuniApp');
-    </script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="../assets/js/kelola-penghuni.js"></script>
 </body>
 </html>

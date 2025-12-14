@@ -8,47 +8,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     
-    <link rel="stylesheet" href="assets/css/style-admin.css">
+    <link rel="stylesheet" href="../assets/css/style-admin.css">
+    <link rel="stylesheet" href="../assets/css/semua-aktivitas.css">
     
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <script>
-    // --- SECURITY CHECK (SATPAM) ---
-    // UPDATE PATH LOGIN: Masuk ke folder auth
-    if (!localStorage.getItem('adminLoggedIn')) {
-        window.location.href = 'auth/login.html';
-    }
-    </script>
-    
-    <style>
-        .header-left { border-right: none !important; }
-        .glass-panel { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 25px; margin-bottom: 30px; }
-        .log-item { padding: 15px; border-bottom: 1px solid #eee; display: flex; gap: 15px; align-items: center; transition: 0.3s; }
-        .log-item:hover { background-color: #f8fbfd; }
-        .log-item:last-child { border-bottom: none; }
-        
-        /* Icon Style */
-        .log-icon { width: 42px; height: 42px; background: #e0f2fe; color: #1a5c7a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
-        
-        /* Content Style */
-        .log-content { flex: 1; }
-        .log-text { font-weight: 600; color: #333; margin-bottom: 2px; font-size: 0.95rem; }
-        
-        /* Time Style (Biar Rapi & Muat Tanggal Panjang) */
-        .log-time { 
-            font-size: 0.8rem; 
-            color: #666; 
-            font-weight: 500;
-            background-color: #f1f5f9;
-            padding: 4px 10px;
-            border-radius: 20px;
-            white-space: nowrap; /* Biar tanggal gak turun baris */
-        }
-        
-        .filter-select { border: 2px solid #e0f2fe; border-radius: 8px; padding: 6px 12px; color: #1a5c7a; font-weight: 600; font-size: 0.9rem; cursor: pointer; outline: none; transition: 0.3s; }
-        .filter-select:focus { border-color: #1a5c7a; background-color: #f0f9ff; }
-    </style>
 </head>
 <body class="bg-admin">
     <div id="activityApp" class="admin-wrapper">
@@ -82,9 +46,7 @@
                 <li><a href="index.html"><i class="fas fa-folder"></i> Dashboard</a></li>
                 
                 <li>
-                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle">
-                        <i class="fas fa-file-invoice"></i> Manajemen Data Penghuni
-                    </a>
+                    <a href="#penghuniSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-file-invoice"></i> Manajemen Data Penghuni</a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="penghuniSub">
                         <li><a href="kelola-penghuni.html"><i class="fas fa-list"></i> Data Penghuni</a></li>
                         <li><a href="tambah-penghuni.html"><i class="fas fa-plus"></i> Tambah Data</a></li>
@@ -92,9 +54,7 @@
                 </li>
 
                 <li>
-                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle">
-                        <i class="fas fa-box-open"></i> Manajemen Distribusi Donasi
-                    </a>
+                    <a href="#donasiSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-box-open"></i> Manajemen Distribusi Donasi</a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="donasiSub">
                         <li><a href="kelola-donasi.html"><i class="fas fa-history"></i> Riwayat</a></li>
                         <li><a href="tambah-donasi.html"><i class="fas fa-plus"></i> Tambah Donasi</a></li>
@@ -103,9 +63,7 @@
                 </li>
 
                 <li>
-                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle">
-                        <i class="fas fa-boxes"></i> Manajemen Stok Barang
-                    </a>
+                    <a href="#barangSub" data-bs-toggle="collapse" class="dropdown-toggle"><i class="fas fa-boxes"></i> Manajemen Stok Barang</a>
                     <ul class="collapse list-unstyled sidebar-submenu" id="barangSub">
                         <li><a href="data-barang.html"><i class="fas fa-clipboard-list"></i> Data Stok Barang</a></li>
                         <li><a href="tambah-barang.html"><i class="fas fa-plus"></i> Tambah Stok Barang</a></li>
@@ -168,75 +126,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const { createApp } = window.Vue;
-        createApp({
-            data() {
-                return {
-                    searchQuery: '',
-                    filterKategori: '', 
-                    activities: [],
-                    currentUrl: window.location.href // Untuk notif badge di header (optional)
-                }
-            },
-            computed: {
-                filteredList() {
-                    let result = this.activities.filter(item => {
-                        return item.text.toLowerCase().includes(this.searchQuery.toLowerCase());
-                    });
-                    if (this.filterKategori) {
-                        result = result.filter(item => {
-                            return item.text.toLowerCase().includes(this.filterKategori.toLowerCase());
-                        });
-                    }
-                    return result;
-                }
-            },
-            mounted() {
-                const logs = JSON.parse(localStorage.getItem('activityLog')) || [];
-                // 1. DATA URUT DARI TERBARU (REVERSE)
-                this.activities = logs.reverse(); 
-            },
-            methods: {
-                // FUNGSI FORMAT TANGGAL BIAR RAPI
-                formatTanggal(waktu) {
-                    // Cek dulu, kalau datanya cuma jam (format lama, misal "14.21"), balikin aja langsung
-                    // Biar data lama gak error
-                    if (!waktu || typeof waktu === 'string' && waktu.length < 10) return waktu;
-
-                    // Kalau datanya format baru (Date string), kita format jadi "13 Des 2025, 14:21"
-                    try {
-                        const date = new Date(waktu);
-                        // Cek validitas date
-                        if(isNaN(date.getTime())) return waktu; 
-
-                        return date.toLocaleDateString('id-ID', {
-                            day: 'numeric',
-                            month: 'short', 
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        });
-                    } catch (e) {
-                        return waktu;
-                    }
-                },
-
-                logoutAdmin() {
-                    Swal.fire({
-                        title: 'Keluar?', text: "Sesi admin akan diakhiri.", icon: 'warning',
-                        showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Ya, Logout'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            localStorage.removeItem('adminLoggedIn'); 
-                            // UPDATE PATH LOGOUT: Masuk ke folder auth
-                            window.location.href = 'auth/login.html'; 
-                        }
-                    });
-                }
-            }
-        }).mount('#activityApp');
-    </script>
+    
+    <script src="../assets/js/semua-aktivitas.js"></script>
 </body>
 </html>

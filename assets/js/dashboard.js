@@ -1,3 +1,8 @@
+// --- SECURITY CHECK (SATPAM) ---
+if (!localStorage.getItem('adminLoggedIn')) {
+    window.location.href = 'auth/login.html';
+}
+
 const { createApp } = window.Vue;
 
 createApp({
@@ -12,7 +17,7 @@ createApp({
             totalPenghuni: 0, totalUang: 0, totalBarang: 0, 
             totalStok: 0, stokMenipis: 0, jumlahHampirExpired: 0,
             totalSembako: 0, totalPakaian: 0, totalObat: 0,
-            currentUrl: window.location.href // Tambahan biar aktif menu sidebar
+            currentUrl: window.location.href // Biar aktif menu sidebar
         }
     },
     computed: {
@@ -104,6 +109,7 @@ createApp({
 
         loadActivities() {
             const logs = JSON.parse(localStorage.getItem('activityLog')) || [];
+            // Slice().reverse() agar tidak mengubah array asli
             this.activities = logs.slice().reverse().slice(0, 5);
         },
 
@@ -112,7 +118,7 @@ createApp({
             const donasiList = JSON.parse(localStorage.getItem('donasiList')) || [];
             const barangList = JSON.parse(localStorage.getItem('barangList')) || [];
 
-            // Donasi
+            // 1. Notifikasi Donasi
             donasiList.forEach(d => {
                 let time = d.id || this.dateToTimestamp(d.tanggal);
                 allNotifs.push({
@@ -122,10 +128,12 @@ createApp({
                 });
             });
 
-            // Stok
+            // 2. Notifikasi Stok
             barangList.forEach(b => {
                 let itemTime = this.dateToTimestamp(b.tgl_masuk);
                 let stok = parseInt(b.sisa_stok);
+                
+                // Stok Menipis
                 if (!isNaN(stok) && stok < 5) {
                     allNotifs.push({
                         text: `Stok ${b.nama} Menipis! (Sisa: ${b.sisa_stok})`,
@@ -134,6 +142,7 @@ createApp({
                     });
                 }
                 
+                // Stok Expired
                 if (b.expired && b.expired !== '-') {
                     const parts = b.expired.split('/'); 
                     const expDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
@@ -159,9 +168,11 @@ createApp({
         },
 
         calculateStats() {
+            // 1. Total Penghuni
             const penghuniList = JSON.parse(localStorage.getItem('penghuniBaru'));
             this.totalPenghuni = (penghuniList && Array.isArray(penghuniList)) ? penghuniList.length : 0;
 
+            // 2. Statistik Donasi (Bulan Ini)
             const donasiList = JSON.parse(localStorage.getItem('donasiList')) || [];
             const now = new Date();
             const currentMonth = now.getMonth() + 1;
@@ -212,6 +223,7 @@ createApp({
             this.totalPakaian = hitungPakaian;
             this.totalObat = hitungObat;
 
+            // 3. Statistik Stok
             const barangList = JSON.parse(localStorage.getItem('barangList')) || [];
             this.totalStok = barangList.length;
             this.stokMenipis = barangList.filter(b => {
@@ -243,7 +255,6 @@ createApp({
             }).then((result) => {
                 if (result.isConfirmed) {
                     localStorage.removeItem('adminLoggedIn');
-                    // UPDATE PATH LOGOUT: Masuk ke folder auth
                     window.location.href = 'auth/login.html';
                 }
             });
